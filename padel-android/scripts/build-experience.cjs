@@ -48,4 +48,6 @@ replace('window.__padel={',fs.readFileSync(path.join(src,'coop-camera.js'),'utf8
 replace('<button id="camera-cycle"','<button id="coop-view-toggle" class="icon-button" hidden>VIEW · Both players</button><button id="camera-cycle"');
 replace('<div id="scene"></div>','<div id="scene"></div><div id="split-labels" hidden aria-label="Split screen players"><span>PLAYER 1 · ARROWS + Z / X</span><span>PLAYER 2 · WASD + N / M</span></div>');
 replace('autoSwitch:setup.autoSwitch,racket:setup.racket','autoSwitch:setup.autoSwitch&&setup.format!==\'coop\',racket:setup.racket');
+replace('window.__padel={',fs.readFileSync(path.join(src,'ball-visibility.js'),'utf8')+'\nwindow.__padel={');
+replace('  updateSkillUI(dt);','  updateBallVisibility();updateSkillUI(dt);');
 fs.writeFileSync(path.join(root,'padel.html'),s);fs.writeFileSync(path.join(src,'base.html'),s);console.log('Shared v6 desktop + Android base built');
