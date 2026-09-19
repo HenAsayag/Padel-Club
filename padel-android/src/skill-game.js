@@ -48,7 +48,8 @@
       const b=this.ball,power=this.shotContext?.power??unusedPower,dx=tx-b.x,dz=tz-b.z,d=Math.hypot(dx,dz),lob=kind==='lob',serve=kind==='serve';
       let flight=lob?1.9+d*.025:serve?1.15:Math.max(.50,.58+d*.047-power*.28),solution;
       // Solve a nominal controlled trajectory using the actual gravity, drag and spin.
-      // Power extremes are applied AFTER solving, with no automatic net rescue.
+      // A tap uses the slower nominal arc too: beginners can return without charging.
+      // Overcharging still adds speed after solving and can hit glass before the floor.
       for(let attempt=0;attempt<8;attempt++){
         let vx=dx/flight,vy=(.0325-b.y+4.905*flight*flight)/flight,vz=dz/flight;const spin=lob?24:kind==='smash'?75:35;
         let net=Infinity;
@@ -61,9 +62,9 @@
         }
         if(net>1.03||lob)break;flight+=.10;
       }
-      const weak=clamp(power/.24,0,1),over=clamp((power-.86)/.14,0,1);
-      solution.vx*=power<.24?.35+.65*weak:1+over*.82;solution.vz*=power<.24?.35+.65*weak:1+over*.82;
-      solution.vy*=power<.24?.10+.9*weak:1+over*.14;
+      const over=clamp((power-.86)/.14,0,1);
+      solution.vx*=1+over*.82;solution.vz*=1+over*.82;
+      solution.vy*=1+over*.14;
       Object.assign(b,solution);this.solvedKind=kind;
     }
     launch(id,tx,tz,power,kind,bonus=1){

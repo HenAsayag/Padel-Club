@@ -18,3 +18,42 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 
 /* Mobile full-screen entry */
 #fullscreen-play{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:12;min-height:44px;padding:10px 12px;border-radius:9px;border:1px solid #d7f19b;color:#e6ffa7;background:#18392dee;font-size:10px;font-weight:bold}#fullscreen-play[hidden]{display:none}.phone #rally-card{display:none}#rotate-fullscreen{min-height:48px;padding:12px 20px;border:1px solid #d7f19b;border-radius:10px;background:#d7f19b;color:#123128;font-weight:bold}.phone #online-open{min-height:44px;max-width:50vw}.phone #online-panel{padding:max(12px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))}.phone #online-panel .net-card{width:min(620px,100%)}
+/* Mobile: a clear court, quiet HUD and one task per menu screen. */
+.phone #menu{justify-content:center;padding-top:max(60px,env(safe-area-inset-top));gap:0}
+.phone #menu .intro{display:none}
+.phone #menu .experience-panel{width:min(480px,100%);flex:none;padding:16px 22px;border-radius:20px}
+.phone #menu .club-header,.phone #menu .rally-challenge,.phone #menu .club-tip b,.phone #menu .menu-foot{display:none}
+.phone #menu [data-club-panel=club]>p{display:none}
+.phone #menu .experience-panel h2{font-size:30px;line-height:1.05;margin:12px 0}
+.phone #menu .experience-panel h2 br{display:none}
+.phone #menu .experience-panel h2 em:before{content:' '}
+.phone #menu .club-tip{border:0;padding:0;margin:8px 0}
+.phone #menu .club-tip p{font-size:12px;line-height:1.4}
+.phone #menu #quick-play{min-height:48px;font-size:16px;margin:8px 0}
+.phone #mobile-setup-toggle,.phone #mobile-setup-back{min-height:44px;font-size:12px}
+.phone.mobile-setup #menu .experience-panel{display:none}
+.phone.mobile-setup #menu .intro{display:block;width:min(650px,100%);height:100%;padding:0 8px;overflow:auto}
+.phone #mobile-setup-back{margin:0 0 8px}
+.phone #scoreboard{top:max(10px,env(safe-area-inset-top));width:180px;border-radius:12px;background:#12372ec9;box-shadow:none}
+.phone .score-head,.phone .score-col,.phone #scoreboard .score-serve{display:none}
+.phone .score-body{padding:4px 10px}.phone .score-name{font-size:9px}.phone .score-num{font-size:17px}
+.phone #status-pill,.phone #rally-card,.phone #impact-word,.phone .shot-buttons small,.phone #joystick small{display:none!important}
+.phone #message{bottom:auto;top:82px;max-width:50vw;background:transparent;padding:0;pointer-events:none}
+.phone #message strong{font-size:14px}.phone #message small{display:none}
+.phone.mobile-rally #message{display:none!important}
+.phone #net-badge{left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));transform:none;font-size:8px;background:#12372e99}
+.phone.mobile-playing #fullscreen-play{display:none}
+.phone #pause-button{width:44px;height:44px;font-size:19px!important;border-radius:50%;padding:0!important}
+.phone #pause #camera-cycle{min-height:44px;margin:8px 0;width:100%;max-width:none;border-radius:10px}
+.phone #skill-hud{width:160px;max-width:28vw;bottom:max(18px,env(safe-area-inset-bottom))}
+.phone .skill-meter{padding:7px 10px;background:#12372ebd;border:0;box-shadow:none}
+.phone .meter-title{justify-content:center;font-size:10px}.phone .meter-title>span:first-child,.phone .meter-zones,.phone .meter-hint{display:none}
+.phone .meter-track{height:9px;margin:5px 0 0}.phone .skill-meter.weak .power-value{color:#edf7d9}
+.phone #joystick{background:#14382e35;border-color:#e4f9d838;box-shadow:none}
+.phone #joystick:before,.phone #joystick:after{display:none}
+.phone .shot-buttons button{box-shadow:none;border-width:1px}
+@media(max-height:370px){.phone #menu{padding-top:56px;padding-bottom:8px}.phone #menu .experience-panel{padding:10px 18px}.phone #menu .experience-panel h2{font-size:23px;margin:5px 0}.phone #menu .club-tip{margin:4px 0}}
+.phone .score-body{grid-template-columns:minmax(0,1fr) 32px 38px;row-gap:2px}
+.phone .score-col{display:block;font-size:6px;letter-spacing:.4px}
+.phone #scoreboard .score-name{font-size:8px;letter-spacing:.3px;gap:4px;white-space:nowrap}
+.phone .serve-marker{font-size:0}.phone .serve-marker:not(:empty):after{content:'●';font-size:7px}

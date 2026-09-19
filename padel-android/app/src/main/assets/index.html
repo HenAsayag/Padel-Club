@@ -66,11 +66,50 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 
 /* Mobile full-screen entry */
 #fullscreen-play{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:12;min-height:44px;padding:10px 12px;border-radius:9px;border:1px solid #d7f19b;color:#e6ffa7;background:#18392dee;font-size:10px;font-weight:bold}#fullscreen-play[hidden]{display:none}.phone #rally-card{display:none}#rotate-fullscreen{min-height:48px;padding:12px 20px;border:1px solid #d7f19b;border-radius:10px;background:#d7f19b;color:#123128;font-weight:bold}.phone #online-open{min-height:44px;max-width:50vw}.phone #online-panel{padding:max(12px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))}.phone #online-panel .net-card{width:min(620px,100%)}
+/* Mobile: a clear court, quiet HUD and one task per menu screen. */
+.phone #menu{justify-content:center;padding-top:max(60px,env(safe-area-inset-top));gap:0}
+.phone #menu .intro{display:none}
+.phone #menu .experience-panel{width:min(480px,100%);flex:none;padding:16px 22px;border-radius:20px}
+.phone #menu .club-header,.phone #menu .rally-challenge,.phone #menu .club-tip b,.phone #menu .menu-foot{display:none}
+.phone #menu [data-club-panel=club]>p{display:none}
+.phone #menu .experience-panel h2{font-size:30px;line-height:1.05;margin:12px 0}
+.phone #menu .experience-panel h2 br{display:none}
+.phone #menu .experience-panel h2 em:before{content:' '}
+.phone #menu .club-tip{border:0;padding:0;margin:8px 0}
+.phone #menu .club-tip p{font-size:12px;line-height:1.4}
+.phone #menu #quick-play{min-height:48px;font-size:16px;margin:8px 0}
+.phone #mobile-setup-toggle,.phone #mobile-setup-back{min-height:44px;font-size:12px}
+.phone.mobile-setup #menu .experience-panel{display:none}
+.phone.mobile-setup #menu .intro{display:block;width:min(650px,100%);height:100%;padding:0 8px;overflow:auto}
+.phone #mobile-setup-back{margin:0 0 8px}
+.phone #scoreboard{top:max(10px,env(safe-area-inset-top));width:180px;border-radius:12px;background:#12372ec9;box-shadow:none}
+.phone .score-head,.phone .score-col,.phone #scoreboard .score-serve{display:none}
+.phone .score-body{padding:4px 10px}.phone .score-name{font-size:9px}.phone .score-num{font-size:17px}
+.phone #status-pill,.phone #rally-card,.phone #impact-word,.phone .shot-buttons small,.phone #joystick small{display:none!important}
+.phone #message{bottom:auto;top:82px;max-width:50vw;background:transparent;padding:0;pointer-events:none}
+.phone #message strong{font-size:14px}.phone #message small{display:none}
+.phone.mobile-rally #message{display:none!important}
+.phone #net-badge{left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));transform:none;font-size:8px;background:#12372e99}
+.phone.mobile-playing #fullscreen-play{display:none}
+.phone #pause-button{width:44px;height:44px;font-size:19px!important;border-radius:50%;padding:0!important}
+.phone #pause #camera-cycle{min-height:44px;margin:8px 0;width:100%;max-width:none;border-radius:10px}
+.phone #skill-hud{width:160px;max-width:28vw;bottom:max(18px,env(safe-area-inset-bottom))}
+.phone .skill-meter{padding:7px 10px;background:#12372ebd;border:0;box-shadow:none}
+.phone .meter-title{justify-content:center;font-size:10px}.phone .meter-title>span:first-child,.phone .meter-zones,.phone .meter-hint{display:none}
+.phone .meter-track{height:9px;margin:5px 0 0}.phone .skill-meter.weak .power-value{color:#edf7d9}
+.phone #joystick{background:#14382e35;border-color:#e4f9d838;box-shadow:none}
+.phone #joystick:before,.phone #joystick:after{display:none}
+.phone .shot-buttons button{box-shadow:none;border-width:1px}
+@media(max-height:370px){.phone #menu{padding-top:56px;padding-bottom:8px}.phone #menu .experience-panel{padding:10px 18px}.phone #menu .experience-panel h2{font-size:23px;margin:5px 0}.phone #menu .club-tip{margin:4px 0}}
+.phone .score-body{grid-template-columns:minmax(0,1fr) 32px 38px;row-gap:2px}
+.phone .score-col{display:block;font-size:6px;letter-spacing:.4px}
+.phone #scoreboard .score-name{font-size:8px;letter-spacing:.3px;gap:4px;white-space:nowrap}
+.phone .serve-marker{font-size:0}.phone .serve-marker:not(:empty):after{content:'●';font-size:7px}
 </style></head>
 <body>
 <div id="scene"></div><div id="split-labels" hidden aria-label="Split screen players"><span>PLAYER 1 · ARROWS + Z / X</span><span>PLAYER 2 · WASD + N / M</span></div><div id="skill-hud" hidden aria-label="Shot power">
-  <section class="skill-meter" id="skill-meter-0"><div class="meter-title"><b>SHOT POWER</b><span class="power-value">Hold HIT / Z</span></div><div class="meter-track"><span class="sweet-zone"></span><i class="meter-needle"></i></div><div class="meter-zones"><span>WEAK</span><span>CONTROL</span><span>SWEET</span><span>TOO STRONG</span></div><small class="meter-hint">Hold to charge · release to hit</small></section>
-  <section class="skill-meter" id="skill-meter-2" hidden><div class="meter-title"><b>PLAYER 2</b><span class="power-value">Hold N / M</span></div><div class="meter-track"><span class="sweet-zone"></span><i class="meter-needle"></i></div><div class="meter-zones"><span>WEAK</span><span>CONTROL</span><span>SWEET</span><span>TOO STRONG</span></div><small class="meter-hint">Hold to charge · release to hit</small></section>
+  <section class="skill-meter" id="skill-meter-0"><div class="meter-title"><b>SHOT POWER</b><span class="power-value">Hold HIT / Z</span></div><div class="meter-track"><span class="sweet-zone"></span><i class="meter-needle"></i></div><div class="meter-zones"><span>SOFT</span><span>CONTROL</span><span>SWEET</span><span>TOO STRONG</span></div><small class="meter-hint">Hold to charge · release to hit</small></section>
+  <section class="skill-meter" id="skill-meter-2" hidden><div class="meter-title"><b>PLAYER 2</b><span class="power-value">Hold N / M</span></div><div class="meter-track"><span class="sweet-zone"></span><i class="meter-needle"></i></div><div class="meter-zones"><span>SOFT</span><span>CONTROL</span><span>SWEET</span><span>TOO STRONG</span></div><small class="meter-hint">Hold to charge · release to hit</small></section>
 </div>
 <div id="desktop-shots" hidden><button id="mouse-lob">LOB <small>hold X</small></button><button id="mouse-hit">HIT <small>hold Z</small></button></div>
 <div id="vignette"></div>
@@ -967,7 +1006,8 @@ window.readSimpleInputs=readSimpleInputs;
       const b=this.ball,power=this.shotContext?.power??unusedPower,dx=tx-b.x,dz=tz-b.z,d=Math.hypot(dx,dz),lob=kind==='lob',serve=kind==='serve';
       let flight=lob?1.9+d*.025:serve?1.15:Math.max(.50,.58+d*.047-power*.28),solution;
       // Solve a nominal controlled trajectory using the actual gravity, drag and spin.
-      // Power extremes are applied AFTER solving, with no automatic net rescue.
+      // A tap uses the slower nominal arc too: beginners can return without charging.
+      // Overcharging still adds speed after solving and can hit glass before the floor.
       for(let attempt=0;attempt<8;attempt++){
         let vx=dx/flight,vy=(.0325-b.y+4.905*flight*flight)/flight,vz=dz/flight;const spin=lob?24:kind==='smash'?75:35;
         let net=Infinity;
@@ -980,9 +1020,9 @@ window.readSimpleInputs=readSimpleInputs;
         }
         if(net>1.03||lob)break;flight+=.10;
       }
-      const weak=clamp(power/.24,0,1),over=clamp((power-.86)/.14,0,1);
-      solution.vx*=power<.24?.35+.65*weak:1+over*.82;solution.vz*=power<.24?.35+.65*weak:1+over*.82;
-      solution.vy*=power<.24?.10+.9*weak:1+over*.14;
+      const over=clamp((power-.86)/.14,0,1);
+      solution.vx*=1+over*.82;solution.vz*=1+over*.82;
+      solution.vy*=1+over*.14;
       Object.assign(b,solution);this.solvedKind=kind;
     }
     launch(id,tx,tz,power,kind,bonus=1){
@@ -1706,13 +1746,13 @@ bindShotButton($('mouse-hit'),'drive');bindShotButton($('mouse-lob'),'lob');
 function renderProgress(){const rows=[];for(const [key,gains]of Object.entries(game.progress.gains))for(const [ability,gain]of Object.entries(gains))if(gain>=.005)rows.push(key.toUpperCase()+' · '+labels[ability]+' +'+gain.toFixed(2));progressionSummary.textContent=rows.length?'PRACTICE PAID OFF · '+rows.join(' / '):'Keep practicing: controlled, legal returns develop your character.';}
 function updateSkillUI(dt){
   syncCharacterKeys();if(!document.body.classList.contains('phone')){const detail=$("message-detail");if(detail.textContent.includes(' · Z to serve'))detail.textContent=detail.textContent.replace(' · Z to serve',' · hold Z, release to serve');if($("status-pill").textContent.startsWith('Z ·'))$("status-pill").textContent='HOLD Z → RELEASE TO SERVE';}const phone=document.body.classList.contains('phone'),live=!['menu','match'].includes(game.mode)&&!game.paused;
-  $('skill-hud').hidden=!live;$('desktop-shots').hidden=!live||phone;
+  const shotActive=!!game.chargeStates?.[game.controlled]||game.lastRelease?.[game.controlled]&&game.time-game.lastRelease[game.controlled].at<.65;document.body.classList.toggle('mobile-playing',phone&&live);document.body.classList.toggle('mobile-rally',phone&&game.mode==='rally');$('skill-hud').hidden=!live||(phone&&!shotActive);$('desktop-shots').hidden=!live||phone;
   if(game.networkRole==='guest'){game.advanceCharge(dt);for(const reward of game.rewardEvents||[]){if(reward.seq>rewardSeen&&reward.id===game.controlled)game.progress.award(game.characterKeys[game.controlled],reward.weights);rewardSeen=Math.max(rewardSeen,reward.seq);}}
   if(lastSkillMode==='menu'&&game.mode!=='menu')rewardSeen=0;
   if(game.mode==='match'&&lastSkillMode!=='match')renderProgress();lastSkillMode=game.mode;
   for(const slot of [0,2]){const id=slot===0?game.controlled:2,node=$('skill-meter-'+slot);node.hidden=slot===2&&!game.coop;const charge=game.chargeStates?.[id],release=game.lastRelease?.[id],recent=release&&game.time-release.at<.8,power=charge?.power??(recent?release.power:0),kind=charge?.kind??release?.kind??'drive',zone=game.powerZone(id,kind,power),spec=game.powerSpec(id,kind);
     node.classList.toggle('sweet',(!!charge||recent)&&zone==='sweet');node.classList.toggle('strong',zone==='strong');node.classList.toggle('weak',!!charge&&zone==='weak');node.querySelector('.meter-needle').style.left=(power*100)+'%';const sweet=node.querySelector('.sweet-zone');sweet.style.left=spec.low*100+'%';sweet.style.width=(spec.high-spec.low)*100+'%';
-    node.querySelector('.power-value').textContent=charge?Math.round(power*100)+'% · '+zone.toUpperCase():recent?zone.toUpperCase():'HOLD → RELEASE';node.querySelector('.meter-hint').textContent=charge?'Aim with movement · release to hit':phone?'Hold HIT / LOB · release to hit':slot===2?'Hold N / M · release to hit':'Hold Z / X or mouse buttons below';
+    node.querySelector('.power-value').textContent=charge?Math.round(power*100)+'% · '+(zone==='weak'?'SOFT':zone.toUpperCase()):recent?(zone==='weak'?'SOFT':zone.toUpperCase()):'HOLD → RELEASE';node.querySelector('.meter-hint').textContent=charge?'Aim with movement · release to hit':phone?'Hold HIT / LOB · release to hit':slot===2?'Hold N / M · release to hit':'Hold Z / X or mouse buttons below';
   }
   const release=game.lastRelease?.[game.controlled],token=release?release.at+':'+release.power:'';
   if(release?.zone==='sweet'&&token!==lastSweetToken){lastSweetToken=token;sound('racket',7);if(navigator.vibrate)navigator.vibrate(18);}
@@ -1800,6 +1840,18 @@ $('online-close').onclick=()=>{online.leave();$('online-panel').hidden=true;menu
 window.padelSuspend=()=>{resetTouch();if(game.mode!=='menu'&&game.mode!=='match'&&!game.paused)pause();};
 window.padelBack=()=>{if(!$('online-panel').hidden){$('online-close').click();return true;}if(game.mode==='menu')return false;if(game.mode==='match'){menu();return true;}pause();return true;};
 function updateMobileUI(){const playing=game.mode!=='menu'&&game.mode!=='match'&&!game.paused;$('mobile-controls').hidden=!(isPhone&&playing);$('online-open').hidden=game.mode!=='menu'||!$('online-panel').hidden;$('net-badge').hidden=!online.active;if(online.active)$('net-badge').textContent='ONLINE '+(online.mode==='coop'?'CO-OP':'1 VS 1')+' / '+online.latency+' ms';$('touch-hit').firstChild.textContent=game.mode==='ready'&&game.serverPlayer===game.controlled?'SERVE':'HIT';if(online.active){$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';}if(isPhone&&!$('input-guide').dataset.mobileReady){$('input-guide').dataset.mobileReady='true';$('input-guide').innerHTML='<b>MADE FOR TOUCH</b><p>Left joystick to move. Hold HIT or LOB, aim with the joystick, then release. Watch the power meter.</p>';}}
+
+// One mobile home panel; setup remains available without crowding the play screen.
+if(isPhone){
+  const setupToggle=document.createElement('button');setupToggle.id='mobile-setup-toggle';setupToggle.className='secondary';setupToggle.textContent='Court & match settings';
+  const setupBack=document.createElement('button');setupBack.id='mobile-setup-back';setupBack.className='secondary';setupBack.textContent='← Back';
+  document.querySelector('[data-club-panel=club]').appendChild(setupToggle);document.querySelector('.intro').prepend(setupBack);
+  setupToggle.onclick=()=>document.body.classList.add('mobile-setup');setupBack.onclick=()=>document.body.classList.remove('mobile-setup');
+  for(const id of ['start','quick-play','quit'])$(id).addEventListener('click',()=>document.body.classList.remove('mobile-setup'));
+  $('quick-play').textContent='Play now ↗';document.querySelector('.club-tip p').textContent='Tap HIT for a gentle return. Hold for more power.';
+  $('resume').before($('camera-cycle'));
+  $('pause-button').textContent='Ⅱ';$('pause-button').setAttribute('aria-label','Pause game');
+}
 
 // Fullscreen must begin inside a user gesture; orientation lock is best effort.
 let screenBusy=false;

@@ -30,3 +30,15 @@ $('online-close').onclick=()=>{online.leave();$('online-panel').hidden=true;menu
 window.padelSuspend=()=>{resetTouch();if(game.mode!=='menu'&&game.mode!=='match'&&!game.paused)pause();};
 window.padelBack=()=>{if(!$('online-panel').hidden){$('online-close').click();return true;}if(game.mode==='menu')return false;if(game.mode==='match'){menu();return true;}pause();return true;};
 function updateMobileUI(){const playing=game.mode!=='menu'&&game.mode!=='match'&&!game.paused;$('mobile-controls').hidden=!(isPhone&&playing);$('online-open').hidden=game.mode!=='menu'||!$('online-panel').hidden;$('net-badge').hidden=!online.active;if(online.active)$('net-badge').textContent='ONLINE '+(online.mode==='coop'?'CO-OP':'1 VS 1')+' / '+online.latency+' ms';$('touch-hit').firstChild.textContent=game.mode==='ready'&&game.serverPlayer===game.controlled?'SERVE':'HIT';if(online.active){$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';}if(isPhone&&!$('input-guide').dataset.mobileReady){$('input-guide').dataset.mobileReady='true';$('input-guide').innerHTML='<b>MADE FOR TOUCH</b><p>Left joystick to move. Hold HIT or LOB, aim with the joystick, then release. Watch the power meter.</p>';}}
+
+// One mobile home panel; setup remains available without crowding the play screen.
+if(isPhone){
+  const setupToggle=document.createElement('button');setupToggle.id='mobile-setup-toggle';setupToggle.className='secondary';setupToggle.textContent='Court & match settings';
+  const setupBack=document.createElement('button');setupBack.id='mobile-setup-back';setupBack.className='secondary';setupBack.textContent='← Back';
+  document.querySelector('[data-club-panel=club]').appendChild(setupToggle);document.querySelector('.intro').prepend(setupBack);
+  setupToggle.onclick=()=>document.body.classList.add('mobile-setup');setupBack.onclick=()=>document.body.classList.remove('mobile-setup');
+  for(const id of ['start','quick-play','quit'])$(id).addEventListener('click',()=>document.body.classList.remove('mobile-setup'));
+  $('quick-play').textContent='Play now ↗';document.querySelector('.club-tip p').textContent='Tap HIT for a gentle return. Hold for more power.';
+  $('resume').before($('camera-cycle'));
+  $('pause-button').textContent='Ⅱ';$('pause-button').setAttribute('aria-label','Pause game');
+}
