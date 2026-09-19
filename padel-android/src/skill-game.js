@@ -3,19 +3,41 @@
   class SkillGame extends window.SimpleGame {
     constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];}
     start(level){super.start(level);this.tactics?.reset();this.cancelAllShots();this.pendingAward=null;this.pointCredits=[0,0,0,0];this.rewardEvents=[];this.rewardSequence=0;this.progress?.begin();}
-    prepare(){super.prepare();this.cancelAllShots();this.pendingAward=null;this.pointCredits=[0,0,0,0];}
+    prepare(){super.prepare();this.cancelAllShots();for(const c of this.controls)c.contactWindow=null;this.pendingAward=null;this.pointCredits=[0,0,0,0];}
     stat(id,key){return this.networkMode&&this.networkMode!=='offline'?0:(this.progress?.value(this.characterKeys[id],key)||0)/100;}
     powerSpec(id,kind){return {cycle:kind==='lob'?1.2:1.02,low:kind==='lob'?.53:.62,high:(kind==='lob'?.65:.74)+this.stat(id,'control')*.025};}
     powerZone(id,kind,power){const s=this.powerSpec(id,kind);return power<.24?'weak':power>.86?'strong':power>=s.low&&power<=s.high?'sweet':'controlled';}
     beginShot(id,kind='drive'){
       if(this.paused||!this.isHuman(id)||!['ready','rally'].includes(this.mode)||this.mode==='ready'&&id!==this.serverPlayer||this.chargeStates?.[id])return false;
-      this.chargeStates??=Array(4).fill(null);this.chargeStates[id]={kind,elapsed:0,power:0};this.controls[id].buffer=0;this.controls[id].charging=true;if(id===this.controlled)this.charging=true;return true;
+      this.chargeStates??=Array(4).fill(null);this.chargeStates[id]={kind,elapsed:0,power:0};this.controls[id].buffer=0;this.controls[id].charging=true;if(id===this.controlled)this.charging=true;this.reserveContact(id);return true;
+    }
+    // A bounded contact window slows an incoming ball near a charging player.
+    // It never rewinds the ball, moves a player, or bypasses racket contact.
+    reserveContact(id){
+      if(!this.legalReach(id))return;
+      const c=this.controls[id],p=this.players[id],b=this.ball;
+      if(Math.hypot(b.x-p.x,b.z-p.z)>1.55)return;
+      const old=c.contactWindow;
+      if(old&&old.hit===this.lastHitTime&&old.point===this.pointNumber)return;
+      c.contactWindow={hit:this.lastHitTime,point:this.pointNumber,bounces:this.bounces[this.team(id)],until:this.time+.45};
+    }
+    physics(dt){
+      let assist=false;
+      if(this.mode==='rally'&&!this.paused)for(const id of this.activePlayers){
+        const c=this.controls[id];if(!this.isHuman(id))continue;
+        if(this.chargeStates?.[id])this.reserveContact(id);
+        const w=c.contactWindow;if(!w||this.time>w.until)continue;
+        const p=this.players[id],b=this.ball,dx=b.x-p.x,dz=b.z-p.z;
+        if(!this.legalReach(id)||w.hit!==this.lastHitTime||w.point!==this.pointNumber||w.bounces!==this.bounces[this.team(id)]||Math.hypot(dx,dz)>1.85||c.input.x*dx+c.input.z*dz<-.1){w.until=-1;continue;}
+        if(this.chargeStates?.[id]||c.buffer>0)assist=true;
+      }
+      super.physics(dt*(assist?.18:1));
     }
     button(id,kind,held=false){if(!held)return this.beginShot(id,kind);}
     advanceCharge(dt){if(this.paused)return;for(let id=0;id<4;id++){const state=this.chargeStates?.[id];if(!state)continue;state.elapsed+=dt;state.power=Math.min(1,state.elapsed/this.powerSpec(id,state.kind).cycle);this.controls[id].charge=state.power;if(id===this.controlled)this.charge=state.power;}}
-    cancelShot(id){if(this.chargeStates)this.chargeStates[id]=null;const c=this.controls?.[id];if(c){c.charging=false;c.charge=0;c.buffer=0;}if(id===this.controlled){this.charging=false;this.charge=0;}}
+    cancelShot(id,keepContact=false){if(this.chargeStates)this.chargeStates[id]=null;const c=this.controls?.[id];if(c){if(!keepContact&&c.contactWindow)c.contactWindow.until=-1;c.charging=false;c.charge=0;c.buffer=0;}if(id===this.controlled){this.charging=false;this.charge=0;}}
     cancelAllShots(){for(let id=0;id<4;id++)this.cancelShot(id);}
-    releaseShot(id,kind){const c=this.chargeStates?.[id];if(!c||kind&&c.kind!==kind)return false;const power=c.power;kind=c.kind;this.cancelShot(id);if(this.paused||!['ready','rally'].includes(this.mode))return false;
+    releaseShot(id,kind){const c=this.chargeStates?.[id];if(!c||kind&&c.kind!==kind)return false;const power=c.power;kind=c.kind;this.cancelShot(id,true);if(this.paused||!['ready','rally'].includes(this.mode))return false;
       this.previewSwing(id,kind);this.lastRelease[id]={power,kind,zone:this.powerZone(id,kind,power),at:this.time};this.keyboardAim(id);
       const aim={...(id===this.controlled?this.aim:this.controls[id].aim)};
       if(this.networkRole==='guest'){this.localAction++;this.localKind=kind;this.localPower=power;this.localAim=aim;return true;}
@@ -25,7 +47,7 @@
       if(this.paused||!this.isHuman(id)||!Number.isFinite(power)||power<0||power>1||!['drive','lob'].includes(kind))return false;
       if(this.mode==='ready'){if(id!==this.serverPlayer)return false;this.controls[id].servePower=power;this.keyboardAim(id);return this.requestServe();}
       if(this.mode!=='rally')return false;const c=this.controls[id],side=this.team(id)===0?-1:1;
-      c.power=power;c.pendingKind=kind;c.buffer=.22+this.stat(id,'timing')*.025;c.readyAt=this.time;c.releasedAim={x:clamp(Number(aim?.x)||0,-4.4,4.4),z:side*clamp(Math.abs(Number(aim?.z)||6.5),2.2,9.2)};
+      c.power=power;c.pendingKind=kind;c.buffer=.32+this.stat(id,'timing')*.025;c.readyAt=this.time;c.releasedAim={x:clamp(Number(aim?.x)||0,-4.4,4.4),z:side*clamp(Math.abs(Number(aim?.z)||6.5),2.2,9.2)};
       this.reachAttempted[id]=false;this.assistReturn(id);return true;
     }
     keyboardAim(id=this.controlled){const c=this.controls[id],aim=id===this.controlled?this.aim:c.aim,side=this.team(id)===0?-1:1,input=id===this.controlled?this.input:c.input;
