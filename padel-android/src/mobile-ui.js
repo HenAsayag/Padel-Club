@@ -38,7 +38,7 @@ if(isPhone){
   document.querySelector('[data-club-panel=club]').appendChild(setupToggle);document.querySelector('.intro').prepend(setupBack);
   setupToggle.onclick=()=>document.body.classList.add('mobile-setup');setupBack.onclick=()=>document.body.classList.remove('mobile-setup');
   for(const id of ['start','quick-play','quit'])$(id).addEventListener('click',()=>document.body.classList.remove('mobile-setup'));
-  $('quick-play').textContent='Play now ↗';document.querySelector('.club-tip p').textContent='Tap HIT for a gentle return. Hold for more power.';
+  document.querySelector('[data-club-panel=settings]').appendChild($('browser-fullscreen'));$('quick-play').after($('iphone-play'));$('quick-play').textContent='Play now ↗';document.querySelector('.club-tip p').textContent='Tap HIT for a gentle return. Hold for more power.';
   $('resume').before($('camera-cycle'));
   $('pause-button').textContent='Ⅱ';$('pause-button').setAttribute('aria-label','Pause game');
 }
