@@ -1,0 +1,8 @@
+node_modules/
+.tmp/
+padel-android/build-module.mjs
+padel-android/src/base.html
+padel.html
+.env*
+*.keystore
+*.apk

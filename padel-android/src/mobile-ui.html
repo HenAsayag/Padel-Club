@@ -1,0 +1,20 @@
+
+<button id="online-open">TWO PHONES · 1 VS 1</button>
+<section id="online-panel" hidden role="dialog" aria-label="Online multiplayer">
+<div class="net-card"><div class="eyebrow">PLAY TOGETHER</div><h2>Invite a friend.</h2>
+<p>Two phones. Opposite sides. Connect both phones to the same Wi-Fi, then create a room on one and join on the other.</p><label for="online-mode">MATCH TYPE</label>
+<select id="online-mode"><option value="duel">1 vs 1 · you against your friend</option></select>
+<button id="create-room" class="primary">Create room</button>
+<div id="room-code-box" hidden><label for="room-code">YOUR ROOM CODE</label><input id="room-code" readonly aria-label="Your room code"><button id="copy-room" class="secondary">Copy code</button></div>
+<div class="net-divider">OR JOIN YOUR FRIEND</div>
+<input id="join-code" maxlength="8" placeholder="8-character code" aria-label="Room code to join" autocomplete="off" autocapitalize="characters" spellcheck="false">
+<button id="join-room" class="primary">Join room</button>
+<p id="online-status" role="status">Open the same game address on both phones.</p>
+<button id="online-close" class="secondary">Back to clubhouse</button></div></section>
+<div id="mobile-controls" hidden>
+<div id="joystick" role="group" aria-label="Movement joystick"><span id="joystick-thumb"></span><small>MOVE</small></div>
+<div class="shot-buttons"><button id="touch-lob" aria-label="Lob">LOB<small>HIGH SHOT</small></button><button id="touch-hit" aria-label="Hit or serve">HIT<small>HOLD OR TAP</small></button></div>
+</div>
+<div id="net-badge" hidden></div>
+<button id="fullscreen-play" hidden>FULL SCREEN ↗</button>
+<div id="rotate-phone"><b>Turn your phone sideways</b><span>Padel Club plays in landscape. Turn off your phone’s rotation lock.</span><button id="rotate-fullscreen">ENTER FULL SCREEN</button></div>
