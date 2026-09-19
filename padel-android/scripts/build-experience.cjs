@@ -34,7 +34,14 @@ replace('window.__padel={',fs.readFileSync(path.join(src,'clubhouse.js'),'utf8')
 replace('for(const i of game.activePlayers)animatePlayer(models[i],game.players[i],i,game.paused?0:dt);','for(const i of game.activePlayers){animatePlayer(models[i],game.players[i],i,game.paused?0:dt);animateClubCharacter(models[i],game.players[i],i,game.paused?0:dt);}updateLocker(dt);');
 replace("document.querySelector('.experience-panel').appendChild($('cycle-looks'));","document.querySelector('[data-club-panel=locker]').appendChild($('cycle-looks'));");
 s=require('./patch-flow.cjs')(s);
+replace("      if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);", "      if(this.shotVelocity)this.shotVelocity(id,tx,tz,power,kind);else if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);");
 replace('  window.SimpleGame=SimpleGame;','  window.SimpleGame=SimpleGame;\n'+fs.readFileSync(path.join(src,'reach-game.js'),'utf8'));
+replace('</script>\n<script type="module">','</script>\n<script>'+['progression.js','tactics.js','skill-game.js'].map(name=>fs.readFileSync(path.join(src,name),'utf8')).join('\n')+'</script>\n<script type="module">');
+replace('</head>','<style>'+fs.readFileSync(path.join(src,'skill-ui.css'),'utf8')+'</style></head>');
+replace('<div id="scene"></div>','<div id="scene"></div>'+fs.readFileSync(path.join(src,'skill-ui.html'),'utf8'));
+replace('function clearLocalInputs(){','function clearLocalInputs(){game.cancelAllShots?.();');
+replace('  updateExperience();','  updateSkillUI(dt);updateExperience();');
+replace('window.__padel={',fs.readFileSync(path.join(src,'skill-ui.js'),'utf8')+'\nwindow.__padel={');
 replace('function updatePlayCamera(p,b,dt){','function updatePlayCamera(p,b,dt){\n  if(isLocalCoop()){updateCoopCamera();return;}');
 replace('if(renderEnabled)renderer.render(scene,camera);','if(renderEnabled)renderCourt();');
 replace('window.__padel={',fs.readFileSync(path.join(src,'coop-camera.js'),'utf8')+'\nwindow.__padel={');

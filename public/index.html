@@ -43,6 +43,9 @@
 #split-labels{position:fixed;inset:0;pointer-events:none;z-index:3;display:flex;align-items:flex-end;padding-bottom:76px}#split-labels[hidden]{display:none}#split-labels:before{content:'';position:absolute;top:0;bottom:0;left:50%;width:2px;background:#bbf7d080;box-shadow:0 0 12px #000}#split-labels span{width:50%;text-align:center;color:white;font:bold 11px system-ui;text-shadow:0 2px 4px #000}.split-screen #partner-call,.split-screen #rally-card{display:none!important}
 </style><style>:root{--lime:#d9fc80;--paper:#f5f4eb}#menu{background:linear-gradient(90deg,#071c20f5 0%,#102b2bcc 42%,#0d222749 69%,#091e22c9 100%)}.setup-panel{padding:22px;border:1px solid #ffffff19;border-radius:20px;background:#102b2bc9;backdrop-filter:blur(12px)}.setup-steps{gap:6px;padding:5px;background:#071c2180;border-radius:10px;margin-bottom:20px}.setup-steps button{flex:1;padding:12px 5px;border:0;border-radius:7px;letter-spacing:1px}.setup-steps button.active{background:#d9fc80;color:#142b25}.court-choice,.racket-choice,.format-options button{transition:background .2s,transform .2s,border-color .2s}.court-choice:hover,.racket-choice:hover,.format-options button:hover{transform:translateY(-2px);background:#284940}.experience-panel{margin-top:0;border-radius:20px;background:#0e2630ef;padding:22px;width:340px;max-width:37vw}.club-header{display:flex;justify-content:space-between;align-items:center}.club-header .eyebrow{font-size:8px;letter-spacing:2px}.season-badge{font-size:22px;font-weight:700;opacity:.35}.club-tabs{display:flex;gap:5px;border-bottom:1px solid #ffffff20;padding:14px 0}.club-tabs button{border:0;border-radius:20px;background:none;color:#b7c9c8;padding:9px 14px;font-size:11px}.club-tabs button.active{background:#d9fc80;color:#112923}.experience-panel h2{font-size:46px;line-height:1.05;font-weight:500;letter-spacing:-2px}.experience-panel h2 em{font-family:Georgia,serif;font-weight:400;color:var(--lime)}.club-tip{margin-top:20px;padding:15px;border-radius:10px;background:#ffffff05}.club-tip b{font-size:9px;letter-spacing:1px}.club-tip p{font-size:11px;margin-bottom:0}.rally-challenge strong{font-size:35px}.locker-heading{display:flex;align-items:center;justify-content:space-between}.locker-heading h2{font-size:29px;letter-spacing:-1px}.locker-heading span{font-size:7px;color:#c2d8c3;letter-spacing:1px}#locker-canvas{width:100%;height:200px;object-fit:contain;background:#172d39;border-radius:12px}.character-options{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.character-options button{border:1px solid #ffffff25;background:#ffffff04;color:#eaf4e2;border-radius:10px;padding:7px}.character-options button[aria-pressed=true]{background:#d9fc801b;border-color:var(--lime)}.character-options img{height:45px;width:45px;object-fit:contain}.character-options b,.character-options small{display:block;font-size:11px}.character-options small{font-size:7px;color:#aec4b8;margin-top:4px;letter-spacing:1px}.classic-avatar{display:block;font-size:34px;height:45px;color:#d9fc80}.demo-options{display:flex;flex-wrap:wrap;gap:5px;margin-top:13px}.demo-options button{border:1px solid #ffffff25;border-radius:6px;background:none;color:#d3e4d3;padding:8px;font-size:9px}.demo-options button[aria-pressed=true]{background:#d9fc80;color:#152d26}.experience-panel .asset-credit{font-size:8px;line-height:1.7;color:#9fb7ad}#cycle-looks{width:100%;margin-top:8px;border:1px solid #ffffff25;border-radius:7px;padding:10px;background:#ffffff05;color:#d9fc80}.dialog{border-radius:22px;background:#102b30;border-color:#d9fc8040;box-shadow:0 30px 100px #0006}.dialog h2{color:#e7f5c6}.primary{border-radius:10px}.racket-choice,.court-choice,.format-options button{border-radius:11px}@media(max-width:850px){.setup-panel{padding:15px}.experience-panel{max-width:none;padding:15px}.experience-panel h2{font-size:33px}.club-tabs button{padding:8px 11px}.locker-heading h2{font-size:25px}}
 body.phone .experience-panel{padding:12px!important}body.phone .setup-panel{padding:12px!important}body.phone .club-header{display:none}body.phone .club-tabs{padding:0 0 9px;position:sticky;top:0;z-index:2;background:#0e2630}body.phone .experience-panel h2{font-size:27px;margin:12px 0 7px}body.phone #locker-canvas{height:110px}body.phone .character-options img{height:30px;width:30px}body.phone .classic-avatar{height:30px;font-size:26px}body.phone .character-options{margin-top:7px}body.phone .demo-options{margin-top:7px}body.phone .rally-challenge{margin-top:12px;padding:12px 0}body.phone .club-tip{margin-top:12px;padding:10px}body.phone .rally-challenge strong{font-size:25px}body.phone .asset-credit,body.phone #cycle-looks{display:none}body.phone .locker-heading h2{font-size:22px;margin:8px 0}body.phone .character-options button{padding:4px}@media(prefers-reduced-motion:reduce){.court-choice,.racket-choice,.format-options button{transition:none}}
+</style><style>#skill-hud{position:fixed;left:50%;transform:translateX(-50%);bottom:78px;z-index:9;display:flex;gap:12px;pointer-events:none;width:min(560px,65vw);justify-content:center}#skill-hud[hidden],#desktop-shots[hidden],.skill-meter[hidden]{display:none}.skill-meter{width:260px;max-width:100%;padding:11px 13px;background:#12372ee8;border:1px solid #e5efdc40;border-radius:12px;color:#edf7d9;box-shadow:0 4px 20px #0002}.meter-title{display:flex;justify-content:space-between;font:9px system-ui;letter-spacing:.5px;gap:6px}.meter-track{position:relative;height:14px;margin:9px 0 5px;border-radius:4px;background:linear-gradient(to right,#857883 0 24%,#719bb2 24% 86%,#bd735e 86%);overflow:hidden}.sweet-zone{position:absolute;top:0;bottom:0;left:62%;width:12%;background:#d7f19b}.meter-needle{position:absolute;top:0;bottom:0;left:0;width:4px;background:white;box-shadow:0 0 7px #fff;transform:translateX(-50%)}.meter-zones{display:flex;justify-content:space-between;font:6px system-ui;letter-spacing:.2px}.meter-hint{display:block;font:9px system-ui;margin-top:6px;color:#d0dfca}.skill-meter.sweet{border-color:#d7f19b;box-shadow:0 0 22px #d7f19b55}.skill-meter.strong .power-value,.skill-meter.weak .power-value{color:#ffc2a0}#desktop-shots{position:fixed;right:20px;bottom:100px;z-index:10;display:flex;gap:8px}#desktop-shots button{background:#153b31dd;color:#d7f19b;border:1px solid #d7f19b88;border-radius:12px;padding:16px;touch-action:none;min-height:56px}#desktop-shots small{display:block;font-size:9px;margin-top:5px}#desktop-shots button.held{background:#416c52}.progress-summary{margin:12px 0;padding:12px;border:1px solid #d7f19b55;border-radius:8px;font-size:12px;color:#d7f19b;line-height:1.6}.skill-settings{display:flex;gap:10px;align-items:center;font-size:11px;margin-top:12px}.phone #skill-hud{bottom:max(13px,env(safe-area-inset-bottom));width:32vw;max-width:300px}.phone .skill-meter{padding:8px 9px}.phone .meter-title{font-size:8px}.phone .meter-hint{font-size:8px}.phone #message{bottom:117px}.phone #status-pill{bottom:97px}.phone #mobile-controls{touch-action:none}.phone.left-handed #joystick{left:auto;right:max(18px,env(safe-area-inset-right))}.phone.left-handed .shot-buttons{right:auto;left:max(18px,env(safe-area-inset-left))}.phone .shot-buttons button{opacity:.85}.phone .shot-buttons button.held{opacity:1}.phone #bottom .icon-button{min-height:44px;min-width:44px}.phone #scene{touch-action:none}.phone #rotate-phone{background:radial-gradient(ellipse at 50% 30%,#245b49,#102c26)}
+@media(max-height:420px){.phone #skill-hud{width:30vw}.phone .meter-zones{font-size:5px}.phone .meter-hint{font-size:7px}.phone #message{bottom:110px}.phone .meter-track{margin-top:6px;height:11px}}
+.progress-summary{max-height:150px;overflow:auto;text-align:left}.phone .progress-summary{max-height:90px}.phone #rotate-phone{background:radial-gradient(ellipse at 50% 30%,#245b49,#102c26)}
 </style><style>
 html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select:none;user-select:none}button,input,select{-webkit-tap-highlight-color:transparent}button{touch-action:manipulation}input{-webkit-user-select:text;user-select:text}
 #online-open{position:fixed;right:24px;top:20px;z-index:7;padding:13px 20px;border:1px solid #c9ee96;border-radius:9px;color:#e6ffa7;background:#18392dee;font-size:11px;font-weight:bold}
@@ -65,7 +68,12 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 #fullscreen-play{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:12;min-height:44px;padding:10px 12px;border-radius:9px;border:1px solid #d7f19b;color:#e6ffa7;background:#18392dee;font-size:10px;font-weight:bold}#fullscreen-play[hidden]{display:none}.phone #rally-card{display:none}#rotate-fullscreen{min-height:48px;padding:12px 20px;border:1px solid #d7f19b;border-radius:10px;background:#d7f19b;color:#123128;font-weight:bold}.phone #online-open{min-height:44px;max-width:50vw}.phone #online-panel{padding:max(12px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))}.phone #online-panel .net-card{width:min(620px,100%)}
 </style><link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#123128"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head>
 <body>
-<div id="scene"></div><div id="split-labels" hidden aria-label="Split screen players"><span>PLAYER 1 · ARROWS + Z / X</span><span>PLAYER 2 · WASD + N / M</span></div><div id="vignette"></div>
+<div id="scene"></div><div id="split-labels" hidden aria-label="Split screen players"><span>PLAYER 1 · ARROWS + Z / X</span><span>PLAYER 2 · WASD + N / M</span></div><div id="skill-hud" hidden aria-label="Shot power">
+  <section class="skill-meter" id="skill-meter-0"><div class="meter-title"><b>SHOT POWER</b><span class="power-value">Hold HIT / Z</span></div><div class="meter-track"><span class="sweet-zone"></span><i class="meter-needle"></i></div><div class="meter-zones"><span>WEAK</span><span>CONTROL</span><span>SWEET</span><span>TOO STRONG</span></div><small class="meter-hint">Hold to charge · release to hit</small></section>
+  <section class="skill-meter" id="skill-meter-2" hidden><div class="meter-title"><b>PLAYER 2</b><span class="power-value">Hold N / M</span></div><div class="meter-track"><span class="sweet-zone"></span><i class="meter-needle"></i></div><div class="meter-zones"><span>WEAK</span><span>CONTROL</span><span>SWEET</span><span>TOO STRONG</span></div><small class="meter-hint">Hold to charge · release to hit</small></section>
+</div>
+<div id="desktop-shots" hidden><button id="mouse-lob">LOB <small>hold X</small></button><button id="mouse-hit">HIT <small>hold Z</small></button></div>
+<div id="vignette"></div>
 <header class="topline"><div class="brand"><span class="brandmark"></span>PADEL <small>/</small> CLUB</div><div class="location"><i class="dot"></i> OPEN AIR · COURT 01</div></header>
 <section id="scoreboard" aria-label="Match score"><div class="score-head"><span>FRIENDLY MATCH / ONE SET</span><span id="difficulty-label">NORMAL</span></div><div class="score-body"><span></span><span class="score-col">GAMES</span><span class="score-col">POINTS</span><span class="score-name"><i class="player-dot"></i> <span id="your-team-name">YOU</span> <span id="serve-you" class="serve-marker">●</span></span><span id="games-you" class="score-num">0</span><span id="points-you" class="score-num point">0</span><span class="score-name"><i class="player-dot ai"></i> <span id="opponent-team-name">CLUB PRO</span> <span id="serve-ai" class="serve-marker"></span></span><span id="games-ai" class="score-num">0</span><span id="points-ai" class="score-num point">0</span></div></section>
 <main id="menu"><div class="intro setup-panel">
@@ -122,7 +130,7 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 <button id="online-close" class="secondary">Back to clubhouse</button></div></section>
 <div id="mobile-controls" hidden>
 <div id="joystick" role="group" aria-label="Movement joystick"><span id="joystick-thumb"></span><small>MOVE</small></div>
-<div class="shot-buttons"><button id="touch-lob" aria-label="Lob">LOB<small>HIGH SHOT</small></button><button id="touch-hit" aria-label="Hit or serve">HIT<small>HOLD OR TAP</small></button></div>
+<div class="shot-buttons"><button id="touch-lob" aria-label="Lob">LOB<small>HIGH SHOT</small></button><button id="touch-hit" aria-label="Hit or serve">HIT<small>HOLD + RELEASE</small></button></div>
 </div>
 <div id="net-badge" hidden></div>
 <button id="fullscreen-play" hidden>FULL SCREEN ↗</button>
@@ -361,7 +369,7 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
     }
     launch(id,tx,tz,power,kind,bonus=1) {
       const b=this.ball,dx=tx-b.x,dz=tz-b.z,d=Math.hypot(dx,dz);
-      if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);
+      if(this.shotVelocity)this.shotVelocity(id,tx,tz,power,kind);else if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);
       else if(kind==='lob'){this.buildLob(id,tx,bonus);kind=this.solvedKind;}
       else{
       let flight=kind==='serve'?1.3:kind==='lob'?1.85+d*.014:1.11+d*.012-power*.35;
@@ -820,15 +828,200 @@ window.readSimpleInputs=readSimpleInputs;
 })();
 
 </script>
+<script>(() => {
+  const abilities=['control','accuracy','timing','consistency','placement','defense','net','stamina','sweet','technique'];
+  const keys=['rio','alex','classic'];
+  class PlayerProgress {
+    constructor(storage){this.storage=storage;this.data={};this.gains={};try{const saved=JSON.parse(storage?.getItem('padel-progress-v1')||'{}');for(const key of keys){this.data[key]={};for(const a of abilities)this.data[key][a]=Math.max(0,Math.min(100,Number(saved[key]?.[a])||0));}}catch{} }
+    value(key,ability){return this.data[key]?.[ability]||0;}
+    begin(){this.gains={};}
+    award(key,weights){if(!keys.includes(key))return;this.data[key]??={};this.gains[key]??={};for(const a of abilities){const amount=Math.max(0,Math.min(2,Number(weights[a])||0));if(!amount)continue;const old=this.value(key,a),gain=Math.min(100-old,.16*amount/(1+old/12));this.data[key][a]=old+gain;this.gains[key][a]=(this.gains[key][a]||0)+gain;}try{this.storage?.setItem('padel-progress-v1',JSON.stringify(this.data));}catch{} }
+  }
+  window.PlayerProgress=PlayerProgress;window.PADEL_ABILITIES=abilities;
+})();
+
+(() => {
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const levels={easy:{reaction:.27,speed:3.9,error:.27},normal:{reaction:.16,speed:4.9,error:.15},hard:{reaction:.085,speed:5.65,error:.075}};
+  const styles=['balanced','aggressive','defensive','creative'];
+  class RallyTactics {
+    constructor(game){this.game=game;this.reset();}
+    reset(){this.brains=Array.from({length:4},(_,id)=>({state:'Recover',style:styles[id],history:[],fatigue:0,next:0,shot:-1,readyAt:0,plan:null}));this.rallyStart=null;this.history=[];this.safeguardCount=0;}
+    settings(){return levels[this.game.difficulty]||levels.normal;}
+    pressure(){return clamp((this.game.rallyHits-8)/26,0,1.5);}
+    transition(brain,state){if(brain.state!==state){brain.state=state;brain.since=this.game.time;}}
+    choose(id){
+      const g=this.game,b=g.ball,p=g.players[id],brain=this.brains[id],side=g.team(id)===0?-1:1,opponents=g.members(1-g.team(id)).map(i=>g.players[i]);
+      const exhausted=brain.fatigue+this.pressure()*.22,displaced=Math.min(1,Math.hypot(p.vx,p.vz)/6),defending=Math.abs(p.z)>7.5||b.y<.65||displaced>.85;
+      const netPressure=opponents.every(o=>Math.abs(o.z)<4.4),canAttack=b.y>1.7&&Math.abs(p.z)<5.5&&!defending;
+      const candidates=[];
+      for(const x of [-3.65,0,3.65])for(const depth of [2.8,5.4,8.3])for(const kind of ['drive','lob',...(canAttack?['smash']:[])]){
+        if(kind==='lob'&&depth!==8.3)continue;
+        const lane=x<0?'left':x>0?'right':'center',zone=depth<4?'short':depth>7?'deep':'middle',key=lane+':'+zone+':'+kind;
+        const space=Math.min(...opponents.map(o=>Math.hypot(x-clamp(o.x+o.vx*.32,-4.5,4.5),side*depth-(o.z+o.vz*.25))));
+        const recent=brain.history.slice(-4),repeats=recent.filter(h=>h.key===key).length,teamRepeats=this.history.slice(-4).filter(h=>h.team===g.team(id)&&h.lane===lane).length;
+        if(recent.length>=2&&recent.slice(-2).every(h=>h.key===key))continue;
+        let score=space*.65-repeats*3-teamRepeats*.65;
+        score+=kind==='lob'?(netPressure?3.5:-1.8)+(defending?1.3:0):0;
+        score+=kind==='smash'?2.2:0;score+=defending&&zone==='deep'?1.2:0;
+        score+=brain.style==='aggressive'&&zone==='short'?.7:brain.style==='defensive'&&kind==='lob'?.9:0;
+        score-=Math.abs(x-b.x)*.08*(defending?2:1);score+=g.gaussian()*(brain.style==='creative'?.38:.16);
+        candidates.push({x,z:side*depth,kind,lane,zone,key,score});
+      }
+      candidates.sort((a,b)=>b.score-a.score);const pick=candidates[0];
+      const intent=defending?'Defend':canAttack||pick.zone==='short'?'Attack':'Prepare';
+      let power=pick.kind==='lob'?.59:pick.kind==='smash'?.77:intent==='Attack'?.73:g.difficulty==='hard'?.67:g.difficulty==='normal'?.57:.49;
+      // Timing error grows with speed, fatigue and rally pressure; never rerolled per frame.
+      const error=this.settings().error*(1+displaced*.6)+brain.fatigue*.08+this.pressure()*.15;
+      power=clamp(power+g.gaussian()*error,.04,.99);
+      return {...pick,power,intent,error,displaced};
+    }
+    coordinate(){
+      const g=this.game,settings=this.settings();
+      for(let team=0;team<2;team++){
+        const ids=g.members(team),side=team===0?1:-1,incoming=g.lastHitter!==team;
+        const pick=incoming?g.predictTeam(team):null;
+        if(pick)g.claims[team]=pick.id;
+        for(const id of ids){if(g.isHuman(id))continue;const brain=this.brains[id],p=g.players[id];
+          if(incoming&&brain.shot!==g.rallyHits){brain.shot=g.rallyHits;brain.readyAt=g.time+settings.reaction*(1+brain.fatigue*.5);brain.plan=null;brain.offset=g.gaussian()*settings.error;brain.next=0;this.transition(brain,'Track');}
+          if(g.time<brain.next)continue;brain.next=g.time+.20+settings.reaction*.3;
+          if(incoming&&pick.id===id){
+            g.targets[id]={x:clamp(pick.x+(brain.offset||0),-4.5,4.5),z:side*clamp(Math.abs(pick.z)+Math.abs(brain.offset||0)*.3,.65,9.4)};
+            if(g.time>=brain.readyAt&&!brain.plan){brain.plan=this.choose(id);brain.readyAt=g.time+.06+brain.plan.displaced*settings.reaction;this.transition(brain,brain.plan.intent);}
+          }else{
+            const depth=brain.style==='defensive'?6.3:brain.style==='aggressive'?3.7:4.9;
+            g.targets[id]={x:clamp(g.ball.x*.22+(ids.length===2?(id<2?1.9:-1.9)*side:0),-4.3,4.3),z:side*(incoming?6.2:depth)};
+            this.transition(brain,'Recover');brain.plan=null;
+          }
+        }
+        // Preserve optional desktop teammate switching without switching a charged shot.
+        if(pick&&team===0&&g.autoSwitch&&!g.coop&&!g.chargeStates?.some(c=>c)&&pick.id!==g.controlled){g.controls[g.controlled].input={x:0,z:0,sprint:false};g.controlled=pick.id;g.emit('switch',pick.id);}
+      }
+    }
+    hit(id){const g=this.game,brain=this.brains[id],team=g.team(id);if(g.claims[team]!==id||!brain.plan||g.time<brain.readyAt||g.time<(brain.cooldown||0)||!g.canHit(id)||g.serveActive&&(g.bounces[team]===0||id!==g.serveReceiver))return;
+      const plan=brain.plan,p=g.players[id],distance=Math.hypot(g.ball.x-p.x,g.ball.z-p.z),strain=clamp(distance-.55,0,1)+brain.fatigue*.3+this.pressure()*.12;
+      const error=plan.error*(.6+strain);const x=plan.x+g.gaussian()*error,z=plan.z+g.gaussian()*error;
+      this.transition(brain,'Perform Action');g.serveActive=false;g.launch(id,x,z,plan.power,plan.kind);brain.cooldown=g.time+.26;
+      const record={key:plan.key,lane:plan.lane,kind:plan.kind,power:plan.power,team};brain.history.push(record);brain.history=brain.history.slice(-8);this.history.push(record);this.history=this.history.slice(-12);brain.plan=null;
+    }
+    step(dt){const g=this.game;if(g.mode!=='rally'){this.rallyStart=null;for(const b of this.brains)b.fatigue=Math.max(0,b.fatigue-dt*.12);return;}
+      if(this.rallyStart===null)this.rallyStart=g.time;
+      for(let id=0;id<4;id++){const b=this.brains[id],p=g.players[id];b.fatigue=clamp(b.fatigue+dt*(Math.hypot(p.vx,p.vz)*.0025+.0015),0,1);}
+      // Neutral replay is a final safety net, never an assigned winner.
+      if(g.rallyHits>=100||g.time-this.rallyStart>=150){g.cancelAllShots();g.pendingAward=null;g.mode='between';g.countdown=2.5;g.retry=true;this.rallyStart=null;this.safeguardCount++;g.emit('point','Long rally · replay','No point awarded. Serve again.');}
+    }
+  }
+  window.RallyTactics=RallyTactics;
+})();
+
+
+
+
+(() => {
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  class SkillGame extends window.SimpleGame {
+    constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];}
+    start(level){super.start(level);this.tactics?.reset();this.cancelAllShots();this.pendingAward=null;this.pointCredits=[0,0,0,0];this.rewardEvents=[];this.rewardSequence=0;this.progress?.begin();}
+    prepare(){super.prepare();this.cancelAllShots();this.pendingAward=null;this.pointCredits=[0,0,0,0];}
+    stat(id,key){return this.networkMode&&this.networkMode!=='offline'?0:(this.progress?.value(this.characterKeys[id],key)||0)/100;}
+    powerSpec(id,kind){return {cycle:kind==='lob'?1.2:1.02,low:kind==='lob'?.53:.62,high:(kind==='lob'?.65:.74)+this.stat(id,'control')*.025};}
+    powerZone(id,kind,power){const s=this.powerSpec(id,kind);return power<.24?'weak':power>.86?'strong':power>=s.low&&power<=s.high?'sweet':'controlled';}
+    beginShot(id,kind='drive'){
+      if(this.paused||!this.isHuman(id)||!['ready','rally'].includes(this.mode)||this.mode==='ready'&&id!==this.serverPlayer||this.chargeStates?.[id])return false;
+      this.chargeStates??=Array(4).fill(null);this.chargeStates[id]={kind,elapsed:0,power:0};this.controls[id].buffer=0;this.controls[id].charging=true;if(id===this.controlled)this.charging=true;return true;
+    }
+    button(id,kind,held=false){if(!held)return this.beginShot(id,kind);}
+    advanceCharge(dt){if(this.paused)return;for(let id=0;id<4;id++){const state=this.chargeStates?.[id];if(!state)continue;state.elapsed+=dt;state.power=Math.min(1,state.elapsed/this.powerSpec(id,state.kind).cycle);this.controls[id].charge=state.power;if(id===this.controlled)this.charge=state.power;}}
+    cancelShot(id){if(this.chargeStates)this.chargeStates[id]=null;const c=this.controls?.[id];if(c){c.charging=false;c.charge=0;c.buffer=0;}if(id===this.controlled){this.charging=false;this.charge=0;}}
+    cancelAllShots(){for(let id=0;id<4;id++)this.cancelShot(id);}
+    releaseShot(id,kind){const c=this.chargeStates?.[id];if(!c||kind&&c.kind!==kind)return false;const power=c.power;kind=c.kind;this.cancelShot(id);if(this.paused||!['ready','rally'].includes(this.mode))return false;
+      this.previewSwing(id,kind);this.lastRelease[id]={power,kind,zone:this.powerZone(id,kind,power),at:this.time};this.keyboardAim(id);
+      const aim={...(id===this.controlled?this.aim:this.controls[id].aim)};
+      if(this.networkRole==='guest'){this.localAction++;this.localKind=kind;this.localPower=power;this.localAim=aim;return true;}
+      return this.queueReleasedShot(id,kind,power,aim);
+    }
+    queueReleasedShot(id,kind,power,aim){
+      if(this.paused||!this.isHuman(id)||!Number.isFinite(power)||power<0||power>1||!['drive','lob'].includes(kind))return false;
+      if(this.mode==='ready'){if(id!==this.serverPlayer)return false;this.controls[id].servePower=power;this.keyboardAim(id);return this.requestServe();}
+      if(this.mode!=='rally')return false;const c=this.controls[id],side=this.team(id)===0?-1:1;
+      c.power=power;c.pendingKind=kind;c.buffer=.22+this.stat(id,'timing')*.025;c.readyAt=this.time;c.releasedAim={x:clamp(Number(aim?.x)||0,-4.4,4.4),z:side*clamp(Math.abs(Number(aim?.z)||6.5),2.2,9.2)};
+      this.reachAttempted[id]=false;this.assistReturn(id);return true;
+    }
+    keyboardAim(id=this.controlled){const c=this.controls[id],aim=id===this.controlled?this.aim:c.aim,side=this.team(id)===0?-1:1,input=id===this.controlled?this.input:c.input;
+      if(this.mode==='ready'||this.mode==='drop'){aim.x=-this.serveX(this.team(id));aim.z=side*4.5;return;}
+      // Movement selects the lane and depth. Neutral input keeps the last aim.
+      if(Math.abs(input.x)>.18)aim.x=clamp(input.x*3.7,-3.7,3.7);if(Math.abs(input.z)>.18)aim.z=side*(input.z*side>0?4.1:8.2);
+      if(!Number.isFinite(aim.z)||aim.z*side<=0)aim.z=side*6.5;if(!Number.isFinite(aim.x))aim.x=0;
+    }
+    tryHit(id){const c=this.controls[id],team=this.team(id);if(this.networkRole==='guest'||c.buffer<=0||this.time<c.readyAt||!this.canHit(id)||this.serveActive&&(this.bounces[team]===0||id!==this.serveReceiver))return false;
+      const aim=c.releasedAim;if(!aim)return false;const kind=c.pendingKind==='lob'?'lob':this.driveKind(id),zone=this.powerZone(id,c.pendingKind,c.power);
+      const off=Math.abs(this.contactOffset(id)),fatigue=1-c.stamina,sigma=(zone==='sweet'?.045:zone==='strong'?.7:.16)*(1+fatigue*.5+off*.3)*(1-this.stat(id,'accuracy')*.15);
+      this.serveActive=false;this.launch(id,aim.x+this.gaussian()*sigma,aim.z+this.gaussian()*sigma,c.power,kind);c.buffer=0;return true;
+    }
+    serveHit(){const id=this.serverPlayer,b=this.ball;if(!this.dropBounced||b.y>1||Math.abs(b.z)<6.95){this.fault('Illegal serve');return;}
+      this.keyboardAim(id);const side=this.team(id)===0?-1:1,aim=this.isHuman(id)?(id===this.controlled?this.aim:this.controls[id].aim):{x:-this.serveX(),z:side*4.5};
+      const power=this.isHuman(id)?(this.controls[id].servePower??.5):clamp(.53+this.gaussian()*this.tactics.settings().error*.5,.1,.95);
+      this.launch(id,aim.x,aim.z,power,'serve');this.serveActive=true;this.serveNet=false;this.mode='rally';
+    }
+    shotVelocity(id,tx,tz,unusedPower,kind){
+      const b=this.ball,power=this.shotContext?.power??unusedPower,dx=tx-b.x,dz=tz-b.z,d=Math.hypot(dx,dz),lob=kind==='lob',serve=kind==='serve';
+      let flight=lob?1.9+d*.025:serve?1.15:Math.max(.50,.58+d*.047-power*.28),solution;
+      // Solve a nominal controlled trajectory using the actual gravity, drag and spin.
+      // Power extremes are applied AFTER solving, with no automatic net rescue.
+      for(let attempt=0;attempt<8;attempt++){
+        let vx=dx/flight,vy=(.0325-b.y+4.905*flight*flight)/flight,vz=dz/flight;const spin=lob?24:kind==='smash'?75:35;
+        let net=Infinity;
+        for(let iteration=0;iteration<5;iteration++){
+          const q={...b,vx,vy,vz,sx:dz/Math.max(d,.01)*spin,sy:0,sz:-dx/Math.max(d,.01)*spin};net=Infinity;
+          const steps=Math.ceil(flight*120),dt=flight/steps;
+          for(let i=0;i<steps;i++){const z=q.z,y=q.y;this.integrate(q,dt);if(z*q.z<=0)net=Math.min(net,y+(q.y-y)*Math.abs(z)/Math.max(.0001,Math.abs(q.z-z)));}
+          if(iteration<4){vx+=(tx-q.x)/flight;vy+=(.0325-q.y)/flight;vz+=(tz-q.z)/flight;}
+          solution={vx,vy,vz,sx:dz/Math.max(d,.01)*spin,sy:0,sz:-dx/Math.max(d,.01)*spin};
+        }
+        if(net>1.03||lob)break;flight+=.10;
+      }
+      const weak=clamp(power/.24,0,1),over=clamp((power-.86)/.14,0,1);
+      solution.vx*=power<.24?.35+.65*weak:1+over*.82;solution.vz*=power<.24?.35+.65*weak:1+over*.82;
+      solution.vy*=power<.24?.10+.9*weak:1+over*.14;
+      Object.assign(b,solution);this.solvedKind=kind;
+    }
+    launch(id,tx,tz,power,kind,bonus=1){
+      if(this.pendingAward&&this.team(this.pendingAward.id)!==this.team(id)&&this.crossed&&!this.hitNet)this.creditShot();
+      if(kind==='flat'||kind==='slice'||kind==='topspin')kind='drive';this.shotContext={id,power};
+      const p=this.players[id],zone=this.powerZone(id,kind,power),speed=Math.hypot(p.vx,p.vz),off=Math.abs(this.contactOffset(id));
+      super.launch(id,tx,tz,power,kind,1);this.shotContext=null;
+      this.lastContact.power=power;this.lastContact.zone=zone;
+      this.pendingAward={id,zone,power,kind,x:p.x,z:p.z,speed,wall:this.time-p.lastWall<1.5,off,character:this.characterKeys[id]};
+      if(zone==='sweet')this.emit('sweet',id);if(this.tactics)this.aiEligible=this.time+this.tactics.settings().reaction;
+    }
+    creditShot(){const shot=this.pendingAward;if(!shot)return;this.pendingAward=null;if(!this.isHuman(shot.id)||!['sweet','controlled'].includes(shot.zone)||this.pointCredits[shot.id]>=4)return;
+      this.pointCredits[shot.id]++;const placement=Math.min(...this.members(1-this.team(shot.id)).map(i=>Math.hypot(this.ball.x-this.players[i].x,this.ball.z-this.players[i].z)));
+      const weights={control:1,accuracy:1,consistency:1,placement:placement>2?1:0,timing:shot.off<.09?1:0,defense:shot.wall||Math.abs(shot.z)>7?1.3:0,net:Math.abs(shot.z)<3.5?1:0,stamina:this.rallyHits>10?1:0,sweet:shot.zone==='sweet'?1.3:0,technique:shot.kind==='smash'||shot.kind==='lob'?1:0};
+      const event={seq:++this.rewardSequence,id:shot.id,character:shot.character,weights};this.rewardEvents.push(event);this.rewardEvents=this.rewardEvents.slice(-32);
+      if(this.networkRole!=='host'||shot.id===this.controlled)this.progress?.award(shot.character,weights);
+    }
+    floorContact(){const legal=this.mode==='rally'&&(this.ball.z>=0?0:1)!==this.lastHitter&&!this.hitNet&&this.bounces[1-this.lastHitter]===0;super.floorContact();if(legal&&this.mode==='rally')this.creditShot();}
+    endPoint(winner,reason,detail){super.endPoint(winner,reason,detail);this.cancelAllShots();this.pendingAward=null;}
+    fault(reason){super.fault(reason);this.cancelAllShots();this.pendingAward=null;}
+    coordinate(){this.tactics.coordinate();}
+    aiHit(id){this.tactics.hit(id);}
+    moveToward(p,x,z,dt,speed){const id=this.players.indexOf(p);if(this.mode==='rally'&&id>=0&&!this.isHuman(id)&&this.tactics)speed=this.tactics.settings().speed*(1-this.tactics.brains[id].fatigue*.15);super.moveToward(p,x,z,dt,speed);}
+    moveLocal(id,dt){const c=this.controls[id],before=c.stamina;super.moveLocal(id,dt);if(c.stamina<before)c.stamina+=((before-c.stamina)*this.stat(id,'stamina')*.12);}
+    step(dt=1/120){if(this.paused||this.networkRole==='guest')return;super.step(dt);if(this.mode!=='menu'&&this.mode!=='match'){this.advanceCharge(dt);this.tactics.step(dt);}}
+  }
+  window.SkillGame=SkillGame;window.SimpleGame=SkillGame;
+})();
+
+</script>
 <script src="./network-config.js"></script><script src="./peerjs.min.js"></script><script>
 (() => {
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   class MobileGame extends window.SimpleGame {
     constructor(event){super(event);this.networkMode='offline';this.networkRole='offline';this.remoteId=1;this.remoteInput={x:0,z:0,drive:false,lob:false};this.remoteInputAt=-100;this.localAction=0;this.localKind='drive';this.deviceInput={x:0,z:0,drive:false,lob:false};}
     isHuman(id){return this.networkMode&&this.networkMode!=='offline'?id===0||id===this.remoteId:super.isHuman(id);}
-    button(id,kind,held=false){if(this.networkRole==='guest'){if(this.paused)return;if(!held)this.previewSwing(id,kind);this.localKind=kind;this.localAction++;return;}super.button(id,kind,held);}
-    keyboardAim(id=this.controlled){if(this.team(id)===0)return super.keyboardAim(id);const aim=this.controls[id].aim,input=this.controls[id].input;if(this.mode==='ready'||this.mode==='drop'){aim.x=-this.serveX(1);aim.z=4.5;return;}if(Math.abs(input.x)>.25)aim.x=Math.sign(input.x)*3.1;else{let best=-Infinity;for(const x of [-3.1,0,3.1]){const space=Math.min(...this.members(0).map(i=>Math.hypot(x-this.players[i].x,7.5-this.players[i].z)));if(space>best){best=space;aim.x=x;}}}aim.z=input.z>.3?5.6:7.5;}
-    tryHit(id){if(this.networkRole==='guest')return false;if(this.team(id)===0)return super.tryHit(id);this.assistReturn(id);const c=this.controls[id];if(c.buffer<=0||this.time<c.readyAt||!this.canHit(id))return false;if(this.serveActive&&(this.bounces[1]===0||id!==this.serveReceiver))return false;this.keyboardAim(id);if(c.pendingKind!=='lob')c.pendingKind=this.driveKind(id);const off=this.contactOffset(id),perfect=Math.abs(off)<=.05;this.timing=perfect?'perfect':off>0?'early':'late';this.timingUntil=this.time+1.25;this.lastContactQuality=1;const sigma=(.08+.38*c.power*c.power)*(perfect?.5:1)*this.racketFor(id).control;this.lastAimSigma=sigma;this.serveActive=false;this.launch(id,c.aim.x+this.gaussian()*sigma,clamp(c.aim.z+this.gaussian()*sigma,.35,9.7),c.power,c.pendingKind,perfect?1.15:1);c.buffer=0;this.emit('timing',this.timing,this.lastShotSpeed);return true;}
+    button(id,kind,held=false){return super.button(id,kind,held);}
+    keyboardAim(id=this.controlled){return super.keyboardAim(id);}
+    tryHit(id){return super.tryHit(id);}
     moveLocal(id,dt){
       if(this.team(id)===0)return super.moveLocal(id,dt);
       // Mirror the far player into the same movement rules, including stamina,
@@ -840,7 +1033,7 @@ window.readSimpleInputs=readSimpleInputs;
       mirror();try{super.moveLocal(id,dt);}finally{mirror();this.emit=emit;p.facing-=Math.PI*2;if(!Number.isFinite(p.facing))p.facing=facing;}
       for(const args of events)this.emit(...args);
     }
-    step(dt=1/120){if(this.networkRole==='guest')return;if(this.networkRole==='host'){const fresh=this.time-this.remoteInputAt<.6,input=fresh?this.remoteInput:{x:0,z:0,drive:false,lob:false},c=this.controls[this.remoteId];c.input.x=input.x;c.input.z=input.z;c.input.sprint=Math.hypot(this.ball.x-this.players[this.remoteId].x,this.ball.z-this.players[this.remoteId].z)>2.2;if((input.drive||input.lob)&&this.mode==='rally'&&this.lastHitter!==this.team(this.remoteId)&&c.buffer<.15)this.button(this.remoteId,input.lob?'lob':'drive',true);}super.step(dt);}
+    step(dt=1/120){if(this.networkRole==='guest')return;if(this.networkRole==='host'){const fresh=this.time-this.remoteInputAt<.6,input=fresh?this.remoteInput:{x:0,z:0},c=this.controls[this.remoteId];c.input.x=input.x;c.input.z=input.z;c.input.sprint=Math.hypot(this.ball.x-this.players[this.remoteId].x,this.ball.z-this.players[this.remoteId].z)>2.2;}super.step(dt);}
   }
   window.MobileGame=MobileGame;
 })();
@@ -848,34 +1041,34 @@ window.readSimpleInputs=readSimpleInputs;
 (() => {
 const fields='mode time paused server pointNumber faults countdown serveActive serveNet serveOriginX dropBounced dropClock lastHitter lastHitterPlayer lastHitTime aiEligible crossed hitNet rallyHits lastShotSpeed timing timingUntil partnerMineUntil difficulty racket'.split(' ');
 const poses='x z vx vz facing swing splitStart splitManual boostStart boostUntil turnRate locomotion stroke strokeSide lastWall skidStart skidSide recoverUntil shotKind'.split(' ');
-function snapshot(g){const s=Object.fromEntries(fields.map(k=>[k,g[k]]));s.players=g.players.map(p=>Object.fromEntries(poses.map(k=>[k,p[k]])));s.ball={...g.ball};for(const k of ['games','points','bounces','claims'])s[k]=[...g[k]];s.targets=g.targets;s.contact=g.lastContact;return s;}
+function snapshot(g){const s=Object.fromEntries(fields.map(k=>[k,g[k]]));s.players=g.players.map(p=>Object.fromEntries(poses.map(k=>[k,p[k]])));s.ball={...g.ball};for(const k of ['games','points','bounces','claims'])s[k]=[...g[k]];s.targets=g.targets;s.contact=g.lastContact;s.rewards=g.rewardEvents||[];return s;}
 function validState(s){return s&&['ready','drop','rally','between','match'].includes(s.mode)&&Number.isFinite(s.time)&&s.players?.length===4&&s.players.every(p=>['x','z','vx','vz','facing'].every(k=>Number.isFinite(p[k])&&Math.abs(p[k])<1000))&&s.ball&&['x','y','z','vx','vy','vz'].every(k=>Number.isFinite(s.ball[k])&&Math.abs(s.ball[k])<1000)&&['games','points','bounces','claims'].every(k=>Array.isArray(s[k])&&s[k].length===2&&s[k].every(Number.isFinite));}
-function applyState(g,s){if(!validState(s))return false;for(const k of fields)if(['number','boolean','string'].includes(typeof s[k]))g[k]=s[k];for(let i=0;i<4;i++)for(const k of poses)if(['number','boolean','string'].includes(typeof s.players[i][k]))g.players[i][k]=s.players[i][k];for(const k of ['x','y','z','vx','vy','vz','sx','sy','sz'])if(Number.isFinite(s.ball[k]))g.ball[k]=s.ball[k];for(const k of ['games','points','bounces','claims'])g[k]=s[k].slice();if(s.targets?.length===4)g.targets=s.targets.map(t=>({x:Number(t.x)||0,z:Number(t.z)||0}));if(s.contact&&Number.isFinite(s.contact.time)&&[0,1,2,3].includes(s.contact.id))g.lastContact=s.contact;return true;}
+function applyState(g,s){if(!validState(s))return false;for(const k of fields)if(['number','boolean','string'].includes(typeof s[k]))g[k]=s[k];for(let i=0;i<4;i++)for(const k of poses)if(['number','boolean','string'].includes(typeof s.players[i][k]))g.players[i][k]=s.players[i][k];for(const k of ['x','y','z','vx','vy','vz','sx','sy','sz'])if(Number.isFinite(s.ball[k]))g.ball[k]=s.ball[k];for(const k of ['games','points','bounces','claims'])g[k]=s[k].slice();if(s.targets?.length===4)g.targets=s.targets.map(t=>({x:Number(t.x)||0,z:Number(t.z)||0}));if(s.contact&&Number.isFinite(s.contact.time)&&[0,1,2,3].includes(s.contact.id))g.lastContact=s.contact;if(Array.isArray(s.rewards))g.rewardEvents=s.rewards.filter(r=>Number.isInteger(r.seq)&&[0,1,2,3].includes(r.id)&&r.weights&&typeof r.weights==='object').slice(-32);return true;}
 class PadelLink{
 constructor(cb,PeerClass=window.Peer){Object.assign(this,{cb,PeerClass,active:false,peer:null,conn:null,role:'offline',mode:'duel',remoteId:1,sequence:0,lastSequence:-1,lastAction:0,clock:0,sentAt:0,receivedAt:0,closing:false,room:'',latency:0,lastPing:0});}
 status(s){this.cb.status(s);}
 options(){const c=window.PADEL_NETWORK||{},o={debug:0};if(c.host)Object.assign(o,{host:c.host,port:c.port||(c.secure===false?80:443),path:c.path||'/',secure:c.secure!==false});if(Array.isArray(c.iceServers))o.config={iceServers:c.iceServers};return o;}
-create(mode){this.leave();this.mode=mode==='coop'?'coop':'duel';this.remoteId=this.mode==='coop'?2:1;this.role='host';this.closing=false;const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',bytes=new Uint8Array(8);crypto.getRandomValues(bytes);this.room=Array.from(bytes,b=>alphabet[b%alphabet.length]).join('');this.status('Creating room...');this.openPeer('padel-mobile-1-'+this.room,()=>this.status('Room '+this.room+' is ready. Share the code with your friend.'));return this.room;}
-join(code){code=code.trim().toUpperCase();if(!/^[A-Z2-9]{8}$/.test(code)){this.status('Enter the 8-character room code.');return false;}this.leave();this.role='guest';this.closing=false;this.room=code;this.status('Finding room '+code+'...');this.openPeer(undefined,()=>this.attach(this.peer.connect('padel-mobile-1-'+code,{reliable:true,serialization:'json',metadata:{version:1}})));return true;}
+create(mode){this.leave();this.mode=mode==='coop'?'coop':'duel';this.remoteId=this.mode==='coop'?2:1;this.role='host';this.closing=false;const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',bytes=new Uint8Array(8);crypto.getRandomValues(bytes);this.room=Array.from(bytes,b=>alphabet[b%alphabet.length]).join('');this.status('Creating room...');this.openPeer('padel-mobile-2-'+this.room,()=>this.status('Room '+this.room+' is ready. Share the code with your friend.'));return this.room;}
+join(code){code=code.trim().toUpperCase();if(!/^[A-Z2-9]{8}$/.test(code)){this.status('Enter the 8-character room code.');return false;}this.leave();this.role='guest';this.closing=false;this.room=code;this.status('Finding room '+code+'...');this.openPeer(undefined,()=>this.attach(this.peer.connect('padel-mobile-2-'+code,{reliable:true,serialization:'json',metadata:{version:2}})));return true;}
 openPeer(id,opened){try{this.peer=id?new this.PeerClass(id,this.options()):new this.PeerClass(this.options());this.peer.on('open',()=>{clearTimeout(this.timeout);opened();if(this.role==='guest')this.timeout=setTimeout(()=>this.fail('Connection timed out. Check the code or try another network.'),20000);});this.peer.on('connection',c=>{if(this.role!=='host'||this.conn){c.on('open',()=>{c.send({t:'full'});setTimeout(()=>c.close(),150);});return;}this.attach(c);});this.peer.on('error',e=>this.fail(e.type==='peer-unavailable'?'Room not found. Check the code and keep the host online.':'Could not connect. Check your internet connection or try another network.'));this.peer.on('disconnected',()=>{if(!this.closing&&!this.active)this.fail('Room service disconnected. Please try again.');});this.timeout=setTimeout(()=>this.fail('Room service did not respond. Check your connection.'),16000);}catch(e){this.fail('Online play is unavailable in this browser.');}}
-attach(c){this.conn=c;c.on('open',()=>{clearTimeout(this.timeout);this.receivedAt=performance.now();if(this.role==='host'){this.send({t:'hello',version:1,mode:this.mode,settings:this.cb.settings()});this.timeout=setTimeout(()=>this.fail('Friend did not finish connecting. Please create another room.'),15000);}else this.status('Connected. Preparing the court...');});c.on('data',d=>this.receive(d));c.on('close',()=>{if(this.conn===c&&!this.closing)this.fail('Your friend disconnected. Create or join a new room.');});c.on('error',()=>{if(this.conn===c&&!this.closing)this.fail('The connection was interrupted. Please reconnect.');});}
+attach(c){this.conn=c;c.on('open',()=>{clearTimeout(this.timeout);this.receivedAt=performance.now();if(this.role==='host'){this.send({t:'hello',version:2,mode:this.mode,settings:this.cb.settings()});this.timeout=setTimeout(()=>this.fail('Friend did not finish connecting. Please create another room.'),15000);}else this.status('Connected. Preparing the court...');});c.on('data',d=>this.receive(d));c.on('close',()=>{if(this.conn===c&&!this.closing)this.fail('Your friend disconnected. Create or join a new room.');});c.on('error',()=>{if(this.conn===c&&!this.closing)this.fail('The connection was interrupted. Please reconnect.');});}
 send(d){if(this.conn?.open&&(this.conn.dataChannel?.bufferedAmount||0)<128000)this.conn.send(d);}
 boot(role,settings){clearTimeout(this.timeout);Object.assign(this,{active:true,role,lastSequence:-1,lastAction:0,sequence:0,sentAt:0,receivedAt:performance.now()});this.cb.boot(role,this.mode,this.remoteId,settings);this.status('Connected - '+(this.mode==='coop'?'co-op 2 vs 2':'1 vs 1'));}
 receive(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;this.receivedAt=performance.now();const g=this.cb.game();
 if(d.t==='full'){this.fail('This room already has two players.');return;}
-if(d.t==='hello'&&this.role==='guest'&&!this.active){if(d.version!==1||!['duel','coop'].includes(d.mode)){this.fail('Different game versions.');return;}this.mode=d.mode;this.remoteId=d.mode==='coop'?2:1;this.boot('guest',d.settings);this.send({t:'ready',version:1});return;}
-if(d.t==='ready'&&this.role==='host'&&!this.active&&d.version===1){this.boot('host',this.cb.settings());this.send({t:'state',seq:++this.sequence,state:snapshot(g)});return;}
+if(d.t==='hello'&&this.role==='guest'&&!this.active){if(d.version!==2||!['duel','coop'].includes(d.mode)){this.fail('Different game versions.');return;}this.mode=d.mode;this.remoteId=d.mode==='coop'?2:1;this.boot('guest',d.settings);this.send({t:'ready',version:2});return;}
+if(d.t==='ready'&&this.role==='host'&&!this.active&&d.version===2){this.boot('host',this.cb.settings());this.send({t:'state',seq:++this.sequence,state:snapshot(g)});return;}
 if(!this.active)return;
-if(d.t==='input'&&this.role==='host'){if(!Number.isInteger(d.seq)||d.seq<=this.lastSequence||!Number.isFinite(d.x)||!Number.isFinite(d.z)||Math.abs(d.x)>1||Math.abs(d.z)>1)return;this.lastSequence=d.seq;g.remoteInput={x:d.x,z:d.z,drive:d.drive===true,lob:d.lob===true};g.remoteInputAt=g.time;if(Number.isInteger(d.action)&&d.action>this.lastAction){this.lastAction=d.action;if(['drive','lob'].includes(d.kind)&&!g.paused)g.button(this.remoteId,d.kind);}return;}
+if(d.t==='input'&&this.role==='host'){if(!Number.isInteger(d.seq)||d.seq<=this.lastSequence||!Number.isFinite(d.x)||!Number.isFinite(d.z)||Math.abs(d.x)>1||Math.abs(d.z)>1)return;this.lastSequence=d.seq;g.remoteInput={x:d.x,z:d.z,drive:d.drive===true,lob:d.lob===true};g.remoteInputAt=g.time;if(Number.isInteger(d.action)&&d.action>this.lastAction){this.lastAction=d.action;if(['drive','lob'].includes(d.kind)&&Number.isFinite(d.power)&&d.power>=0&&d.power<=1&&!g.paused)g.queueReleasedShot(this.remoteId,d.kind,d.power,d.aim);}return;}
 if(d.t==='state'&&this.role==='guest'){if(!Number.isInteger(d.seq)||d.seq<=this.lastSequence||!applyState(g,d.state))return;this.lastSequence=d.seq;g.controlled=this.remoteId;this.cb.state(d.state);return;}
 if(d.t==='pause'&&this.role==='host'&&typeof d.value==='boolean'){this.setPaused(d.value);return;}
 if(d.t==='ping'&&Number.isFinite(d.at)){this.send({t:'pong',at:d.at});return;}
 if(d.t==='pong'&&Number.isFinite(d.at))this.latency=Math.round(Math.max(0,performance.now()-d.at));}
-setPaused(value){const g=this.cb.game();g.paused=value;g.remoteInput={x:0,z:0,drive:false,lob:false};this.cb.paused(value);this.send({t:'state',seq:++this.sequence,state:snapshot(g)});}
+setPaused(value){const g=this.cb.game();g.paused=value;g.cancelAllShots?.();g.remoteInput={x:0,z:0,drive:false,lob:false};this.cb.paused(value);this.send({t:'state',seq:++this.sequence,state:snapshot(g)});}
 requestPause(){if(!this.active)return;const value=!this.cb.game().paused;if(this.role==='guest')this.send({t:'pause',value});else this.setPaused(value);}
-tick(dt){if(!this.active)return;this.clock+=dt;const g=this.cb.game(),now=performance.now();if(now-this.receivedAt>12000){this.fail('Connection lost. Your match has stopped.');return;}if(this.clock-this.lastPing>2){this.lastPing=this.clock;this.send({t:'ping',at:now});}if(this.clock-this.sentAt<.05)return;this.sentAt=this.clock;if(this.role==='host')this.send({t:'state',seq:++this.sequence,state:snapshot(g)});else{const i=g.deviceInput;this.send({t:'input',seq:++this.sequence,x:i.x,z:i.z,drive:i.drive,lob:i.lob,action:g.localAction,kind:g.localKind});}}
+tick(dt){if(!this.active)return;this.clock+=dt;const g=this.cb.game(),now=performance.now();if(now-this.receivedAt>12000){this.fail('Connection lost. Your match has stopped.');return;}if(this.clock-this.lastPing>2){this.lastPing=this.clock;this.send({t:'ping',at:now});}if(this.clock-this.sentAt<.05)return;this.sentAt=this.clock;if(this.role==='host')this.send({t:'state',seq:++this.sequence,state:snapshot(g)});else{const i=g.deviceInput;this.send({t:'input',seq:++this.sequence,x:i.x,z:i.z,drive:i.drive,lob:i.lob,action:g.localAction,kind:g.localKind,power:g.localPower,aim:g.localAim});}}
 fail(message){if(this.closing)return;const active=this.active;this.leave();this.status(message);this.cb.ended(active,message);}
-leave(){this.closing=true;clearTimeout(this.timeout);this.active=false;this.conn?.close();this.peer?.destroy();this.conn=null;this.peer=null;this.role='offline';const g=this.cb.game();g.networkMode='offline';g.networkRole='offline';g.remoteInput={x:0,z:0,drive:false,lob:false};}
+leave(){this.closing=true;clearTimeout(this.timeout);this.active=false;this.conn?.close();this.peer?.destroy();this.conn=null;this.peer=null;this.role='offline';const g=this.cb.game();g.cancelAllShots?.();g.networkMode='offline';g.networkRole='offline';g.remoteInput={x:0,z:0,drive:false,lob:false};}
 }
 window.PadelLink=PadelLink;window.PadelNetState={snapshot,applyState,validState};
 })();
@@ -1371,7 +1564,7 @@ document.querySelectorAll('[data-format]').forEach(b=>b.onclick=()=>{setup.forma
 $('view-court').onclick=()=>{previewing=true;$('menu').style.display='none';$('court-view-bar').style.display='flex';};$('view-back').onclick=()=>{previewing=false;$('menu').style.display='flex';$('court-view-bar').style.display='none';};document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{viewAngle=Number(b.dataset.angle);});
 for(const button of document.querySelectorAll('.difficulty'))button.onclick=()=>{difficulty=button.dataset.level;setup.difficulty=difficulty;document.querySelectorAll('.difficulty').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});$('difficulty-help').textContent={easy:'A slower read. A wider margin. Make yourself at home.',normal:'A little pressure. Plenty of room to find your game.',hard:'Quick reactions. Precise angles. Bring your best.'}[difficulty];updateRackets();};
 const partnerRing=playerRing.clone();partnerRing.material=playerRing.material.clone();partnerRing.material.color.set('#86deed');scene.add(partnerRing);const coopReticle=reticle.clone();coopReticle.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.color.set('#86deed');}});scene.add(coopReticle);
-function clearLocalInputs(){for(const c of game.controls){c.input.x=c.input.z=0;c.input.sprint=false;c.charging=false;c.charge=0;c.buffer=0;}game.charging=false;game.charge=0;}
+function clearLocalInputs(){game.cancelAllShots?.();for(const c of game.controls){c.input.x=c.input.z=0;c.input.sprint=false;c.charging=false;c.charge=0;c.buffer=0;}game.charging=false;game.charge=0;}
 const debugReadout=new URLSearchParams(location.search).get('debug')==='1'?document.createElement('pre'):null,renderEnabled=!debugReadout||new URLSearchParams(location.search).get('render')!=='off';let measuredFrames=0,measureStarted=performance.now();if(debugReadout){debugReadout.id='render-metrics';debugReadout.style.cssText='position:fixed;right:12px;top:58px;z-index:20;color:white;background:#102329dd;padding:9px;font-size:11px;pointer-events:none';document.body.appendChild(debugReadout);}
 function updateClubExtras(dt,inMenu){for(let i=0;i<4;i++)models[i].root.visible=inMenu?i<2:game.activePlayers.includes(i);partnerRing.visible=game.format==='doubles'&&!inMenu;partnerRing.position.set(game.players[game.controlled^2].x,.022,game.players[game.controlled^2].z);coopReticle.visible=false;coopReticle.position.set(game.controls[2].aim.x,.026,game.controls[2].aim.z);
   for(const o of environments.indoor.children)if(o.material?.userData.cutaway)o.visible=inMenu&&!(previewing&&viewAngle===2)||camera.position.y<8;
@@ -1400,7 +1593,7 @@ function frame(now){
   trail.visible=game.mode==='rally';trailClock+=dt;if(trailClock>.02&&!game.paused){trailClock=0;for(let i=trailCount-1;i>0;i--){trailArray[i*3]=trailArray[(i-1)*3];trailArray[i*3+1]=trailArray[(i-1)*3+1];trailArray[i*3+2]=trailArray[(i-1)*3+2];}trailArray[0]=b.x;trailArray[1]=b.y;trailArray[2]=b.z;trailGeometry.attributes.position.needsUpdate=true;}
   $('movement-hud').style.display='none';$('shot-preview').style.display='none';$('power').style.display='none';
   if(game.time>messageUntil&&game.mode==='rally')$('message').style.display='none';
-  updateExperience();if(renderEnabled)renderCourt();
+  updateSkillUI(dt);updateExperience();if(renderEnabled)renderCourt();
 }
 camera.lookAt(look);resetTrail();$('start').disabled=false;$('start-text').textContent='Step onto the court';requestAnimationFrame(frame);
 // Shared desktop / Android presentation. Camera preferences remain local online.
@@ -1420,7 +1613,7 @@ applyExperience();selectCamera(experience.camera);
 document.querySelector('[data-club-panel=locker]').appendChild($('cycle-looks'));
 let rallyMilestone=0,previousRally=0;
 function updateExperience(){
-  if(document.body.classList.contains('phone')){const detail=$('message-detail');if(detail.textContent.includes(' · Z to serve'))detail.textContent=detail.textContent.replace(' · Z to serve',' · tap HIT to serve');if($('status-pill').textContent.startsWith('Z ·'))$('status-pill').textContent='TAP HIT · DROP, BOUNCE & SERVE';}
+  if(document.body.classList.contains('phone')){const detail=$('message-detail');if(detail.textContent.includes(' · Z to serve'))detail.textContent=detail.textContent.replace(' · Z to serve',' · hold HIT, release to serve');if($('status-pill').textContent.startsWith('Z ·'))$('status-pill').textContent='HOLD HIT → RELEASE TO SERVE';}
   const live=game.mode!=='menu'&&game.mode!=='match';$('rally-card').hidden=!live||game.paused;
   const hits=game.rallyHits||0;if(hits<previousRally)rallyMilestone=0;previousRally=hits;
   const goal=hits<8?8:hits<16?16:hits<24?24:Math.ceil((hits+1)/8)*8;
@@ -1479,7 +1672,7 @@ chooseCharacter(clubhouse.style);clubTab('club');$('cycle-looks').textContent='S
 // Source emotes are sampled only outside rallies, so padel IK remains authoritative.
 function sampleCharacterRotation(asset,clip,node,time){const track=asset.clips[clip]?.find(t=>t.node===node);if(!track)return null;const duration=track.times.at(-1);time=duration?time%duration:0;let i=0;while(i<track.times.length-2&&track.times[i+1]<time)i++;const t=(time-track.times[i])/Math.max(.0001,track.times[i+1]-track.times[i]);return new THREE.Quaternion().fromArray(track.values,i*4).slerp(new THREE.Quaternion().fromArray(track.values,(i+1)*4),Math.max(0,Math.min(1,t)));}
 function animateClubCharacter(model,p,id,dt){
- if(dt<=0)return;const menu=game.mode==='menu',between=game.mode==='between'||game.mode==='match';if(!menu&&!between)return;
+ if(dt<=0)return;const menu=game.mode==='menu',between=game.mode==='between'||game.mode==='match';if(!menu&&!between){const charge=game.chargeStates?.[id];if(charge&&model.clock-model.contactAt>.3){const amount=Math.min(1,charge.power*2);model.torso.rotation.y-=amount*.18;model.hips.position.y-=amount*.025;model.limbs.right.arm.rotation.x+=amount*.25;model.limbs.right.forearm.rotation.x+=amount*.18;}return;}
  if(model.assetIndex>=0){const asset=characterAssets[model.assetIndex],clip=between?(model.emotion==='win'?'emote-yes':'emote-no'):'idle',q=sampleCharacterRotation(asset,clip,'head',model.clock);if(q)model.head.quaternion.slerp(q,.65);}
  if(between){const win=model.emotion==='win',wave=Math.sin(model.clock*8);if(win){model.limbs.left.arm.rotation.x=2.3+wave*.18;model.limbs.left.forearm.rotation.x=1.4;model.torso.rotation.y+=Math.sin(model.clock*4)*.10;}else{model.neck.rotation.x=-.22;model.limbs.left.hand.rotation.z=Math.sin(model.clock*5)*.15;}return;}
  const demo=clubhouse.tab==='locker'?clubhouse.demo:'idle',t=model.clock;
@@ -1493,6 +1686,43 @@ function animateClubCharacter(model,p,id,dt){
 const lockerScene=new THREE.Scene();lockerScene.background=new THREE.Color('#172d39');lockerScene.add(new THREE.HemisphereLight(0xf3f9ff,0x647a68,2.8));const lockerLight=new THREE.DirectionalLight(0xffe4c5,2.5);lockerLight.position.set(-2,4,-3);lockerScene.add(lockerLight);
 const lockerCamera=new THREE.PerspectiveCamera(33,1,.1,20);lockerCamera.position.set(2.2,1.55,-3.4);lockerCamera.lookAt(0,.93,0);const lockerTarget=new THREE.WebGLRenderTarget(256,256),lockerPixels=new Uint8Array(256*256*4),lockerContext=$('locker-canvas').getContext('2d'),lockerImage=lockerContext.createImageData(256,256);lockerTarget.texture.colorSpace=THREE.SRGBColorSpace;let lockerTimer=0;
 function updateLocker(dt){if(game.mode!=='menu'||clubhouse.tab!=='locker')return;lockerTimer+=dt;if(lockerTimer<1/24)return;lockerTimer=0;const model=models[0],root=model.root,oldPosition=root.position.clone(),oldRotation=root.rotation.clone(),parent=root.parent,visible=root.visible,previous=renderer.getRenderTarget();lockerScene.add(root);root.position.set(0,model.groundOffset,0);root.rotation.y=0;root.visible=true;renderer.setRenderTarget(lockerTarget);renderer.render(lockerScene,lockerCamera);renderer.readRenderTargetPixels(lockerTarget,0,0,256,256,lockerPixels);renderer.setRenderTarget(previous);parent.add(root);root.position.copy(oldPosition);root.rotation.copy(oldRotation);root.visible=visible;for(let row=0;row<256;row++)lockerImage.data.set(lockerPixels.subarray((255-row)*1024,(256-row)*1024),row*1024);lockerContext.putImageData(lockerImage,0,0);}
+
+let progressStorage;try{progressStorage=localStorage;}catch{}
+game.progress=new window.PlayerProgress(progressStorage);
+let rewardSeen=0,lastSkillMode='',lastSweetToken='';
+const labels={control:'Power control',accuracy:'Accuracy',timing:'Timing',consistency:'Consistency',placement:'Placement',defense:'Defense',net:'Net play',stamina:'Stamina',sweet:'Sweet spots',technique:'Technique'};
+const skillSettings=document.createElement('label');skillSettings.className='skill-settings';skillSettings.innerHTML='<input type="checkbox" id="left-handed"> Left-handed touch layout';document.querySelector('[data-club-panel=settings]').appendChild(skillSettings);
+try{$('left-handed').checked=localStorage.getItem('padel-left-handed')==='1';}catch{}
+function applyHand(){document.body.classList.toggle('left-handed',$('left-handed').checked);try{localStorage.setItem('padel-left-handed',$('left-handed').checked?'1':'0');}catch{}}
+$('left-handed').onchange=applyHand;applyHand();
+const progressionSummary=document.createElement('div');progressionSummary.className='progress-summary';$('result-description').after(progressionSummary);
+function syncCharacterKeys(){game.characterKeys=game.players.map((p,i)=>clubhouse.style<0?'classic':['rio','alex'][(clubhouse.style+i%2)%2]);}
+syncCharacterKeys();
+function shotKey(code){if(code==='KeyZ'||code==='KeyX')return {id:game.controlled,kind:code==='KeyX'?'lob':'drive'};if(game.coop&&(code==='KeyN'||code==='KeyM'))return {id:2,kind:code==='KeyM'?'lob':'drive'};return null;}
+window.addEventListener('keydown',e=>{const shot=shotKey(e.code);if(!shot||game.mode==='menu'||game.mode==='match'||game.paused||['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){audioStart();game.beginShot(shot.id,shot.kind);}},true);
+window.addEventListener('keyup',e=>{const shot=shotKey(e.code);if(!shot)return;game.releaseShot(shot.id,shot.kind);keys[e.code]=false;},true);
+function bindShotButton(button,kind){let pointer=null;button.addEventListener('pointerdown',e=>{if(pointer!==null)return;e.preventDefault();pointer=e.pointerId;button.setPointerCapture(pointer);button.classList.add('held');audioStart();game.beginShot(game.controlled,kind);});for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,e=>{if(pointer!==e.pointerId)return;pointer=null;button.classList.remove('held');if(event==='pointerup')game.releaseShot(game.controlled,kind);else game.cancelShot(game.controlled);});}
+bindShotButton($('mouse-hit'),'drive');bindShotButton($('mouse-lob'),'lob');
+function renderProgress(){const rows=[];for(const [key,gains]of Object.entries(game.progress.gains))for(const [ability,gain]of Object.entries(gains))if(gain>=.005)rows.push(key.toUpperCase()+' · '+labels[ability]+' +'+gain.toFixed(2));progressionSummary.textContent=rows.length?'PRACTICE PAID OFF · '+rows.join(' / '):'Keep practicing: controlled, legal returns develop your character.';}
+function updateSkillUI(dt){
+  syncCharacterKeys();if(!document.body.classList.contains('phone')){const detail=$("message-detail");if(detail.textContent.includes(' · Z to serve'))detail.textContent=detail.textContent.replace(' · Z to serve',' · hold Z, release to serve');if($("status-pill").textContent.startsWith('Z ·'))$("status-pill").textContent='HOLD Z → RELEASE TO SERVE';}const phone=document.body.classList.contains('phone'),live=!['menu','match'].includes(game.mode)&&!game.paused;
+  $('skill-hud').hidden=!live;$('desktop-shots').hidden=!live||phone;
+  if(game.networkRole==='guest'){game.advanceCharge(dt);for(const reward of game.rewardEvents||[]){if(reward.seq>rewardSeen&&reward.id===game.controlled)game.progress.award(game.characterKeys[game.controlled],reward.weights);rewardSeen=Math.max(rewardSeen,reward.seq);}}
+  if(lastSkillMode==='menu'&&game.mode!=='menu')rewardSeen=0;
+  if(game.mode==='match'&&lastSkillMode!=='match')renderProgress();lastSkillMode=game.mode;
+  for(const slot of [0,2]){const id=slot===0?game.controlled:2,node=$('skill-meter-'+slot);node.hidden=slot===2&&!game.coop;const charge=game.chargeStates?.[id],release=game.lastRelease?.[id],recent=release&&game.time-release.at<.8,power=charge?.power??(recent?release.power:0),kind=charge?.kind??release?.kind??'drive',zone=game.powerZone(id,kind,power),spec=game.powerSpec(id,kind);
+    node.classList.toggle('sweet',(!!charge||recent)&&zone==='sweet');node.classList.toggle('strong',zone==='strong');node.classList.toggle('weak',!!charge&&zone==='weak');node.querySelector('.meter-needle').style.left=(power*100)+'%';const sweet=node.querySelector('.sweet-zone');sweet.style.left=spec.low*100+'%';sweet.style.width=(spec.high-spec.low)*100+'%';
+    node.querySelector('.power-value').textContent=charge?Math.round(power*100)+'% · '+zone.toUpperCase():recent?zone.toUpperCase():'HOLD → RELEASE';node.querySelector('.meter-hint').textContent=charge?'Aim with movement · release to hit':phone?'Hold HIT / LOB · release to hit':slot===2?'Hold N / M · release to hit':'Hold Z / X or mouse buttons below';
+  }
+  const release=game.lastRelease?.[game.controlled],token=release?release.at+':'+release.power:'';
+  if(release?.zone==='sweet'&&token!==lastSweetToken){lastSweetToken=token;sound('racket',7);if(navigator.vibrate)navigator.vibrate(18);}
+  const c=game.chargeStates?.[game.controlled];reticle.visible=live&&!!c;if(c){game.keyboardAim(game.controlled);reticle.position.set(game.aim.x,.023,game.aim.z);}
+}
+// Explain the changed input contract in the existing menus.
+document.querySelectorAll('.controls-strip').forEach(el=>{el.innerHTML='<span>↑ ↓ ← → move / aim</span><span>Z hold + release · HIT</span><span>X hold + release · LOB</span>';});
+const playCopy=document.querySelector('[data-club-panel=club]');if(playCopy){for(const p of playCopy.querySelectorAll('p'))if(p.textContent.includes('position decides'))p.textContent='Hold HIT or LOB, aim with movement, then release in the sweet spot.';}
+
+
 
 // Shared view is automatic for two humans on this computer. Online players
 // keep their own full-screen camera. Split view renders the same simulation.
@@ -1547,17 +1777,17 @@ function setStick(e){const r=$('joystick').getBoundingClientRect(),radius=r.widt
 $('joystick').addEventListener('pointerdown',e=>{if(touch.pointer!==null)return;e.preventDefault();touch.pointer=e.pointerId;touch.active=true;e.currentTarget.setPointerCapture(e.pointerId);setStick(e);game.tapMove?.(game.controlled,touch.x,touch.z);});
 $('joystick').addEventListener('pointermove',e=>{if(touch.pointer===e.pointerId){e.preventDefault();setStick(e);}});
 for(const event of ['pointerup','pointercancel','lostpointercapture'])$('joystick').addEventListener(event,e=>{if(touch.pointer===e.pointerId){touch.pointer=null;touch.x=touch.z=0;touch.active=false;$('joystick-thumb').style.transform='';}});
-for(const [id,kind]of [['touch-hit','drive'],['touch-lob','lob']]){const button=$(id);button.addEventListener('pointerdown',e=>{e.preventDefault();if(button.dataset.pointer!==undefined)return;button.dataset.pointer=String(e.pointerId);button.setPointerCapture(e.pointerId);touch[kind]=true;button.classList.add('held');audioStart();game.button(game.controlled,kind);});for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,e=>{if(button.dataset.pointer===String(e.pointerId)){delete button.dataset.pointer;touch[kind]=false;button.classList.remove('held');}});}
+for(const [id,kind]of [['touch-hit','drive'],['touch-lob','lob']]){const button=$(id);button.addEventListener('pointerdown',e=>{e.preventDefault();if(button.dataset.pointer!==undefined)return;button.dataset.pointer=String(e.pointerId);button.setPointerCapture(e.pointerId);touch[kind]=true;button.classList.add('held');audioStart();game.beginShot(game.controlled,kind);});for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,e=>{if(button.dataset.pointer===String(e.pointerId)){delete button.dataset.pointer;if(event==='pointerup')game.releaseShot(game.controlled,kind);else game.cancelShot(game.controlled);touch[kind]=false;button.classList.remove('held');}});}
 window.addEventListener('blur',resetTouch);
-function readMobileInputs(){const x=touch.active?touch.x:(keys.ArrowRight?1:0)-(keys.ArrowLeft?1:0),z=touch.active?touch.z:(keys.ArrowDown?1:0)-(keys.ArrowUp?1:0),drive=touch.drive||!!keys.KeyZ,lob=touch.lob||!!keys.KeyX,flip=game.networkRole==='guest'&&game.remoteId===1?-1:1;game.deviceInput={x:x*flip,z:z*flip,drive,lob};
-if(game.networkRole!=='guest'){window.readSimpleInputs(game,keys);if(touch.active){game.input.x=x;game.input.z=z;game.input.sprint=Math.hypot(game.ball.x-game.players[game.controlled].x,game.ball.z-game.players[game.controlled].z)>2.2;}if(!game.paused&&(touch.drive||touch.lob)&&game.mode==='rally'&&game.lastHitter!==game.team(game.controlled)&&game.controls[game.controlled].buffer<.15)game.button(game.controlled,touch.lob?'lob':'drive',true);}
+function readMobileInputs(){const x=touch.active?touch.x:(keys.ArrowRight?1:0)-(keys.ArrowLeft?1:0),z=touch.active?touch.z:(keys.ArrowDown?1:0)-(keys.ArrowUp?1:0),drive=touch.drive||!!keys.KeyZ,lob=touch.lob||!!keys.KeyX,flip=game.networkRole==='guest'&&game.remoteId===1?-1:1;game.deviceInput={x:x*flip,z:z*flip,drive,lob};if(game.networkRole==='guest'){game.input.x=x*flip;game.input.z=z*flip;}
+if(game.networkRole!=='guest'){window.readSimpleInputs(game,keys);if(touch.active){game.input.x=x;game.input.z=z;game.input.sprint=Math.hypot(game.ball.x-game.players[game.controlled].x,game.ball.z-game.players[game.controlled].z)>2.2;}}
 }
 let receivedContact='',receivedMode='',receivedPoint=-1;
 online=new window.PadelLink({
 game:()=>game,settings:()=>({court:setup.court,racket:setup.racket,colors:setup.colors,difficulty}),
 status:text=>{$('online-status').textContent=text;},
 boot:(role,mode,remoteId,settings)=>{if(COURTS[settings?.court])setup.court=settings.court;if(window.PADEL_RACKETS[settings?.racket])setup.racket=settings.racket;if(['easy','normal','hard'].includes(settings?.difficulty))difficulty=settings.difficulty;if(settings?.colors)for(const [key,value]of Object.entries(settings.colors))if(COURTS[key]&&SURFACES.some(c=>c.hex===value))setup.colors[key]=value;setup.format=mode==='coop'?'doubles':'singles';setup.autoSwitch=false;applyCourt();startMatch();game.networkMode=mode;game.networkRole=role;game.remoteId=remoteId;game.controlled=role==='guest'?remoteId:0;game.localAction=0;game.localKind='drive';$('rematch').disabled=role==='guest';receivedContact='';receivedMode='';receivedPoint=-1;resetTouch();$('online-panel').hidden=true;updateScore();},
-state:s=>{updateScore();$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';$('pause').style.display=s.paused?'flex':'none';if(s.paused)resetTouch();if(s.contact){const token=s.contact.time+':'+s.contact.id;if(token!==receivedContact){receivedContact=token;avatarContact(s.contact.id,s.contact.stroke);recordMotionContact(s.contact.id);sound('racket',s.lastShotSpeed||12);$('status-pill').textContent=strokeName(s.contact.stroke)+' / '+s.rallyHits+' SHOTS';}}if(s.mode!==receivedMode||s.pointNumber!==receivedPoint){receivedMode=s.mode;receivedPoint=s.pointNumber;if(s.mode==='ready')showMessage(game.serverPlayer===game.controlled?'Your serve':'Friend is serving',game.serverPlayer===game.controlled?'Tap HIT to serve':'Get ready for the return',2);if(s.mode==='between')showMessage('Point finished','Next point in a moment',2);if(s.mode==='match'){const won=(s.games[0]>s.games[1]?0:1)===game.team(game.controlled);$('result-title').textContent=won?'Court is yours.':'Well played.';$('result-description').textContent='Final score: '+s.games[0]+' - '+s.games[1]+'. Return to the clubhouse to play again.';$('result').style.display='flex';}}},
+state:s=>{updateScore();$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';$('pause').style.display=s.paused?'flex':'none';if(s.paused)resetTouch();if(s.contact){const token=s.contact.time+':'+s.contact.id;if(token!==receivedContact){receivedContact=token;avatarContact(s.contact.id,s.contact.stroke);recordMotionContact(s.contact.id);sound('racket',s.lastShotSpeed||12);$('status-pill').textContent=strokeName(s.contact.stroke)+' / '+s.rallyHits+' SHOTS';}}if(s.mode!==receivedMode||s.pointNumber!==receivedPoint){receivedMode=s.mode;receivedPoint=s.pointNumber;if(s.mode==='ready')showMessage(game.serverPlayer===game.controlled?'Your serve':'Friend is serving',game.serverPlayer===game.controlled?'Hold HIT, then release to serve':'Get ready for the return',2);if(s.mode==='between')showMessage('Point finished','Next point in a moment',2);if(s.mode==='match'){const won=(s.games[0]>s.games[1]?0:1)===game.team(game.controlled);$('result-title').textContent=won?'Court is yours.':'Well played.';$('result-description').textContent='Final score: '+s.games[0]+' - '+s.games[1]+'. Return to the clubhouse to play again.';$('result').style.display='flex';}}},
 paused:value=>{resetTouch();$('pause').style.display=value?'flex':'none';},
 ended:(active,message)=>{resetTouch();if(active){game.mode='menu';game.paused=false;$('menu').style.display='flex';for(const id of ['pause','result','scoreboard','bottom','status-pill','message'])$(id).style.display='none';}$('online-panel').hidden=false;$('room-code-box').hidden=true;$('online-status').textContent=message;}
 });
@@ -1569,7 +1799,7 @@ $('copy-room').onclick=async()=>{try{await navigator.clipboard.writeText($('room
 $('online-close').onclick=()=>{online.leave();$('online-panel').hidden=true;menu();};
 window.padelSuspend=()=>{resetTouch();if(game.mode!=='menu'&&game.mode!=='match'&&!game.paused)pause();};
 window.padelBack=()=>{if(!$('online-panel').hidden){$('online-close').click();return true;}if(game.mode==='menu')return false;if(game.mode==='match'){menu();return true;}pause();return true;};
-function updateMobileUI(){const playing=game.mode!=='menu'&&game.mode!=='match'&&!game.paused;$('mobile-controls').hidden=!(isPhone&&playing);$('online-open').hidden=game.mode!=='menu'||!$('online-panel').hidden;$('net-badge').hidden=!online.active;if(online.active)$('net-badge').textContent='ONLINE '+(online.mode==='coop'?'CO-OP':'1 VS 1')+' / '+online.latency+' ms';$('touch-hit').firstChild.textContent=game.mode==='ready'&&game.serverPlayer===game.controlled?'SERVE':'HIT';if(online.active){$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';}if(isPhone&&!$('input-guide').dataset.mobileReady){$('input-guide').dataset.mobileReady='true';$('input-guide').innerHTML='<b>MADE FOR TOUCH</b><p>Left joystick to move. Tap or hold HIT and LOB on the right. Aim and power are automatic.</p>';}}
+function updateMobileUI(){const playing=game.mode!=='menu'&&game.mode!=='match'&&!game.paused;$('mobile-controls').hidden=!(isPhone&&playing);$('online-open').hidden=game.mode!=='menu'||!$('online-panel').hidden;$('net-badge').hidden=!online.active;if(online.active)$('net-badge').textContent='ONLINE '+(online.mode==='coop'?'CO-OP':'1 VS 1')+' / '+online.latency+' ms';$('touch-hit').firstChild.textContent=game.mode==='ready'&&game.serverPlayer===game.controlled?'SERVE':'HIT';if(online.active){$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';}if(isPhone&&!$('input-guide').dataset.mobileReady){$('input-guide').dataset.mobileReady='true';$('input-guide').innerHTML='<b>MADE FOR TOUCH</b><p>Left joystick to move. Hold HIT or LOB, aim with the joystick, then release. Watch the power meter.</p>';}}
 
 // Fullscreen must begin inside a user gesture; orientation lock is best effort.
 let screenBusy=false;

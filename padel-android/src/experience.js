@@ -15,7 +15,7 @@ applyExperience();selectCamera(experience.camera);
 document.querySelector('.experience-panel').appendChild($('cycle-looks'));
 let rallyMilestone=0,previousRally=0;
 function updateExperience(){
-  if(document.body.classList.contains('phone')){const detail=$('message-detail');if(detail.textContent.includes(' · Z to serve'))detail.textContent=detail.textContent.replace(' · Z to serve',' · tap HIT to serve');if($('status-pill').textContent.startsWith('Z ·'))$('status-pill').textContent='TAP HIT · DROP, BOUNCE & SERVE';}
+  if(document.body.classList.contains('phone')){const detail=$('message-detail');if(detail.textContent.includes(' · Z to serve'))detail.textContent=detail.textContent.replace(' · Z to serve',' · hold HIT, release to serve');if($('status-pill').textContent.startsWith('Z ·'))$('status-pill').textContent='HOLD HIT → RELEASE TO SERVE';}
   const live=game.mode!=='menu'&&game.mode!=='match';$('rally-card').hidden=!live||game.paused;
   const hits=game.rallyHits||0;if(hits<previousRally)rallyMilestone=0;previousRally=hits;
   const goal=hits<8?8:hits<16?16:hits<24?24:Math.ceil((hits+1)/8)*8;

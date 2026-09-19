@@ -21,7 +21,7 @@ Repository Settings → Pages → Source: GitHub Actions. Push to main (or run P
 
 Tap Play or FULL SCREEN to request full screen and landscape lock. Portrait blocks play and pauses an active match. Android browsers with supported APIs can lock orientation; browser/OS restrictions mean a website cannot force full screen or landscape on every iPhone/browser. If unavailable, add the HTTPS site to your home screen and rotate the phone manually. The native Android app has its own landscape/full-screen settings. Safe-area padding keeps controls clear of notches. Returning from a background app leaves the match paused.
 
-Joystick: move. HIT: normal shot / serve. LOB: high shot. Aim and shot power are automatic. Each phone has its own player-facing camera. The 120ms coyote window and bounded moving approach are retained.
+Joystick or arrow keys: move and aim. Hold HIT / Z for a drive or serve, or LOB / X for a lob; release at the desired power. Desktop mouse buttons appear beside the meter. Local player 2 uses WASD + N / M. Neutral movement keeps the selected aim. Settings include a left-handed touch layout. Each phone has its own player-facing camera. The 120ms coyote window and bounded moving approach are retained.
 
 ## Edit and build
 
@@ -31,3 +31,30 @@ npm test
 ```
 
 padel-club-v4.html is the baseline. padel-android/src contains mobile, camera, animation and gameplay additions. padel-android/scripts applies them; scripts/export-web.cjs builds public/. assets/characters contains the CC0 Kenney characters. Do not edit the generated public/index.html directly. Dependency/model license notices ship alongside the game. No APK signing keys or personal files are included.
+
+
+## Tactical AI and skill progression
+
+The old bot chose almost the same opponent-relative target and depth every time, while trajectories were automatically corrected to clear the net. Held human input also repeatedly queued a fixed-power shot. Together these made exchanges unusually repetitive.
+
+The new decision layer scores short/middle/deep targets in three lanes against predicted opponent movement. Per-player and team history discourage repeats. Bots use Recover, Track, Prepare, Defend, Attack and Perform Action states, reaction delays and action cooldowns. Four player styles favor different choices. Fatigue, movement strain and rally pressure affect errors; difficulty changes speed, reaction time and precision. After 100 shots or 150 seconds, a pathological rally is replayed without awarding a point.
+
+Hold/release power applies to all human shots, including serves, and is sent with the aim in online packets. Controlled shots use the existing gravity/drag/spin integrator. Weak and excessive power modify the resulting velocity, so faults come from actual net, floor and glass collisions. Bots use the same trajectory code. The short moving reach assist remains capped at 65 cm.
+
+Successful legal, controlled shots build ten saved character attributes with diminishing returns, a 100-point cap and a four-return reward limit per player per point. Misses and uncontrolled shots earn nothing. Power control, accuracy, timing and stamina grant small bounded benefits; online matches normalize those benefits for fairness while still saving earned progress. Clearing browser storage removes progression. The match result lists earned gains.
+
+Implementation map:
+
+| File under padel-android/src | Purpose |
+| --- | --- |
+| tactics.js | Tactical candidate scoring, bot state, fatigue and rally safeguard |
+| skill-game.js | Hold/release input, power trajectories, legal-shot rewards |
+| progression.js | Per-character storage, diminishing gains and caps |
+| skill-ui.js / .html / .css | Meter, mouse/keyboard bindings, handedness and result summary |
+| mobile-ui.js / .html | Multitouch joystick and hold/release shot buttons |
+| mobile-engine.js / online.js | Remote controls and version 2 power/aim packets |
+| clubhouse.js / experience.js | Charge windup and updated in-game instructions |
+
+The build scripts combine these with the existing game and export public/. Both phones must reload after this protocol update. Physics still advances at a fixed 120 Hz, independently of render size. Camera aspect and renderer size update on resize; portrait mobile play pauses under the rotate overlay. Safe areas and pointer capture protect the controls.
+
+Validation: `npm run build && npm test` covers seeded AI-vs-AI at all difficulties, a simulated human-input player against AI, charged keyboard/touch inputs, independent co-op charge, network replay rejection, opposite-court serving, weak/net and strong/wall faults, legal wall rebounds, bounded reach, saved progression, pause/rotation and generated-module syntax. Browser layout checks use 844x390 and 390x844 phones, 1024x768 tablet and 1366x768 desktop. These are browser viewport checks, not physical iPhone/Android certification.

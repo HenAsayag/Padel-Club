@@ -22,8 +22,7 @@ replace("if(type==='hit'){avatarContact","if(type==='hit'){if(navigator.vibrate&
 replace("This single HTML file needs an internet connection for Three.js and a browser with WebGL enabled.","The bundled 3D engine could not start. Update Android System WebView and reopen the app.");
 replace("Still loading Three.js. Connect to the internet and reload. If your network blocks unpkg.com, allow it to load the 3D engine.","The bundled 3D engine is taking longer than expected. Reopen the app or update Android System WebView.");
 s=s.replace('Arrows move. Your position decides the stroke.','Use the joystick to move. Your position decides the stroke.').replace('<kbd>Z</kbd> Hit / serve · <kbd>X</kbd> Lob','HIT / serve · LOB');
-replace("if(this.team(id)===0)return super.tryHit(id);const c=this.controls[id]","if(this.team(id)===0)return super.tryHit(id);this.assistReturn(id);const c=this.controls[id]");
-replace("this.button(this.remoteId,input.lob?'lob':'drive');","this.button(this.remoteId,input.lob?'lob':'drive',true);");
-replace("game.button(game.controlled,touch.lob?'lob':'drive');","game.button(game.controlled,touch.lob?'lob':'drive',true);");
+
+
 fs.copyFileSync(path.join(root,'../assets/characters/LICENSE-Kenney.txt'),path.join(out,'LICENSE-Kenney.txt'));
 fs.writeFileSync(path.join(out,'index.html'),s);fs.writeFileSync(path.join(root,'build-module.mjs'),s.match(/<script type="module">([\s\S]*?)<\/script>/)[1]);console.log('Android assets assembled:',s.length);
