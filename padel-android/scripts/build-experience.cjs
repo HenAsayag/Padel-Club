@@ -35,8 +35,10 @@ replace('for(const i of game.activePlayers)animatePlayer(models[i],game.players[
 replace("document.querySelector('.experience-panel').appendChild($('cycle-looks'));","document.querySelector('[data-club-panel=locker]').appendChild($('cycle-looks'));");
 s=require('./patch-flow.cjs')(s);
 replace('<script>','<script>'+fs.readFileSync(path.join(src,'control-model.js'),'utf8')+'\n');
-for(const key of ['acceleration','run','max'])s=s.replaceAll('MOVEMENT.'+key,'window.PADEL_TUNING.movement.'+key);
+for(const key of ['acceleration','run','max','shuffle','backpedal'])s=s.replaceAll('MOVEMENT.'+key,'window.PADEL_TUNING.movement.'+key);
 s=s.replaceAll('MOVEMENT.deceleration','window.PADEL_TUNING.movement.braking');
+// Tap destinations brake before arrival, even at the faster run speed.
+replace('      const targetVX=length>.015?', '      if(Number.isFinite(this.input.moveDistance))speed=Math.min(speed,Math.sqrt(2*window.PADEL_TUNING.movement.braking*Math.max(0,this.input.moveDistance-window.PADEL_TUNING.movement.arrival*.5)));\n      const targetVX=length>.015?');
 replace("      if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);", "      if(this.shotVelocity)this.shotVelocity(id,tx,tz,power,kind);else if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);");
 replace('  window.SimpleGame=SimpleGame;','  window.SimpleGame=SimpleGame;\n'+fs.readFileSync(path.join(src,'reach-game.js'),'utf8'));
 replace('</script>\n<script type="module">','</script>\n<script>'+['progression.js','tactics.js','skill-game.js'].map(name=>fs.readFileSync(path.join(src,name),'utf8')).join('\n')+'</script>\n<script type="module">');

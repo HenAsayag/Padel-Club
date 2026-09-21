@@ -201,7 +201,7 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 // the shorter gameplay viewport edge; devicePixelRatio never enters the gesture.
 window.PADEL_TUNING={
   gesture:{tapDistance:.025,tapDuration:280,minSwipe:.035,maxDuration:1400,depthLength:.64,minDepth:2.8,maxDepth:8.2,minSpeed:.12,powerFloor:.32,powerCeiling:.96,speedResponse:2.8,lateralReach:4.2,inputBuffer:.30},
-  movement:{arrival:.16,gain:2.4,acceleration:26,braking:32,run:5.2,max:6.1},
+  movement:{arrival:.16,gain:2.4,acceleration:38,braking:44,run:7.2,max:8.2,shuffle:.88,backpedal:.8},
   contact:{reachRadius:1.55,grace:.12,lateRadius:1.95,stepDistance:.10,assistDistance:.45,assistDuration:.16,assistSpeed:3.4},
   power:{weak:.24,over:.90,maxSpread:.8,overSpeed:.28,overLift:.07,driveBase:.74,driveDistance:.050,drivePower:.24,driveMinimum:.68,serveFlight:1.32,lobBase:2.0},
   ai:{easy:{reaction:.27,speed:3.9,error:.27},normal:{reaction:.16,speed:4.9,error:.15},hard:{reaction:.085,speed:5.65,error:.075},decision:.20,cooldown:.26}
@@ -315,11 +315,12 @@ window.PadelGesture={
       if(this.stamina>=.25)this.sprintExhausted=false;
       const sprint=!!this.input.sprint&&length>.02&&!automatic&&!this.sprintExhausted&&this.stamina>0&&this.mode!=='drop';
       let speed=sprint?window.PADEL_TUNING.movement.max:window.PADEL_TUNING.movement.run,mode='run';
-      if(!sprint&&!automatic&&iz>Math.abs(ix)*.6){speed*=MOVEMENT.backpedal;mode='backpedal';}
-      else if(!sprint&&!automatic&&Math.abs(ix)>Math.abs(iz)*2){speed*=MOVEMENT.shuffle;mode='shuffle';}
+      if(!sprint&&!automatic&&iz>Math.abs(ix)*.6){speed*=window.PADEL_TUNING.movement.backpedal;mode='backpedal';}
+      else if(!sprint&&!automatic&&Math.abs(ix)>Math.abs(iz)*2){speed*=window.PADEL_TUNING.movement.shuffle;mode='shuffle';}
       if(sprint)mode='sprint';
       if(automatic)speed=Math.min(speed,Math.sqrt(2*window.PADEL_TUNING.movement.braking*length));
       if(!automatic)speed*=Math.min(1,length);
+      if(Number.isFinite(this.input.moveDistance))speed=Math.min(speed,Math.sqrt(2*window.PADEL_TUNING.movement.braking*Math.max(0,this.input.moveDistance-window.PADEL_TUNING.movement.arrival*.5)));
       const targetVX=length>.015?ix/length*speed:0,targetVZ=length>.015?iz/length*speed:0;
       const dvx=targetVX-p.vx,dvz=targetVZ-p.vz,dv=Math.hypot(dvx,dvz);
       const braking=!length||p.vx*targetVX+p.vz*targetVZ<0||Math.hypot(targetVX,targetVZ)<Math.hypot(p.vx,p.vz)-.01;
@@ -1019,10 +1020,10 @@ window.readSimpleInputs=readSimpleInputs;
       if(this.networkRole==='guest'){this.localMoveAction=(this.localMoveAction||0)+1;this.localMoveTarget={...point};}return true;
     }
     movementCommand(id){
-      const c=this.controls[id],p=this.players[id],target=c.moveTarget;
+      const c=this.controls[id],p=this.players[id],target=c.moveTarget;delete c.input.moveDistance;
       if(Math.hypot(c.input.x,c.input.z)>.08){c.moveTarget=null;return false;}if(!target)return false;
       const dx=target.x-p.x,dz=target.z-p.z,d=Math.hypot(dx,dz),t=window.PADEL_TUNING.movement;
-      if(d<t.arrival){c.moveTarget=null;return false;}const amount=Math.min(1,d*t.gain);c.input.x=dx/d*amount;c.input.z=dz/d*amount;c.input.sprint=false;return true;
+      if(d<t.arrival){c.moveTarget=null;return false;}const amount=Math.min(1,d*t.gain);c.input.x=dx/d*amount;c.input.z=dz/d*amount;c.input.sprint=false;c.input.moveDistance=d;return true;
     }
     commitGesture(id,kind,power,aim){
       if(this.paused||!this.isHuman(id)||!['ready','rally'].includes(this.mode))return false;

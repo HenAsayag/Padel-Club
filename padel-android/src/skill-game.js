@@ -20,10 +20,10 @@
       if(this.networkRole==='guest'){this.localMoveAction=(this.localMoveAction||0)+1;this.localMoveTarget={...point};}return true;
     }
     movementCommand(id){
-      const c=this.controls[id],p=this.players[id],target=c.moveTarget;
+      const c=this.controls[id],p=this.players[id],target=c.moveTarget;delete c.input.moveDistance;
       if(Math.hypot(c.input.x,c.input.z)>.08){c.moveTarget=null;return false;}if(!target)return false;
       const dx=target.x-p.x,dz=target.z-p.z,d=Math.hypot(dx,dz),t=window.PADEL_TUNING.movement;
-      if(d<t.arrival){c.moveTarget=null;return false;}const amount=Math.min(1,d*t.gain);c.input.x=dx/d*amount;c.input.z=dz/d*amount;c.input.sprint=false;return true;
+      if(d<t.arrival){c.moveTarget=null;return false;}const amount=Math.min(1,d*t.gain);c.input.x=dx/d*amount;c.input.z=dz/d*amount;c.input.sprint=false;c.input.moveDistance=d;return true;
     }
     commitGesture(id,kind,power,aim){
       if(this.paused||!this.isHuman(id)||!['ready','rally'].includes(this.mode))return false;

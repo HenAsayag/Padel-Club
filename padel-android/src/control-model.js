@@ -2,7 +2,7 @@
 // the shorter gameplay viewport edge; devicePixelRatio never enters the gesture.
 window.PADEL_TUNING={
   gesture:{tapDistance:.025,tapDuration:280,minSwipe:.035,maxDuration:1400,depthLength:.64,minDepth:2.8,maxDepth:8.2,minSpeed:.12,powerFloor:.32,powerCeiling:.96,speedResponse:2.8,lateralReach:4.2,inputBuffer:.30},
-  movement:{arrival:.16,gain:2.4,acceleration:26,braking:32,run:5.2,max:6.1},
+  movement:{arrival:.16,gain:2.4,acceleration:38,braking:44,run:7.2,max:8.2,shuffle:.88,backpedal:.8},
   contact:{reachRadius:1.55,grace:.12,lateRadius:1.95,stepDistance:.10,assistDistance:.45,assistDuration:.16,assistSpeed:3.4},
   power:{weak:.24,over:.90,maxSpread:.8,overSpeed:.28,overLift:.07,driveBase:.74,driveDistance:.050,drivePower:.24,driveMinimum:.68,serveFlight:1.32,lobBase:2.0},
   ai:{easy:{reaction:.27,speed:3.9,error:.27},normal:{reaction:.16,speed:4.9,error:.15},hard:{reaction:.085,speed:5.65,error:.075},decision:.20,cooldown:.26}
