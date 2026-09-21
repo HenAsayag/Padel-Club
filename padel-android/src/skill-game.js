@@ -80,7 +80,7 @@
     }
     shotVelocity(id,tx,tz,unusedPower,kind){
       const b=this.ball,power=this.shotContext?.power??unusedPower,dx=tx-b.x,dz=tz-b.z,d=Math.hypot(dx,dz),lob=kind==='lob',serve=kind==='serve';
-      let flight=lob?1.9+d*.025:serve?1.15:Math.max(.50,.58+d*.047-power*.28),solution;
+      const feel=window.PADEL_TUNING.power;let flight=lob?feel.lobBase+d*.025:serve?feel.serveFlight:Math.max(feel.driveMinimum,feel.driveBase+d*feel.driveDistance-power*feel.drivePower),solution;
       // Solve a nominal controlled trajectory using the actual gravity, drag and spin.
       // Underpowered shots can fall short; overpowered shots can reach glass first.
       // Overcharging still adds speed after solving and can hit glass before the floor.
@@ -97,8 +97,8 @@
         if(net>1.03||lob)break;flight+=.10;
       }
       const limits=window.PADEL_TUNING.power,over=clamp((power-limits.over)/(1-limits.over),0,1),weak=clamp(power/limits.weak,0,1);
-      solution.vx*=(.45+.55*weak)*(1+over*.82);solution.vz*=(.45+.55*weak)*(1+over*.82);
-      solution.vy*=(.20+.80*weak)*(1+over*.14);
+      solution.vx*=(.45+.55*weak)*(1+over*limits.overSpeed);solution.vz*=(.45+.55*weak)*(1+over*limits.overSpeed);
+      solution.vy*=(.20+.80*weak)*(1+over*limits.overLift);
       Object.assign(b,solution);this.solvedKind=kind;
     }
     launch(id,tx,tz,power,kind,bonus=1){

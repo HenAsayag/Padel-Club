@@ -1,2 +1,15 @@
-#gesture-ui{position:fixed;inset:0;pointer-events:none;z-index:9}#gesture-ui[hidden]{display:none}#gesture-lob{position:absolute;right:max(18px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));pointer-events:auto;min-width:84px;min-height:48px;border-radius:24px;border:1px solid #d7f19b88;background:#153a30cc;color:#e5f9bc;font-size:12px;font-weight:bold;touch-action:none}#gesture-lob[aria-pressed=true]{background:#d7f19b;color:#153a30}#gesture-help{position:absolute;bottom:max(22px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:55vw;color:#edf6dc;background:#12372ebb;padding:9px 12px;border-radius:10px;font-size:11px;text-align:center}#gesture-power{position:absolute;bottom:max(66px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:190px;max-width:42vw;padding:9px 12px;border-radius:10px;background:#12372ed9;text-align:center}#gesture-power b{font-size:11px}#gesture-power progress{display:block;width:100%;height:8px;margin:6px 0;accent-color:#d7f19b}#gesture-power small{font-size:9px;color:#d3dfc7}.swipe-controls #mobile-controls,.swipe-controls #desktop-shots{display:none!important}.phone.left-handed #gesture-lob{right:auto;left:max(18px,env(safe-area-inset-left))}.progress-summary[hidden]{display:none}
+#gesture-ui{position:fixed;inset:0;pointer-events:none;z-index:9}
+#gesture-ui[hidden],#gesture-power[hidden]{display:none}
+#gesture-lob{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));pointer-events:auto;width:68px;min-height:42px;border-radius:22px;border:1px solid #99e9de66;background:#103a3799;color:#d8fff7;font-size:11px;font-weight:bold;touch-action:none}
+#gesture-lob[aria-pressed=true]{background:#8cebdc;color:#153a30}
+#gesture-help{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:55vw;color:#fff;padding:3px 6px;font-size:10px;text-shadow:0 1px 4px #000;text-align:center}
+/* Small edge readout; aim feedback belongs on the court, never over the player. */
+#gesture-power{position:absolute;top:max(70px,calc(env(safe-area-inset-top) + 58px));right:max(16px,env(safe-area-inset-right));width:86px;height:22px;padding:3px 5px;border-radius:6px;background:#102e3566;text-align:center}
+#gesture-power b{display:block;font-size:9px;line-height:12px;letter-spacing:.7px;color:#e3fff7;text-shadow:0 1px 2px #18302e}
+#gesture-power progress{display:block;width:100%;height:3px;margin:2px 0 0;accent-color:#7ce6d9;border:0;border-radius:2px;overflow:hidden}
+#gesture-power progress::-webkit-progress-bar{background:#ffffff30}#gesture-power progress::-webkit-progress-value{background:#7ce6d9}
+#gesture-quality{display:none}
+.swipe-controls #mobile-controls,.swipe-controls #desktop-shots{display:none!important}
+.phone.left-handed #gesture-lob{right:auto;left:max(16px,env(safe-area-inset-left))}
+.progress-summary[hidden]{display:none}
 @media(prefers-reduced-motion:reduce){button{transition:none!important}}

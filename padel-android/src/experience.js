@@ -1,5 +1,5 @@
 // Shared desktop / Android presentation. Camera preferences remain local online.
-const CAMERA_NAMES=['Close follow','Chase','Full court','Overhead'];
+const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead'];
 let experience={camera:0,largeControls:false,calm:false,best:0};
 try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');if(Number.isInteger(v.camera)&&v.camera>=0&&v.camera<4)experience.camera=v.camera;experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
 function saveExperience(){try{localStorage.setItem('padel-experience',JSON.stringify(experience));}catch{}}
@@ -29,11 +29,11 @@ function updateExperience(){
 // All gameplay views face the other half, preserving the arrow/stick axes.
 function updatePlayCamera(p,b,dt){
   const side=game.team(game.controlled)===0?1:-1,high=Math.max(0,b.y-2.5);
-  if(cameraMode===0){desired.set(p.x*.88,3.5+high*.13,p.z+side*4.9);targetLook.set(p.x*.72+THREE.MathUtils.clamp(b.x-p.x,-3,3)*.16,1.05+high*.16,p.z-side*5.5);}
+  if(cameraMode===0){desired.set(p.x*.16,10.5+high*.06,side*17.5+p.z*.03);targetLook.set(p.x*.10,.45,side*2.8);}
   else if(cameraMode===1){desired.set(p.x*.65,5.8+high*.16,p.z+side*7);targetLook.set(p.x*.4+b.x*.08,.7+high*.18,p.z-side*7);}
   else if(cameraMode===2){desired.set(side*.01,15,side*22);targetLook.set(0,.3,0);}
   else{desired.set(p.x*.15,23,side*.4);targetLook.set(p.x*.15,0,-side*.4);}
-  const base=[62,55,49,53][cameraMode],fov=camera.aspect<1.6?base+8:base;
+  const base=[44,55,49,53][cameraMode],fov=camera.aspect<1.6?base+8:base;
   if(Math.abs(camera.fov-fov)>.01){camera.fov+=(fov-camera.fov)*(1-Math.exp(-dt*7));camera.updateProjectionMatrix();}
 }
 function fitViewport(){const width=Math.max(1,Math.round(window.visualViewport?.width||innerWidth)),height=Math.max(1,Math.round(window.visualViewport?.height||innerHeight));document.documentElement.style.setProperty('--screen-h',height+'px');camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));}

@@ -46,7 +46,20 @@ body.phone .experience-panel{padding:12px!important}body.phone .setup-panel{padd
 </style><style>#skill-hud{position:fixed;left:50%;transform:translateX(-50%);bottom:78px;z-index:9;display:flex;gap:12px;pointer-events:none;width:min(560px,65vw);justify-content:center}#skill-hud[hidden],#desktop-shots[hidden],.skill-meter[hidden]{display:none}.skill-meter{width:260px;max-width:100%;padding:11px 13px;background:#12372ee8;border:1px solid #e5efdc40;border-radius:12px;color:#edf7d9;box-shadow:0 4px 20px #0002}.meter-title{display:flex;justify-content:space-between;font:9px system-ui;letter-spacing:.5px;gap:6px}.meter-track{position:relative;height:14px;margin:9px 0 5px;border-radius:4px;background:linear-gradient(to right,#857883 0 24%,#719bb2 24% 86%,#bd735e 86%);overflow:hidden}.sweet-zone{position:absolute;top:0;bottom:0;left:62%;width:12%;background:#d7f19b}.meter-needle{position:absolute;top:0;bottom:0;left:0;width:4px;background:white;box-shadow:0 0 7px #fff;transform:translateX(-50%)}.meter-zones{display:flex;justify-content:space-between;font:6px system-ui;letter-spacing:.2px}.meter-hint{display:block;font:9px system-ui;margin-top:6px;color:#d0dfca}.skill-meter.sweet{border-color:#d7f19b;box-shadow:0 0 22px #d7f19b55}.skill-meter.strong .power-value,.skill-meter.weak .power-value{color:#ffc2a0}#desktop-shots{position:fixed;right:20px;bottom:100px;z-index:10;display:flex;gap:8px}#desktop-shots button{background:#153b31dd;color:#d7f19b;border:1px solid #d7f19b88;border-radius:12px;padding:16px;touch-action:none;min-height:56px}#desktop-shots small{display:block;font-size:9px;margin-top:5px}#desktop-shots button.held{background:#416c52}.progress-summary{margin:12px 0;padding:12px;border:1px solid #d7f19b55;border-radius:8px;font-size:12px;color:#d7f19b;line-height:1.6}.skill-settings{display:flex;gap:10px;align-items:center;font-size:11px;margin-top:12px}.phone #skill-hud{bottom:max(13px,env(safe-area-inset-bottom));width:32vw;max-width:300px}.phone .skill-meter{padding:8px 9px}.phone .meter-title{font-size:8px}.phone .meter-hint{font-size:8px}.phone #message{bottom:117px}.phone #status-pill{bottom:97px}.phone #mobile-controls{touch-action:none}.phone.left-handed #joystick{left:auto;right:max(18px,env(safe-area-inset-right))}.phone.left-handed .shot-buttons{right:auto;left:max(18px,env(safe-area-inset-left))}.phone .shot-buttons button{opacity:.85}.phone .shot-buttons button.held{opacity:1}.phone #bottom .icon-button{min-height:44px;min-width:44px}.phone #scene{touch-action:none}.phone #rotate-phone{background:radial-gradient(ellipse at 50% 30%,#245b49,#102c26)}
 @media(max-height:420px){.phone #skill-hud{width:30vw}.phone .meter-zones{font-size:5px}.phone .meter-hint{font-size:7px}.phone #message{bottom:110px}.phone .meter-track{margin-top:6px;height:11px}}
 .progress-summary{max-height:150px;overflow:auto;text-align:left}.phone .progress-summary{max-height:90px}.phone #rotate-phone{background:radial-gradient(ellipse at 50% 30%,#245b49,#102c26)}
-#gesture-ui{position:fixed;inset:0;pointer-events:none;z-index:9}#gesture-ui[hidden]{display:none}#gesture-lob{position:absolute;right:max(18px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));pointer-events:auto;min-width:84px;min-height:48px;border-radius:24px;border:1px solid #d7f19b88;background:#153a30cc;color:#e5f9bc;font-size:12px;font-weight:bold;touch-action:none}#gesture-lob[aria-pressed=true]{background:#d7f19b;color:#153a30}#gesture-help{position:absolute;bottom:max(22px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:55vw;color:#edf6dc;background:#12372ebb;padding:9px 12px;border-radius:10px;font-size:11px;text-align:center}#gesture-power{position:absolute;bottom:max(66px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:190px;max-width:42vw;padding:9px 12px;border-radius:10px;background:#12372ed9;text-align:center}#gesture-power b{font-size:11px}#gesture-power progress{display:block;width:100%;height:8px;margin:6px 0;accent-color:#d7f19b}#gesture-power small{font-size:9px;color:#d3dfc7}.swipe-controls #mobile-controls,.swipe-controls #desktop-shots{display:none!important}.phone.left-handed #gesture-lob{right:auto;left:max(18px,env(safe-area-inset-left))}.progress-summary[hidden]{display:none}
+#gesture-ui{position:fixed;inset:0;pointer-events:none;z-index:9}
+#gesture-ui[hidden],#gesture-power[hidden]{display:none}
+#gesture-lob{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));pointer-events:auto;width:68px;min-height:42px;border-radius:22px;border:1px solid #99e9de66;background:#103a3799;color:#d8fff7;font-size:11px;font-weight:bold;touch-action:none}
+#gesture-lob[aria-pressed=true]{background:#8cebdc;color:#153a30}
+#gesture-help{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:55vw;color:#fff;padding:3px 6px;font-size:10px;text-shadow:0 1px 4px #000;text-align:center}
+/* Small edge readout; aim feedback belongs on the court, never over the player. */
+#gesture-power{position:absolute;top:max(70px,calc(env(safe-area-inset-top) + 58px));right:max(16px,env(safe-area-inset-right));width:86px;height:22px;padding:3px 5px;border-radius:6px;background:#102e3566;text-align:center}
+#gesture-power b{display:block;font-size:9px;line-height:12px;letter-spacing:.7px;color:#e3fff7;text-shadow:0 1px 2px #18302e}
+#gesture-power progress{display:block;width:100%;height:3px;margin:2px 0 0;accent-color:#7ce6d9;border:0;border-radius:2px;overflow:hidden}
+#gesture-power progress::-webkit-progress-bar{background:#ffffff30}#gesture-power progress::-webkit-progress-value{background:#7ce6d9}
+#gesture-quality{display:none}
+.swipe-controls #mobile-controls,.swipe-controls #desktop-shots{display:none!important}
+.phone.left-handed #gesture-lob{right:auto;left:max(16px,env(safe-area-inset-left))}
+.progress-summary[hidden]{display:none}
 @media(prefers-reduced-motion:reduce){button{transition:none!important}}
 </style><style>
 html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select:none;user-select:none}button,input,select{-webkit-tap-highlight-color:transparent}button{touch-action:manipulation}input{-webkit-user-select:text;user-select:text}
@@ -144,7 +157,7 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
   <button id="quick-play" class="primary">Quick play · current setup ↗</button>
   <div class="club-tip"><b>TWO BUTTONS. ALL THE SHOTS.</b><p>HIT / serve · LOB<br>Use the joystick to move. Your position decides the stroke.</p></div></section>
   <section data-club-panel="locker" role="tabpanel" hidden><div class="locker-heading"><h2>The lineup.</h2><span>LIVE PREVIEW</span></div><canvas id="locker-canvas" width="256" height="256" aria-label="Animated player preview"></canvas><div class="character-options" role="group" aria-label="Player style"><button data-character="0"><img alt=""><b>Rio</b><small>ARCADE</small></button><button data-character="1"><img alt=""><b>Alex</b><small>ARCADE</small></button><button data-character="-1"><span class="classic-avatar">◉</span><b>Club pro</b><small>CLASSIC</small></button></div><div class="demo-options" role="group" aria-label="Preview animation"><button data-demo="idle" aria-pressed="true">Warm up</button><button data-demo="run">Run</button><button data-demo="swing">Swing</button><button data-demo="celebrate">Celebrate</button></div><p class="asset-credit">Arcade models & emotes: Kenney · CC0.<br>Padel strokes adapted to the contact rig.</p></section>
-  <section data-club-panel="settings" role="tabpanel" hidden><h2>Your game.</h2><p>Set your view and comfort.</p><div class="experience-label">YOUR CAMERA</div><div class="camera-options" role="group" aria-label="Gameplay camera"><button data-camera="0">Close follow</button><button data-camera="1">Chase</button><button data-camera="2">Full court</button><button data-camera="3">Overhead</button></div>
+  <section data-club-panel="settings" role="tabpanel" hidden><h2>Your game.</h2><p>Set your view and comfort.</p><div class="experience-label">YOUR CAMERA</div><div class="camera-options" role="group" aria-label="Gameplay camera"><button data-camera="0">Rally view</button><button data-camera="1">Chase</button><button data-camera="2">Full court</button><button data-camera="3">Overhead</button></div>
   <div class="experience-label" style="margin-top:18px">TWO PLAYERS · ONE COMPUTER</div><div class="camera-options" role="group" aria-label="Local co-op view"><button data-coop-view="shared">Both players</button><button data-coop-view="split">Split screen</button></div><p class="experience-tip">Local co-op always keeps both players in view. Change the layout here or during a match.</p>
   <label class="experience-toggle"><input id="calm-camera" type="checkbox"> Steady camera · no impact shake</label>
   <label class="experience-toggle touch-option"><input id="large-controls" type="checkbox"> Larger touch buttons</label>
@@ -187,10 +200,10 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 <script>// Shared, dimensionless control and gameplay tuning. CSS pixels are normalized by
 // the shorter gameplay viewport edge; devicePixelRatio never enters the gesture.
 window.PADEL_TUNING={
-  gesture:{tapDistance:.025,tapDuration:280,minSwipe:.035,maxDuration:1400,depthLength:.48,minDepth:2.5,maxDepth:8.8,minSpeed:.18,maxSpeed:2.0,inputBuffer:.30},
+  gesture:{tapDistance:.025,tapDuration:280,minSwipe:.035,maxDuration:1400,depthLength:.64,minDepth:2.8,maxDepth:8.2,minSpeed:.12,powerFloor:.32,powerCeiling:.96,speedResponse:2.8,lateralReach:4.2,inputBuffer:.30},
   movement:{arrival:.16,gain:2.4,acceleration:26,braking:32,run:5.2,max:6.1},
   contact:{reachRadius:1.55,grace:.12,lateRadius:1.95,stepDistance:.10,assistDistance:.45,assistDuration:.16,assistSpeed:3.4},
-  power:{weak:.24,over:.86,maxSpread:.8},
+  power:{weak:.24,over:.90,maxSpread:.8,overSpeed:.28,overLift:.07,driveBase:.74,driveDistance:.050,drivePower:.24,driveMinimum:.68,serveFlight:1.32,lobBase:2.0},
   ai:{easy:{reaction:.27,speed:3.9,error:.27},normal:{reaction:.16,speed:4.9,error:.15},hard:{reaction:.085,speed:5.65,error:.075},decision:.20,cooldown:.26}
 };
 window.PadelGesture={
@@ -198,7 +211,7 @@ window.PadelGesture={
     const t=window.PADEL_TUNING.gesture,unit=Math.max(1,Math.min(viewport.width,viewport.height)),dx=(end.x-start.x)/unit,dy=(end.y-start.y)/unit;
     const length=Math.hypot(dx,dy),duration=Math.max(16,end.time-start.time),speed=length/(duration/1000),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
     return {tap:length<=t.tapDistance&&duration<=t.tapDuration,valid:length>=t.minSwipe&&duration<=t.maxDuration,direction:length?dx/length:0,forward:-dy,length,duration,
-      depth:t.minDepth+(t.maxDepth-t.minDepth)*clamp(length/t.depthLength,0,1),power:clamp((speed-t.minSpeed)/(t.maxSpeed-t.minSpeed),0,1)};
+      depth:t.minDepth+(t.maxDepth-t.minDepth)*clamp(length/t.depthLength,0,1),power:t.powerFloor+(t.powerCeiling-t.powerFloor)*(1-Math.exp(-Math.max(0,speed-t.minSpeed)/t.speedResponse))};
   }
 };
 
@@ -1066,7 +1079,7 @@ window.readSimpleInputs=readSimpleInputs;
     }
     shotVelocity(id,tx,tz,unusedPower,kind){
       const b=this.ball,power=this.shotContext?.power??unusedPower,dx=tx-b.x,dz=tz-b.z,d=Math.hypot(dx,dz),lob=kind==='lob',serve=kind==='serve';
-      let flight=lob?1.9+d*.025:serve?1.15:Math.max(.50,.58+d*.047-power*.28),solution;
+      const feel=window.PADEL_TUNING.power;let flight=lob?feel.lobBase+d*.025:serve?feel.serveFlight:Math.max(feel.driveMinimum,feel.driveBase+d*feel.driveDistance-power*feel.drivePower),solution;
       // Solve a nominal controlled trajectory using the actual gravity, drag and spin.
       // Underpowered shots can fall short; overpowered shots can reach glass first.
       // Overcharging still adds speed after solving and can hit glass before the floor.
@@ -1083,8 +1096,8 @@ window.readSimpleInputs=readSimpleInputs;
         if(net>1.03||lob)break;flight+=.10;
       }
       const limits=window.PADEL_TUNING.power,over=clamp((power-limits.over)/(1-limits.over),0,1),weak=clamp(power/limits.weak,0,1);
-      solution.vx*=(.45+.55*weak)*(1+over*.82);solution.vz*=(.45+.55*weak)*(1+over*.82);
-      solution.vy*=(.20+.80*weak)*(1+over*.14);
+      solution.vx*=(.45+.55*weak)*(1+over*limits.overSpeed);solution.vz*=(.45+.55*weak)*(1+over*limits.overSpeed);
+      solution.vy*=(.20+.80*weak)*(1+over*limits.overLift);
       Object.assign(b,solution);this.solvedKind=kind;
     }
     launch(id,tx,tz,power,kind,bonus=1){
@@ -1713,7 +1726,7 @@ function frame(now){
 }
 camera.lookAt(look);resetTrail();$('start').disabled=false;$('start-text').textContent='Step onto the court';requestAnimationFrame(frame);
 // Shared desktop / Android presentation. Camera preferences remain local online.
-const CAMERA_NAMES=['Close follow','Chase','Full court','Overhead'];
+const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead'];
 let experience={camera:0,largeControls:false,calm:false,best:0};
 try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');if(Number.isInteger(v.camera)&&v.camera>=0&&v.camera<4)experience.camera=v.camera;experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
 function saveExperience(){try{localStorage.setItem('padel-experience',JSON.stringify(experience));}catch{}}
@@ -1744,11 +1757,11 @@ function updateExperience(){
 function updatePlayCamera(p,b,dt){
   if(isLocalCoop()){updateCoopCamera();return;}
   const side=game.team(game.controlled)===0?1:-1,high=Math.max(0,b.y-2.5);
-  if(cameraMode===0){desired.set(p.x*.88,3.5+high*.13,p.z+side*4.9);targetLook.set(p.x*.72+THREE.MathUtils.clamp(b.x-p.x,-3,3)*.16,1.05+high*.16,p.z-side*5.5);}
+  if(cameraMode===0){desired.set(p.x*.16,10.5+high*.06,side*17.5+p.z*.03);targetLook.set(p.x*.10,.45,side*2.8);}
   else if(cameraMode===1){desired.set(p.x*.65,5.8+high*.16,p.z+side*7);targetLook.set(p.x*.4+b.x*.08,.7+high*.18,p.z-side*7);}
   else if(cameraMode===2){desired.set(side*.01,15,side*22);targetLook.set(0,.3,0);}
   else{desired.set(p.x*.15,23,side*.4);targetLook.set(p.x*.15,0,-side*.4);}
-  const base=[62,55,49,53][cameraMode],fov=camera.aspect<1.6?base+8:base;
+  const base=[44,55,49,53][cameraMode],fov=camera.aspect<1.6?base+8:base;
   if(Math.abs(camera.fov-fov)>.01){camera.fov+=(fov-camera.fov)*(1-Math.exp(-dt*7));camera.updateProjectionMatrix();}
 }
 function fitViewport(){const width=Math.max(1,Math.round(window.visualViewport?.width||innerWidth)),height=Math.max(1,Math.round(window.visualViewport?.height||innerHeight));document.documentElement.style.setProperty('--screen-h',height+'px');camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);renderer.setPixelRatio(Math.min(devicePixelRatio,1.35));}
@@ -1916,7 +1929,10 @@ let swipe=null,lobGesture=false,swipeFeedback=null,gesturePreviewClock=0;
 const gestureRay=new THREE.Raycaster(),gesturePlane=new THREE.Plane(new THREE.Vector3(0,1,0),0),gestureNdc=new THREE.Vector2();
 const moveMarker=new THREE.Mesh(new THREE.RingGeometry(.19,.22,24),new THREE.MeshBasicMaterial({color:0xa8dcde,transparent:true,opacity:.7,depthWrite:false,side:THREE.DoubleSide}));moveMarker.rotation.x=-Math.PI/2;scene.add(moveMarker);
 const landingArea=new THREE.Mesh(new THREE.RingGeometry(.85,1,32),new THREE.MeshBasicMaterial({color:0xdff493,transparent:true,opacity:.65,depthWrite:false,side:THREE.DoubleSide}));landingArea.rotation.x=-Math.PI/2;scene.add(landingArea);landingArea.visible=moveMarker.visible=false;
-function cancelSwipe(){swipe=null;swipeFeedback=null;landingArea.visible=false;}
+const swipeArrow=new THREE.ArrowHelper(new THREE.Vector3(0,0,-1),new THREE.Vector3(),1,0x74e4da,.5,.23);scene.add(swipeArrow);swipeArrow.visible=false;
+for(const part of [swipeArrow.line,swipeArrow.cone]){part.material.transparent=true;part.material.opacity=.5;part.material.depthWrite=false;}
+
+function cancelSwipe(){swipe=null;swipeFeedback=null;landingArea.visible=false;swipeArrow.visible=false;}
 function setSwipeMode(){swipeEnabled=$('gesture-mode').checked;document.body.classList.toggle('swipe-controls',swipeEnabled);cancelSwipe();game.cancelAllShots();const heading=document.querySelector('.club-tip b');if(heading)heading.textContent=swipeEnabled?'TAP TO MOVE. SWIPE TO HIT.':'TWO BUTTONS. ALL THE SHOTS.';document.querySelectorAll('.controls-strip').forEach(el=>{el.textContent=swipeEnabled?'Tap court · move / Swipe up · hit / LOB · high return':'Arrows · move / Hold Z or X · release to hit';});const tip=document.querySelector('.club-tip p');if(tip)tip.textContent=swipeEnabled?'Tap your court to move. Swipe up to hit. Use LOB for height.':'Move with arrows or joystick. Hold HIT / LOB and release.';try{localStorage.setItem('padel-swipe-mode',swipeEnabled?'1':'0');}catch{}}
 $('gesture-mode').checked=swipeEnabled;$('gesture-mode').onchange=setSwipeMode;setSwipeMode();
 $('gesture-lob').onclick=()=>{lobGesture=!lobGesture;$('gesture-lob').textContent=lobGesture?'LOB ON':'LOB OFF';$('gesture-lob').setAttribute('aria-pressed',String(lobGesture));};
@@ -1924,14 +1940,14 @@ function gestureView(x,y){const r=renderer.domElement.getBoundingClientRect();if
 function gesturePoint(x,y,view){gestureNdc.set((x-view.left)/view.width*2-1,-(y-view.top)/view.height*2+1);gestureRay.setFromCamera(gestureNdc,view.camera);const point=new THREE.Vector3();return gestureRay.ray.intersectPlane(gesturePlane,point)?{x:point.x,z:point.z}:null;}
 function liveGesture(){return swipeEnabled&&!game.paused&&['ready','rally'].includes(game.mode)&&document.getElementById('online-panel')?.hidden!==false;}
 function swipeSample(e){const end={x:e.clientX,y:e.clientY,time:e.timeStamp},sample=window.PadelGesture.sample(swipe.start,end,swipe.view),side=game.team(swipe.view.id)===0?-1:1;
-  const horizontal=new THREE.Vector3().setFromMatrixColumn(swipe.view.camera.matrixWorld,0);const aim={x:THREE.MathUtils.clamp(swipe.originX+sample.direction*4.8*horizontal.x,-4.4,4.4),z:side*sample.depth};return {...sample,aim,kind:lobGesture?'lob':'drive'};
+  const horizontal=new THREE.Vector3().setFromMatrixColumn(swipe.view.camera.matrixWorld,0);const aim={x:THREE.MathUtils.clamp(swipe.originX+sample.direction*window.PADEL_TUNING.gesture.lateralReach*horizontal.x,-4.4,4.4),z:side*(game.mode==='ready'?Math.min(6.2,sample.depth):sample.depth)};return {...sample,aim,kind:lobGesture?'lob':'drive'};
 }
 renderer.domElement.style.touchAction='none';
 renderer.domElement.addEventListener('pointerdown',e=>{if(!liveGesture()||swipe||e.button!==0)return;e.preventDefault();audioStart();const view=gestureView(e.clientX,e.clientY);swipe={pointer:e.pointerId,start:{x:e.clientX,y:e.clientY,time:e.timeStamp},view,originX:game.mode==='ready'?-game.serveX():game.ball.x,last:null};renderer.domElement.setPointerCapture(e.pointerId);});
 renderer.domElement.addEventListener('pointermove',e=>{if(!swipe||swipe.pointer!==e.pointerId)return;e.preventDefault();if(!liveGesture()){cancelSwipe();return;}swipe.last=swipeSample(e);});
 renderer.domElement.addEventListener('pointerup',e=>{if(!swipe||swipe.pointer!==e.pointerId)return;e.preventDefault();const active=swipe,result=swipeSample(e);swipe=null;if(!liveGesture())return;
   if(result.tap){const point=gesturePoint(e.clientX,e.clientY,active.view);if(point)game.setMoveTarget(active.view.id,point);landingArea.visible=false;return;}
-  if(result.valid&&result.forward>0){const accepted=game.commitGesture(active.view.id,result.kind,result.power,result.aim);swipeFeedback={...result,invalid:!accepted,id:active.view.id,until:performance.now()+650};}else{swipeFeedback={invalid:true,until:performance.now()+650};}
+  if(result.valid&&result.forward>0){const estimate=estimateGesture(active.view.id,result),p=game.players[active.view.id],origin={x:p.x,z:p.z};const accepted=game.commitGesture(active.view.id,result.kind,result.power,result.aim);swipeFeedback={...result,estimate,origin,invalid:!accepted,id:active.view.id,until:performance.now()+360};}else{swipeFeedback={invalid:true,until:performance.now()+650};}
 });
 for(const event of ['pointercancel','lostpointercapture'])renderer.domElement.addEventListener(event,e=>{if(swipe?.pointer===e.pointerId)cancelSwipe();});
 window.addEventListener('blur',cancelSwipe);window.addEventListener('resize',cancelSwipe);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelSwipe();});
@@ -1949,9 +1965,15 @@ function updateGestureUI(dt){
   const mover=game.players[game.controlled],control=game.controls[game.controlled];if(control.moveTarget&&Math.hypot(mover.x-control.moveTarget.x,mover.z-control.moveTarget.z)<window.PADEL_TUNING.movement.arrival)control.moveTarget=null;const target=control.moveTarget;moveMarker.visible=!!target;if(target)moveMarker.position.set(target.x,.027,target.z);
   if(game.mode==='ready'){$('status-pill').textContent='SWIPE UP TO SERVE';$('message-detail').textContent=$('message-detail').textContent.replace('hold Z, release to serve','swipe up to serve');}
   $('gesture-help').hidden=game.mode!=='ready';$('gesture-help').textContent=game.mode==='ready'?'Swipe up to serve · tap your court to move':'Tap to move · swipe up to hit';
-  $('gesture-power').hidden=!shot||(!shot.valid&&!shot.invalid);landingArea.visible=!!shot&&shot.valid;
-  if(shot){$('gesture-power-text').textContent=shot.invalid?'Swipe up to hit':Math.round(shot.power*100)+'% · '+(shot.power<.24?'SOFT':shot.power>.86?'RISKY':shot.kind==='lob'?'LOB':'DRIVE');$('gesture-power-bar').value=shot.power||0;
-    gesturePreviewClock+=dt;if(shot.valid&&gesturePreviewClock>1/24){gesturePreviewClock=0;const estimate=estimateGesture(id,shot);landingArea.position.set(estimate.x,.035,estimate.z);landingArea.scale.setScalar(estimate.radius);landingArea.material.color.setHex(estimate.risk?0xff997b:0xdff493);$('gesture-quality').textContent=estimate.risk?'Net / wall risk':'Estimated landing area';}}
+  $('gesture-power').hidden=!shot||(!shot.valid&&!shot.invalid);landingArea.visible=!!shot&&shot.valid&&!shot.invalid;swipeArrow.visible=landingArea.visible;
+  if(shot){$('gesture-power-text').textContent=shot.invalid?'Swipe up to hit':(shot.kind==='lob'?'LOB':shot.power<.48?'GENTLE':shot.power>.82?'FIRM':'DRIVE');$('gesture-power-bar').value=shot.power||0;
+    gesturePreviewClock+=dt;if(shot.valid&&!shot.invalid){
+      if(swipe&&(gesturePreviewClock>1/15||!swipe.estimate)){gesturePreviewClock=0;swipe.estimate=estimateGesture(id,shot);}
+      const estimate=swipe?.estimate||shot.estimate;
+      if(estimate){landingArea.position.set(estimate.x,.035,estimate.z);landingArea.scale.setScalar(estimate.radius);landingArea.material.color.setHex(estimate.risk?0xeeb786:0x74e4da);$('gesture-quality').textContent=estimate.risk?'Net / wall risk':'Estimated landing area';}
+      const origin=shot.origin||game.players[id],direction=new THREE.Vector3(shot.aim.x-origin.x,0,shot.aim.z-origin.z),length=direction.length();
+      swipeArrow.position.set(origin.x,.07,origin.z);if(length>.1){swipeArrow.setDirection(direction.normalize());swipeArrow.setLength(length,.45,.20);}else swipeArrow.visible=false;
+    }}
   // Skill HUD is for the optional buttons mode; a swipe has no separate charge timer.
   $('skill-hud').hidden=true;$('desktop-shots').hidden=true;reticle.visible=false;
 }
