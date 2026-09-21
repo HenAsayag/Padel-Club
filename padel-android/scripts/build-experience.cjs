@@ -34,12 +34,15 @@ replace('window.__padel={',fs.readFileSync(path.join(src,'clubhouse.js'),'utf8')
 replace('for(const i of game.activePlayers)animatePlayer(models[i],game.players[i],i,game.paused?0:dt);','for(const i of game.activePlayers){animatePlayer(models[i],game.players[i],i,game.paused?0:dt);animateClubCharacter(models[i],game.players[i],i,game.paused?0:dt);}updateLocker(dt);');
 replace("document.querySelector('.experience-panel').appendChild($('cycle-looks'));","document.querySelector('[data-club-panel=locker]').appendChild($('cycle-looks'));");
 s=require('./patch-flow.cjs')(s);
+replace('<script>','<script>'+fs.readFileSync(path.join(src,'control-model.js'),'utf8')+'\n');
+for(const key of ['acceleration','run','max'])s=s.replaceAll('MOVEMENT.'+key,'window.PADEL_TUNING.movement.'+key);
+s=s.replaceAll('MOVEMENT.deceleration','window.PADEL_TUNING.movement.braking');
 replace("      if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);", "      if(this.shotVelocity)this.shotVelocity(id,tx,tz,power,kind);else if(kind==='drive'||kind==='smash')this.buildDrive(tx,tz,power,kind,bonus);");
 replace('  window.SimpleGame=SimpleGame;','  window.SimpleGame=SimpleGame;\n'+fs.readFileSync(path.join(src,'reach-game.js'),'utf8'));
 replace('</script>\n<script type="module">','</script>\n<script>'+['progression.js','tactics.js','skill-game.js'].map(name=>fs.readFileSync(path.join(src,name),'utf8')).join('\n')+'</script>\n<script type="module">');
-replace('</head>','<style>'+fs.readFileSync(path.join(src,'skill-ui.css'),'utf8')+'</style></head>');
+replace('</head>','<style>'+fs.readFileSync(path.join(src,'skill-ui.css'),'utf8')+fs.readFileSync(path.join(src,'gesture-ui.css'),'utf8')+'</style></head>');
 replace('<div id="scene"></div>','<div id="scene"></div>'+fs.readFileSync(path.join(src,'skill-ui.html'),'utf8'));
-replace('function clearLocalInputs(){','function clearLocalInputs(){game.cancelAllShots?.();');
+replace('function clearLocalInputs(){','function clearLocalInputs(){game.cancelAllShots?.();for(const c of game.controls)c.moveTarget=null;');
 replace('  updateExperience();','  updateSkillUI(dt);updateExperience();');
 replace('window.__padel={',fs.readFileSync(path.join(src,'skill-ui.js'),'utf8')+'\nwindow.__padel={');
 replace('function updatePlayCamera(p,b,dt){','function updatePlayCamera(p,b,dt){\n  if(isLocalCoop()){updateCoopCamera();return;}');
@@ -50,4 +53,6 @@ replace('<div id="scene"></div>','<div id="scene"></div><div id="split-labels" h
 replace('autoSwitch:setup.autoSwitch,racket:setup.racket','autoSwitch:setup.autoSwitch&&setup.format!==\'coop\',racket:setup.racket');
 replace('window.__padel={',fs.readFileSync(path.join(src,'ball-visibility.js'),'utf8')+'\nwindow.__padel={');
 replace('  updateSkillUI(dt);','  updateBallVisibility();updateSkillUI(dt);');
+replace('window.__padel={',fs.readFileSync(path.join(src,'gesture-ui.js'),'utf8')+'\nwindow.__padel={');
+replace('updateSkillUI(dt);updateExperience();','updateSkillUI(dt);updateGestureUI(dt);updateExperience();');
 fs.writeFileSync(path.join(root,'padel.html'),s);fs.writeFileSync(path.join(src,'base.html'),s);console.log('Shared v6 desktop + Android base built');

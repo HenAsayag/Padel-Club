@@ -7,6 +7,7 @@ function selectCamera(index){cameraMode=index;experience.camera=index;saveExperi
 for(const button of document.querySelectorAll('[data-camera]'))button.onclick=()=>selectCamera(Number(button.dataset.camera));
 $('camera-cycle').onclick=()=>selectCamera((cameraMode+1)%4);
 $('quick-play').onclick=()=>{if(!$('start').disabled)startMatch();};
+experience.calm=experience.calm||window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 $('large-controls').checked=experience.largeControls;$('calm-camera').checked=experience.calm;
 function applyExperience(){document.body.classList.toggle('large-controls',experience.largeControls);document.body.classList.toggle('calm-camera',experience.calm);$('personal-best').textContent=experience.best+' shots';}
 $('large-controls').onchange=e=>{experience.largeControls=e.target.checked;applyExperience();saveExperience();};

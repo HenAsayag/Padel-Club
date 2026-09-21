@@ -17,6 +17,6 @@ function updateBallVisibility(){
   ballMesh.scale.setScalar(live?radius/.0325:1.5);
   ballGlow.visible=live;ballGlow.position.copy(ballMesh.position);ballGlow.scale.setScalar(radius*3.6);
   trail.material.opacity=phone?.46:.32;
-  const moving=live&&game.mode==='rally'&&Math.hypot(game.ball.vx,game.ball.vy,game.ball.vz)>2;
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;trail.visible=trail.visible&&!reduced;const moving=!reduced&&live&&game.mode==='rally'&&Math.hypot(game.ball.vx,game.ball.vy,game.ball.vz)>2;
   for(let i=0;i<ballWake.length;i++){const dot=ballWake[i],fade=1-i/ballWake.length,j=(i+1)*3;dot.visible=moving;if(!moving)continue;dot.position.set(trailArray[j],trailArray[j+1],trailArray[j+2]);dot.scale.setScalar(radius*.65*fade);dot.material.opacity=.34*fade;}
 }

@@ -1,6 +1,6 @@
 // Arcade reach is independent of the early-input buffer. A recent legal
 // Short, bounded footwork assistance; contact always requires physical reach.
-const REACH_RADIUS=1.55,REACH_GRACE=.12,REACH_LATE_LIMIT=1.95;
+const REACH_RADIUS=window.PADEL_TUNING.contact.reachRadius,REACH_GRACE=window.PADEL_TUNING.contact.grace,REACH_LATE_LIMIT=window.PADEL_TUNING.contact.lateRadius;
 class ReachGame extends window.SimpleGame {
   start(level){this.reachWindows=[];this.lunges=[];this.reachAttempted=[];super.start(level);}
   prepare(){this.reachWindows=[];this.lunges=[];this.reachAttempted=[];super.prepare();}
@@ -45,11 +45,11 @@ class ReachGame extends window.SimpleGame {
   }
   advanceLunge(id,dt){
     const l=this.lunges?.[id];if(!l)return;
-    if(!this.legalReach(id)||this.time-l.start>.18||l.travel>=.65||l.hit!==this.lastHitTime||l.point!==this.pointNumber||l.bounces!==this.bounces[this.team(id)]||super.canHit(id)){this.lunges[id]=null;return;}
+    if(!this.legalReach(id)||this.time-l.start>window.PADEL_TUNING.contact.assistDuration||l.travel>=window.PADEL_TUNING.contact.assistDistance||l.hit!==this.lastHitTime||l.point!==this.pointNumber||l.bounces!==this.bounces[this.team(id)]||super.canHit(id)){this.lunges[id]=null;return;}
     const pose=this.reachPose(id);if(!pose){this.lunges[id]=null;return;}
     const p=this.players[id],dx=pose.x-p.x,dz=pose.z-p.z,d=Math.hypot(dx,dz);
     const c=this.controls[id];if(c.input.x*dx+c.input.z*dz<-.1){this.lunges[id]=null;return;}
-    const age=Math.max(0,this.time-l.start),speed=4.5*Math.min(1,(age+dt)/.05),step=Math.min(d,.65-l.travel,speed*dt);
+    const age=Math.max(0,this.time-l.start),speed=window.PADEL_TUNING.contact.assistSpeed*Math.min(1,(age+dt)/.05),step=Math.min(d,window.PADEL_TUNING.contact.assistDistance-l.travel,speed*dt);
     if(step<=0||d<.001)return;
     p.x+=dx/d*step;p.z+=dz/d*step;p.vx=dx/d*speed;p.vz=dz/d*speed;l.travel+=step;
   }

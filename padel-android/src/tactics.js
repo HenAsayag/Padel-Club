@@ -1,6 +1,6 @@
 (() => {
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const levels={easy:{reaction:.27,speed:3.9,error:.27},normal:{reaction:.16,speed:4.9,error:.15},hard:{reaction:.085,speed:5.65,error:.075}};
+  const levels=window.PADEL_TUNING.ai;
   const styles=['balanced','aggressive','defensive','creative'];
   class RallyTactics {
     constructor(game){this.game=game;this.reset();}
@@ -19,7 +19,8 @@
         const space=Math.min(...opponents.map(o=>Math.hypot(x-clamp(o.x+o.vx*.32,-4.5,4.5),side*depth-(o.z+o.vz*.25))));
         const recent=brain.history.slice(-4),repeats=recent.filter(h=>h.key===key).length,teamRepeats=this.history.slice(-4).filter(h=>h.team===g.team(id)&&h.lane===lane).length;
         if(recent.length>=2&&recent.slice(-2).every(h=>h.key===key))continue;
-        let score=space*.65-repeats*3-teamRepeats*.65;
+        const wallRisk=zone==='deep'&&Math.abs(x)>3?(.25+exhausted*.4):0;
+        let score=space*.65-repeats*3-teamRepeats*.65-wallRisk;
         score+=kind==='lob'?(netPressure?3.5:-1.8)+(defending?1.3:0):0;
         score+=kind==='smash'?2.2:0;score+=defending&&zone==='deep'?1.2:0;
         score+=brain.style==='aggressive'&&zone==='short'?.7:brain.style==='defensive'&&kind==='lob'?.9:0;
@@ -31,7 +32,7 @@
       let power=pick.kind==='lob'?.59:pick.kind==='smash'?.77:intent==='Attack'?.73:g.difficulty==='hard'?.67:g.difficulty==='normal'?.57:.49;
       // Timing error grows with speed, fatigue and rally pressure; never rerolled per frame.
       const error=this.settings().error*(1+displaced*.6)+brain.fatigue*.08+this.pressure()*.15;
-      power=clamp(power+g.gaussian()*error,.04,.99);
+      power=clamp(power+clamp(g.gaussian(),-2,2)*error,.04,.99);
       return {...pick,power,intent,error,displaced};
     }
     coordinate(){
@@ -42,13 +43,13 @@
         if(pick)g.claims[team]=pick.id;
         for(const id of ids){if(g.isHuman(id))continue;const brain=this.brains[id],p=g.players[id];
           if(incoming&&brain.shot!==g.rallyHits){brain.shot=g.rallyHits;brain.readyAt=g.time+settings.reaction*(1+brain.fatigue*.5);brain.plan=null;brain.offset=g.gaussian()*settings.error;brain.next=0;this.transition(brain,'Track');}
-          if(g.time<brain.next)continue;brain.next=g.time+.20+settings.reaction*.3;
-          if(incoming&&pick.id===id){
+          if(g.time<brain.next)continue;brain.next=g.time+levels.decision+settings.reaction*.3;
+          if(incoming&&pick&&pick.id===id){
             g.targets[id]={x:clamp(pick.x+(brain.offset||0),-4.5,4.5),z:side*clamp(Math.abs(pick.z)+Math.abs(brain.offset||0)*.3,.65,9.4)};
             if(g.time>=brain.readyAt&&!brain.plan){brain.plan=this.choose(id);brain.readyAt=g.time+.06+brain.plan.displaced*settings.reaction;this.transition(brain,brain.plan.intent);}
           }else{
-            const depth=brain.style==='defensive'?6.3:brain.style==='aggressive'?3.7:4.9;
-            g.targets[id]={x:clamp(g.ball.x*.22+(ids.length===2?(id<2?1.9:-1.9)*side:0),-4.3,4.3),z:side*(incoming?6.2:depth)};
+            const depth=brain.style==='defensive'?6.3:brain.style==='aggressive'&&Math.abs(g.ball.z)<6?3.0:4.9;
+            g.targets[id]={x:clamp(ids.length===2&&pick?(pick.x>=0?-2.4:2.4):g.ball.x*.22+(ids.length===2?(id<2?1.9:-1.9)*side:0),-4.3,4.3),z:side*(incoming?6.2:depth)};
             this.transition(brain,'Recover');brain.plan=null;
           }
         }
@@ -59,7 +60,7 @@
     hit(id){const g=this.game,brain=this.brains[id],team=g.team(id);if(g.claims[team]!==id||!brain.plan||g.time<brain.readyAt||g.time<(brain.cooldown||0)||!g.canHit(id)||g.serveActive&&(g.bounces[team]===0||id!==g.serveReceiver))return;
       const plan=brain.plan,p=g.players[id],distance=Math.hypot(g.ball.x-p.x,g.ball.z-p.z),strain=clamp(distance-.55,0,1)+brain.fatigue*.3+this.pressure()*.12;
       const error=plan.error*(.6+strain);const x=plan.x+g.gaussian()*error,z=plan.z+g.gaussian()*error;
-      this.transition(brain,'Perform Action');g.serveActive=false;g.launch(id,x,z,plan.power,plan.kind);brain.cooldown=g.time+.26;
+      this.transition(brain,'Perform Action');g.serveActive=false;g.launch(id,x,z,plan.power,plan.kind);brain.cooldown=g.time+levels.cooldown;
       const record={key:plan.key,lane:plan.lane,kind:plan.kind,power:plan.power,team};brain.history.push(record);brain.history=brain.history.slice(-8);this.history.push(record);this.history=this.history.slice(-12);brain.plan=null;
     }
     step(dt){const g=this.game;if(g.mode!=='rally'){this.rallyStart=null;for(const b of this.brains)b.fatigue=Math.max(0,b.fatigue-dt*.12);return;}

@@ -1,12 +1,12 @@
 let progressStorage;try{progressStorage=localStorage;}catch{}
-game.progress=new window.PlayerProgress(progressStorage);
+game.progress=null;
 let rewardSeen=0,lastSkillMode='',lastSweetToken='';
 const labels={control:'Power control',accuracy:'Accuracy',timing:'Timing',consistency:'Consistency',placement:'Placement',defense:'Defense',net:'Net play',stamina:'Stamina',sweet:'Sweet spots',technique:'Technique'};
 const skillSettings=document.createElement('label');skillSettings.className='skill-settings';skillSettings.innerHTML='<input type="checkbox" id="left-handed"> Left-handed touch layout';document.querySelector('[data-club-panel=settings]').appendChild(skillSettings);
 try{$('left-handed').checked=localStorage.getItem('padel-left-handed')==='1';}catch{}
 function applyHand(){document.body.classList.toggle('left-handed',$('left-handed').checked);try{localStorage.setItem('padel-left-handed',$('left-handed').checked?'1':'0');}catch{}}
 $('left-handed').onchange=applyHand;applyHand();
-const progressionSummary=document.createElement('div');progressionSummary.className='progress-summary';$('result-description').after(progressionSummary);
+const progressionSummary=document.createElement('div');progressionSummary.className='progress-summary';progressionSummary.hidden=true;$('result-description').after(progressionSummary);
 function syncCharacterKeys(){game.characterKeys=game.players.map((p,i)=>clubhouse.style<0?'classic':['rio','alex'][(clubhouse.style+i%2)%2]);}
 syncCharacterKeys();
 function shotKey(code){if(code==='KeyZ'||code==='KeyX')return {id:game.controlled,kind:code==='KeyX'?'lob':'drive'};if(game.coop&&(code==='KeyN'||code==='KeyM'))return {id:2,kind:code==='KeyM'?'lob':'drive'};return null;}
@@ -18,9 +18,9 @@ function renderProgress(){const rows=[];for(const [key,gains]of Object.entries(g
 function updateSkillUI(dt){
   syncCharacterKeys();if(!document.body.classList.contains('phone')){const detail=$("message-detail");if(detail.textContent.includes(' · Z to serve'))detail.textContent=detail.textContent.replace(' · Z to serve',' · hold Z, release to serve');if($("status-pill").textContent.startsWith('Z ·'))$("status-pill").textContent='HOLD Z → RELEASE TO SERVE';}const phone=document.body.classList.contains('phone'),live=!['menu','match'].includes(game.mode)&&!game.paused;
   const shotActive=!!game.chargeStates?.[game.controlled]||game.lastRelease?.[game.controlled]&&game.time-game.lastRelease[game.controlled].at<.65;document.body.classList.toggle('mobile-playing',phone&&live);document.body.classList.toggle('mobile-rally',phone&&game.mode==='rally');$('skill-hud').hidden=!live||(phone&&!shotActive);$('desktop-shots').hidden=!live||phone;
-  if(game.networkRole==='guest'){game.advanceCharge(dt);for(const reward of game.rewardEvents||[]){if(reward.seq>rewardSeen&&reward.id===game.controlled)game.progress.award(game.characterKeys[game.controlled],reward.weights);rewardSeen=Math.max(rewardSeen,reward.seq);}}
+  if(game.networkRole==='guest'){game.advanceCharge(dt);for(const reward of game.rewardEvents||[]){if(reward.seq>rewardSeen&&reward.id===game.controlled)game.progress?.award(game.characterKeys[game.controlled],reward.weights);rewardSeen=Math.max(rewardSeen,reward.seq);}}
   if(lastSkillMode==='menu'&&game.mode!=='menu')rewardSeen=0;
-  if(game.mode==='match'&&lastSkillMode!=='match')renderProgress();lastSkillMode=game.mode;
+  lastSkillMode=game.mode;
   for(const slot of [0,2]){const id=slot===0?game.controlled:2,node=$('skill-meter-'+slot);node.hidden=slot===2&&!game.coop;const charge=game.chargeStates?.[id],release=game.lastRelease?.[id],recent=release&&game.time-release.at<.8,power=charge?.power??(recent?release.power:0),kind=charge?.kind??release?.kind??'drive',zone=game.powerZone(id,kind,power),spec=game.powerSpec(id,kind);
     node.classList.toggle('sweet',(!!charge||recent)&&zone==='sweet');node.classList.toggle('strong',zone==='strong');node.classList.toggle('weak',!!charge&&zone==='weak');node.querySelector('.meter-needle').style.left=(power*100)+'%';const sweet=node.querySelector('.sweet-zone');sweet.style.left=spec.low*100+'%';sweet.style.width=(spec.high-spec.low)*100+'%';
     node.querySelector('.power-value').textContent=charge?Math.round(power*100)+'% · '+(zone==='weak'?'SOFT':zone.toUpperCase()):recent?(zone==='weak'?'SOFT':zone.toUpperCase()):'HOLD → RELEASE';node.querySelector('.meter-hint').textContent=charge?'Aim with movement · release to hit':phone?'Hold HIT / LOB · release to hit':slot===2?'Hold N / M · release to hit':'Hold Z / X or mouse buttons below';

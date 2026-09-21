@@ -1,6 +1,6 @@
 # Padel Club
 
-Landscape 3D padel for phones and desktop. Touch joystick + HIT / LOB. Two phones play **1 vs 1**, each controlling an opposing player. Local same-computer co-op remains a separate desktop option.
+Landscape 3D padel for phones and desktop. Tap-to-move + swipe shots (optional joystick / buttons). Two phones play **1 vs 1**, each controlling an opposing player. Local same-computer co-op remains a separate desktop option.
 
 ## Play on the same Wi-Fi (no internet matchmaking)
 
@@ -21,7 +21,7 @@ Repository Settings → Pages → Source: GitHub Actions. Push to main (or run P
 
 Tap Play or FULL SCREEN to request full screen and landscape lock. Portrait blocks play and pauses an active match. Android browsers with supported APIs can lock orientation; browser/OS restrictions mean a website cannot force full screen or landscape on every iPhone/browser. If unavailable, add the HTTPS site to your home screen and rotate the phone manually. The native Android app has its own landscape/full-screen settings. Safe-area padding keeps controls clear of notches. Returning from a background app leaves the match paused.
 
-Joystick or arrow keys: move and aim. Hold HIT / Z for a drive or serve, or LOB / X for a lob; release at the desired power. Desktop mouse buttons appear beside the meter. Local player 2 uses WASD + N / M. Neutral movement keeps the selected aim. Settings include a left-handed touch layout. Each phone has its own player-facing camera. The 120ms coyote window and bounded moving approach are retained.
+Default: tap your own court to move; swipe upward to hit. Swipe angle selects direction, length selects depth, speed selects power. LOB toggles a high shot. Settings → Swipe shots + tap to move turns this mode off. In optional button mode, joystick or arrow keys move and aim. Hold HIT / Z for a drive or serve, or LOB / X for a lob; release at the desired power. Desktop mouse buttons appear beside the meter. Local player 2 uses WASD + N / M. Neutral movement keeps the selected aim. Settings include a left-handed touch layout. Each phone has its own player-facing camera. The 120ms coyote window and bounded moving approach are retained.
 
 ## Edit and build
 
@@ -33,32 +33,24 @@ npm test
 padel-club-v4.html is the baseline. padel-android/src contains mobile, camera, animation and gameplay additions. padel-android/scripts applies them; scripts/export-web.cjs builds public/. assets/characters contains the CC0 Kenney characters. Do not edit the generated public/index.html directly. Dependency/model license notices ship alongside the game. No APK signing keys or personal files are included.
 
 
-## Tactical AI and skill progression
+## Swipe gameplay and tactical AI
 
-The old bot chose almost the same opponent-relative target and depth every time, while trajectories were automatically corrected to clear the net. Held human input also repeatedly queued a fixed-power shot. Together these made exchanges unusually repetitive.
+Swipe power comes from normalized gesture speed, not a hold timer. Aim is frozen on release and buffered for 300 ms; contact requires actual reach. The small moving assist is capped at 45 cm and 160 ms. Ball flight never slows for human input and no player teleports. Weak shots can net/fall short; excessive power risks a wall before the bounce. Balance, movement, stretch, incoming speed and fatigue affect a bounded, deterministic human placement error. The ring is an estimated landing area, not a guaranteed result.
 
-The new decision layer scores short/middle/deep targets in three lanes against predicted opponent movement. Per-player and team history discourage repeats. Bots use Recover, Track, Prepare, Defend, Attack and Perform Action states, reaction delays and action cooldowns. Four player styles favor different choices. Fatigue, movement strain and rally pressure affect errors; difficulty changes speed, reaction time and precision. After 100 shots or 150 seconds, a pathological rally is replayed without awarding a point.
+Tap movement accelerates and brakes; arrow/joystick input cancels the target. Bots also accelerate and brake. They predict legal wall rebounds, assign one doubles receiver, cover with their partner, evaluate open space/net pressure/recent shot history and choose between defensive, attacking, lob and overhead plans. Reaction and precision vary by difficulty. A pathological 100-shot / 150-second rally is replayed with no awarded point.
 
-Hold/release power applies to all human shots, including serves, and is sent with the aim in online packets. Controlled shots use the existing gravity/drag/spin integrator. Quick taps use a slower, net-clearing nominal arc for beginners. Excessive power still adds velocity and risks a wall-first fault. Collision rules remain physical. Bots use the same trajectory code. The short moving reach assist remains capped at 65 cm.
+Automatic character progression is disabled. Existing saved attributes are ignored and no attributes or purchases are earned through play. Existing characters, scoring, singles, doubles, local co-op and two-phone matches remain available.
 
-Successful legal, controlled shots build ten saved character attributes with diminishing returns, a 100-point cap and a four-return reward limit per player per point. Misses and uncontrolled shots earn nothing. Power control, accuracy, timing and stamina grant small bounded benefits; online matches normalize those benefits for fairness while still saving earned progress. Clearing browser storage removes progression. The match result lists earned gains.
-
-Implementation map:
-
-| File under padel-android/src | Purpose |
+| Source under padel-android/src | Purpose |
 | --- | --- |
-| tactics.js | Tactical candidate scoring, bot state, fatigue and rally safeguard |
-| skill-game.js | Hold/release input, power trajectories, legal-shot rewards |
-| progression.js | Per-character storage, diminishing gains and caps |
-| skill-ui.js / .html / .css | Meter, mouse/keyboard bindings, handedness and result summary |
-| mobile-ui.js / .html | Multitouch joystick and hold/release shot buttons |
-| mobile-engine.js / online.js | Remote controls and version 2 power/aim packets |
-| clubhouse.js / experience.js | Charge windup and updated in-game instructions |
+| control-model.js | Central gesture, movement, contact, assistance, power and AI tuning |
+| gesture-ui.js / .css | Touch/mouse gestures, tap targets, estimated landing, quiet power HUD and lob toggle |
+| skill-game.js | Released intent, contact sampling, shot quality, flight and wall-aware prediction |
+| tactics.js | AI candidates, coverage, styles, memory and rally safeguard |
+| reach-game.js | Short animated approach and physical contact validation |
+| mobile-engine.js / online.js | Far-court controls and version 3 network gesture packets |
+| clubhouse.js | Preparation and contextual character animation |
 
-The build scripts combine these with the existing game and export public/. Both phones must reload after this protocol update. Physics still advances at a fixed 120 Hz, independently of render size. Camera aspect and renderer size update on resize; portrait mobile play pauses under the rotate overlay. Safe areas and pointer capture protect the controls.
+Both phones must reload after this protocol update. Physics runs at 120 Hz with additional fast-ball contact samples. Reduced-motion preferences enable calm camera and hide the fast trail. Pause, resize and pointer cancellation discard unfinished gestures. iPhone mode plays in the browser without requiring fullscreen; rotate manually.
 
-Validation: `npm run build && npm test` covers seeded AI-vs-AI at all difficulties, a simulated human-input player against AI, charged keyboard/touch inputs, independent co-op charge, network replay rejection, opposite-court serving, beginner tap returns, physical net collisions and strong/wall faults, legal wall rebounds, bounded reach, saved progression, pause/rotation and generated-module syntax. Browser layout checks use 844x390 and 390x844 phones, 1024x768 tablet and 1366x768 desktop. These are browser viewport checks, not physical iPhone/Android certification.
-
-Mobile cleanup: one home panel with Play now; court/match setup opens separately. During play only score, joystick, HIT/LOB and pause remain. Power appears while charging and briefly after release. Camera selection is in pause; handedness remains in Settings.
-
-Contact forgiveness: starting/holding a shot while an incoming ball is within 1.55 m opens one 450 ms contact window per incoming shot. Ball motion slows locally during that window and briefly through the release buffer (320 ms); actual racket contact is still required. Leaving range, moving away, a new bounce, cancellation or point transition ends assistance. Players and balls are never teleported or rewound. Online guests transmit charging state so the host applies the same rule.
+Validation: npm run build and npm test cover gesture normalization, independent length/speed/direction, pointer cancellation, target movement, bounded contact, physical power outcomes, wall/floor scoring, AI simulations, legacy keyboard/buttons, network packet replay protection, restart and iPhone fallback. Browser checks cover landscape mobile and desktop menus, tap/swipe feedback and lob control. Automated browser dragging is slow, so it does not establish fast-swipe feel or certify real iPhone/Android multitouch, latency or battery performance. Test those on target devices before a release tournament.

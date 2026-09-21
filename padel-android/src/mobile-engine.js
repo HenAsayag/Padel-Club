@@ -7,7 +7,8 @@
     keyboardAim(id=this.controlled){return super.keyboardAim(id);}
     tryHit(id){return super.tryHit(id);}
     moveLocal(id,dt){
-      if(this.team(id)===0)return super.moveLocal(id,dt);
+      const command=this.movementCommand(id);
+      if(this.team(id)===0){try{return super.moveLocal(id,dt);}finally{if(command){this.controls[id].input.x=0;this.controls[id].input.z=0;}}}
       // Mirror the far player into the same movement rules, including stamina,
       // acceleration, side steps and recovery. Restore world coordinates before physics.
       const p=this.players[id],c=this.controls[id],ball=this.ball,target=this.targets[id];
@@ -15,7 +16,7 @@
       // Render effects only after the mirrored coordinates have been restored.
       const facing=p.facing,emit=this.emit,events=[];this.emit=(...args)=>events.push(args);
       mirror();try{super.moveLocal(id,dt);}finally{mirror();this.emit=emit;p.facing-=Math.PI*2;if(!Number.isFinite(p.facing))p.facing=facing;}
-      for(const args of events)this.emit(...args);
+      if(command){c.input.x=0;c.input.z=0;}for(const args of events)this.emit(...args);
     }
     step(dt=1/120){if(this.networkRole==='guest')return;if(this.networkRole==='host'){const fresh=this.time-this.remoteInputAt<.6,input=fresh?this.remoteInput:{x:0,z:0},c=this.controls[this.remoteId];c.input.x=input.x;c.input.z=input.z;c.input.sprint=Math.hypot(this.ball.x-this.players[this.remoteId].x,this.ball.z-this.players[this.remoteId].z)>2.2;}super.step(dt);}
   }
