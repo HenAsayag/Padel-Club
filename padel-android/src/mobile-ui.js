@@ -38,7 +38,7 @@ if(isPhone){
   document.querySelector('[data-club-panel=club]').appendChild(setupToggle);document.querySelector('.intro').prepend(setupBack);
   setupToggle.onclick=()=>document.body.classList.add('mobile-setup');setupBack.onclick=()=>document.body.classList.remove('mobile-setup');
   for(const id of ['start','quick-play','quit'])$(id).addEventListener('click',()=>document.body.classList.remove('mobile-setup'));
-  document.querySelector('[data-club-panel=settings]').appendChild($('browser-fullscreen'));$('quick-play').after($('iphone-play'));$('quick-play').textContent='Play now ↗';document.querySelector('.club-tip p').textContent=swipeEnabled?'Tap your court to move. Swipe up to hit. Use LOB for height.':'Hold HIT or LOB, then release.';
+  document.querySelector('[data-club-panel=settings]').appendChild($('browser-fullscreen'));$('quick-play').after($('iphone-play'));$('quick-play').textContent='Play now ↗';document.querySelector('.club-tip p').textContent=swipeEnabled?'We run to the ball. Swipe to aim and set power. Choose LOB for the next return.':'Auto-run. Hold HIT or LOB, then release.';
   $('resume').before($('camera-cycle'));
   $('pause-button').textContent='Ⅱ';$('pause-button').setAttribute('aria-label','Pause game');
 }

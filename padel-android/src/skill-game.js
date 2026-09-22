@@ -1,9 +1,9 @@
 (() => {
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   class SkillGame extends window.SimpleGame {
-    constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];}
+    constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];this.autoRun=true;this.runPlans=[];}
     start(level){super.start(level);this.tactics?.reset();this.cancelAllShots();this.pendingAward=null;this.pointCredits=[0,0,0,0];this.rewardEvents=[];this.rewardSequence=0;this.progress?.begin();}
-    prepare(){super.prepare();this.cancelAllShots();for(const c of this.controls){c.contactWindow=null;c.moveTarget=null;}this.pendingAward=null;this.pointCredits=[0,0,0,0];}
+    prepare(){super.prepare();this.cancelAllShots();for(const c of this.controls){c.contactWindow=null;c.moveTarget=null;c.autoRunTarget=false;c.autoRunAfter=0;}this.pendingAward=null;this.pointCredits=[0,0,0,0];}
     stat(){return 0;} // Player skill is learned; saved attributes no longer affect play.
     powerSpec(id,kind){return {cycle:kind==='lob'?1.2:1.02,low:kind==='lob'?.53:.62,high:(kind==='lob'?.65:.74)+this.stat(id,'control')*.025};}
     powerZone(id,kind,power){const s=this.powerSpec(id,kind);return power<window.PADEL_TUNING.power.weak?'weak':power>window.PADEL_TUNING.power.over?'strong':power>=s.low&&power<=s.high?'sweet':'controlled';}
@@ -16,8 +16,30 @@
     setMoveTarget(id,point){
       if(this.paused||!this.isHuman(id)||!['ready','rally'].includes(this.mode)||!point||!Number.isFinite(point.x)||!Number.isFinite(point.z))return false;
       const side=this.team(id)===0?1:-1;if(Math.abs(point.x)>4.55||point.z*side<.6||point.z*side>9.55)return false;
-      this.controls[id].moveTarget={x:point.x,z:point.z};this.controls[id].autoPosition=false;
+      this.controls[id].autoRunTarget=false;this.controls[id].moveTarget={x:point.x,z:point.z};this.controls[id].autoPosition=false;
       if(this.networkRole==='guest'){this.localMoveAction=(this.localMoveAction||0)+1;this.localMoveTarget={...point};}return true;
+    }
+    updateAutoRun(){
+      if(!this.autoRun||this.paused||this.networkRole==='guest'||this.mode!=='rally')return;
+      const tuning=window.PADEL_TUNING.autoRun;
+      for(let team=0;team<2;team++){
+        const humans=this.members(team).filter(id=>this.isHuman(id));if(!humans.length)continue;
+        const incoming=this.lastHitter!==team,side=team===0?1:-1;let plan=this.runPlans?.[team];
+        if(!plan||plan.hit!==this.lastHitTime||plan.point!==this.pointNumber||plan.next<=this.time){
+          plan={hit:this.lastHitTime,point:this.pointNumber,next:this.time+tuning.decision,pick:incoming?this.predictTeam(team):null};this.runPlans??=[];this.runPlans[team]=plan;
+        }
+        if(plan.pick)this.claims[team]=plan.pick.id;
+        for(const id of humans){const c=this.controls[id],p=this.players[id];
+          const manual=id===this.controlled?this.input:c.input;if(Math.hypot(manual.x,manual.z)>.08){c.autoRunAfter=this.time+tuning.manualPause;if(c.autoRunTarget)c.moveTarget=null;c.autoRunTarget=false;continue;}
+          if(c.moveTarget&&!c.autoRunTarget){c.autoRunAfter=this.time+tuning.manualPause;continue;}
+          if(this.time<(c.autoRunAfter||0))continue;
+          const receiver=plan.pick?.id===id;
+          // Chase a real interception with ordinary acceleration and racket reach.
+          // A far, fast ball can beat this runner; no ball or player position is changed here.
+          const target=receiver?{x:plan.pick.x,z:plan.pick.z}:{x:this.members(team).length===2?(plan.pick?.x>=0?-2.4:2.4):this.ball.x*.15,z:side*tuning.recoveryDepth};
+          c.autoPosition=false;c.autoRunTarget=true;c.moveTarget=Math.hypot(target.x-p.x,target.z-p.z)>window.PADEL_TUNING.movement.arrival?target:null;
+        }
+      }
     }
     movementCommand(id){
       const c=this.controls[id],p=this.players[id],target=c.moveTarget;delete c.input.moveDistance;
@@ -116,7 +138,7 @@
     fault(reason){super.fault(reason);this.cancelAllShots();this.pendingAward=null;}
     predictTeam(team){
       const q={...this.ball},side=team===0?1:-1,bounces=[...this.bounces],ids=this.members(team);let best=null,crossed=this.crossed;
-      const speed=this.tactics?.settings().speed||5.2,reaction=Math.max(0,this.aiEligible-this.time);
+      const aiSpeed=this.tactics?.settings().speed||5.2,reaction=Math.max(0,this.aiEligible-this.time);
       for(let n=1;n<=300;n++){
         const oldZ=q.z;this.integrate(q,1/120);const half=q.z>=0?0:1;
         if(oldZ*q.z<=0){if(q.y<.96)break;crossed=true;}
@@ -127,7 +149,7 @@
         }
         if(q.z*side<.6||q.y<.15||q.y>2.45||this.serveActive&&bounces[team]===0)continue;
         const time=n/120,x=clamp(q.x-.35*side,-4.5,4.5),z=side*clamp(Math.abs(q.z)+.22,.65,9.4);
-        for(const id of ids){if(this.serveActive&&id!==this.serveReceiver)continue;const p=this.players[id],distance=Math.hypot(x-p.x,z-p.z),late=Math.max(0,(distance-.65)/speed+reaction-time),score=late*8+time*.13+distance*.025+(id===this.claims[team]?-.08:0);if(!best||score<best.score)best={id,x,z,score,time,wall:bounces[team]>0};}
+        for(const id of ids){if(this.serveActive&&id!==this.serveReceiver)continue;const p=this.players[id],human=this.isHuman(id),speed=human?window.PADEL_TUNING.movement.run*.88:aiSpeed,distance=Math.hypot(x-p.x,z-p.z),late=Math.max(0,(distance-.65)/speed+(human?.07:reaction)-time),score=late*8+time*.13+distance*.025+(id===this.claims[team]?-.08:0);if(!best||score<best.score)best={id,x,z,score,time,wall:bounces[team]>0};}
         if(best&&best.score<.12&&time>.22)break;
       }
       return best||{id:ids[0],x:clamp(this.ball.x,-4.4,4.4),z:side*7.8};
@@ -136,7 +158,7 @@
     aiHit(id){this.tactics.hit(id);}
     moveToward(p,x,z,dt,speed=window.PADEL_TUNING.movement.run){const id=this.players.indexOf(p);if(this.mode==='rally'&&id>=0&&!this.isHuman(id)&&this.tactics)speed=this.tactics.settings().speed*(1-this.tactics.brains[id].fatigue*.15);const dx=x-p.x,dz=z-p.z,d=Math.hypot(dx,dz),targetSpeed=Math.min(speed,d*window.PADEL_TUNING.movement.gain),vx=d>.001?dx/d*targetSpeed:0,vz=d>.001?dz/d*targetSpeed:0,ax=vx-p.vx,az=vz-p.vz,a=Math.hypot(ax,az),limit=window.PADEL_TUNING.movement.acceleration*dt,f=a>limit?limit/a:1;p.vx+=ax*f;p.vz+=az*f;p.x=clamp(p.x+p.vx*dt,-4.55,4.55);const side=z<0?-1:1;p.z=side*clamp((p.z+p.vz*dt)*side,.6,9.55);}
     moveLocal(id,dt){const c=this.controls[id],before=c.stamina;super.moveLocal(id,dt);if(c.stamina<before)c.stamina+=((before-c.stamina)*this.stat(id,'stamina')*.12);}
-    step(dt=1/120){if(this.paused||this.networkRole==='guest')return;super.step(dt);if(this.mode!=='menu'&&this.mode!=='match'){this.advanceCharge(dt);this.tactics.step(dt);}}
+    step(dt=1/120){if(this.paused||this.networkRole==='guest')return;this.updateAutoRun();super.step(dt);if(this.mode!=='menu'&&this.mode!=='match'){this.advanceCharge(dt);this.tactics.step(dt);}}
   }
   window.SkillGame=SkillGame;window.SimpleGame=SkillGame;
 })();
