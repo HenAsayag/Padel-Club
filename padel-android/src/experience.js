@@ -28,7 +28,35 @@ function updateExperience(){
 }
 // Stable eye height and opponent-facing view keep swipe/stick directions predictable.
 function setEyePose(position,target,p,b,side){position.set(p.x,1.68,p.z-side*.06);target.set(p.x+THREE.MathUtils.clamp((b.x-p.x)*.55,-3.5,3.5),THREE.MathUtils.clamp(b.y*.55,.55,3.2),p.z-side*Math.max(3,Math.abs(p.z-b.z)));}
-function renderEyeView(view,id){const hidden=[],arm=models[id].limbs.right.arm;models[id].root.traverse(node=>{if(!node.isMesh)return;let parent=node;while(parent&&parent!==arm)parent=parent.parent;if(!parent){hidden.push([node,node.visible]);node.visible=false;}});try{renderer.render(scene,view);}finally{for(const [node,visible]of hidden)node.visible=visible;}}
+// Pose the existing articulated arm for this view only; never detach the racket.
+function poseEyeRacket(view,model,id){
+  const age=model.clock-model.contactAt;
+  // Keep the real contact pose intact, then ease back into the ready position.
+  const contact=!!model.contactPoint&&age>=0&&age<.5;
+  const weight=contact?THREE.MathUtils.smoothstep(age,.14,.5):1;
+  if(weight===0)return;
+  const p=game.players[id],speed=Math.min(1,Math.hypot(p.vx,p.vz)/7.2);
+  const sway=experience.calm?0:Math.sin(model.gait)*speed*.012;
+  const airAge=model.clock-(model.airSwingAt??-100),air=!contact&&airAge>=0&&airAge<.46;
+  const sweep=air?Math.sin(Math.PI*airAge/.46):0,lob=air&&model.airSwingKind==='lob';
+  const x=.30-sweep*.50,y=-.17+sway+sweep*(lob?.24:.08),z=-.62-sweep*.18;
+  // Fit narrow co-op viewports too, keeping the face away from the aiming lane.
+  const point=new THREE.Vector3(x*Math.min(1,view.aspect/1.25),y,z);
+  view.localToWorld(point);
+  solveRacketContact(model,point,1,lob?'lob':'forehand',weight);
+}
+function renderEyeView(view,id){
+  const model=models[id],limb=model.limbs.right,hidden=[];
+  const joints=[limb.arm,limb.forearm,limb.hand],rotations=joints.map(j=>j.quaternion.clone());
+  try{
+    poseEyeRacket(view,model,id);
+    model.root.traverse(node=>{if(!node.isMesh)return;let parent=node;while(parent&&parent!==limb.arm)parent=parent.parent;if(!parent){hidden.push([node,node.visible]);node.visible=false;}});
+    renderer.render(scene,view);
+  }finally{
+    for(const [node,visible]of hidden)node.visible=visible;
+    joints.forEach((j,i)=>j.quaternion.copy(rotations[i]));model.root.updateMatrixWorld(true);
+  }
+}
 // All gameplay views face the other half, preserving the arrow/stick axes.
 function updatePlayCamera(p,b,dt){
   const side=game.team(game.controlled)===0?1:-1,high=Math.max(0,b.y-2.5);

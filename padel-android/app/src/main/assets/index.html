@@ -1466,7 +1466,7 @@ function createPlayer(color,index=0,id=0){
   for(const sign of [-1,1])for(let row=-3;row<=3;row++)for(let col=-3;col<=3;col++){
     if(col*col+row*row>11)continue;holeMatrix.makeRotationY(sign<0?Math.PI:0);holeMatrix.setPosition(col*.030,-.299+row*.034,sign*.012);holes.setMatrixAt(count++,holeMatrix);
   }
-  holes.count=count;racket.add(holes);
+  holes.geometry.dispose();
   mergeJointMeshes(root);root.updateMatrixWorld(true);
   const bounds=new THREE.Box3().setFromObject(root),heightScale=1.78/(bounds.max.y-bounds.min.y),groundOffset=-bounds.min.y*heightScale;
   root.scale.setScalar(heightScale);root.position.y=groundOffset;scene.add(root);
@@ -1716,7 +1716,7 @@ function drawCourtThumb(canvas,key){const ctx=canvas.getContext('2d'),w=canvas.w
 }
 function drawCourtChoices(){for(const button of document.querySelectorAll('.court-choice')){button.classList.toggle('active',button.dataset.court===setup.court);button.setAttribute('aria-pressed',String(button.dataset.court===setup.court));drawCourtThumb(button.querySelector('canvas'),button.dataset.court);}for(const b of document.querySelectorAll('.color-swatch')){b.classList.toggle('active',b.dataset.color===selectedSurface());b.setAttribute('aria-pressed',String(b.dataset.color===selectedSurface()));}$('court-note').textContent=COURTS[setup.court].note+' All courts share the same physics.';}
 const racketAssets={};
-function makeRacketShape(key){const shape=new THREE.Shape(),points=[];for(let i=0;i<=64;i++){const a=i/64*Math.PI*2,y=Math.cos(a),x=Math.sin(a);let width=.14;if(key==='teardrop')width*=1+.24*y;if(key==='diamond')width*=1+.43*y;const px=x*width,py=y*(key==='round'?.14:.17);points.push(new THREE.Vector3(px,py,0));if(i===0)shape.moveTo(px,py);else shape.lineTo(px,py);}const face=new THREE.ExtrudeGeometry(shape,{depth:.024,bevelEnabled:false,curveSegments:24});face.translate(0,0,-.012);const rim=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.slice(0,-1),true),64,.008,6,true);return {face,rim};}
+function makeRacketShape(key){const shape=new THREE.Shape(),points=[];for(let i=0;i<=64;i++){const a=i/64*Math.PI*2,y=Math.cos(a),x=Math.sin(a);let width=.14;if(key==='teardrop')width*=1+.24*y;if(key==='diamond')width*=1+.43*y;const px=x*width,py=y*(key==='round'?.14:.17);points.push(new THREE.Vector3(px,py,0));if(i===0)shape.moveTo(px,py);else shape.lineTo(px,py);}for(let row=-3;row<=3;row++)for(let col=-3;col<=3;col++){if(col*col+row*row>11)continue;const hole=new THREE.Path();hole.absarc(col*.030,row*.034,.008,0,Math.PI*2,true);shape.holes.push(hole);}const face=new THREE.ExtrudeGeometry(shape,{depth:.024,bevelEnabled:false,curveSegments:24});face.translate(0,0,-.012);const rim=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.slice(0,-1),true),64,.008,6,true);return {face,rim};}
 for(const key of Object.keys(window.PADEL_RACKETS))racketAssets[key]=makeRacketShape(key);
 function setRacketLook(model,key){const face=model.root.getObjectByName('racket-shape-face'),rim=model.root.getObjectByName('racket-shape-rim');if(!face||!rim)return;for(const m of [face,rim]){if(!m.userData.cachedShape)m.geometry.dispose();m.userData.cachedShape=true;m.rotation.set(0,0,0);m.scale.set(1,1,1);}face.geometry=racketAssets[key].face;rim.geometry=racketAssets[key].rim;face.material.color.set({round:'#c6d69a',teardrop:'#79b2b6',diamond:'#da8c72'}[key]);}
 function updateRackets(){for(let id=0;id<4;id++)setRacketLook(models[id],id%2?{easy:'round',normal:'teardrop',hard:'diamond'}[difficulty]:setup.racket);for(const b of document.querySelectorAll('.racket-choice')){b.classList.toggle('active',b.dataset.racket===setup.racket);b.setAttribute('aria-pressed',String(b.dataset.racket===setup.racket));}saveSetup();}
@@ -1796,7 +1796,35 @@ function updateExperience(){
 }
 // Stable eye height and opponent-facing view keep swipe/stick directions predictable.
 function setEyePose(position,target,p,b,side){position.set(p.x,1.68,p.z-side*.06);target.set(p.x+THREE.MathUtils.clamp((b.x-p.x)*.55,-3.5,3.5),THREE.MathUtils.clamp(b.y*.55,.55,3.2),p.z-side*Math.max(3,Math.abs(p.z-b.z)));}
-function renderEyeView(view,id){const hidden=[],arm=models[id].limbs.right.arm;models[id].root.traverse(node=>{if(!node.isMesh)return;let parent=node;while(parent&&parent!==arm)parent=parent.parent;if(!parent){hidden.push([node,node.visible]);node.visible=false;}});try{renderer.render(scene,view);}finally{for(const [node,visible]of hidden)node.visible=visible;}}
+// Pose the existing articulated arm for this view only; never detach the racket.
+function poseEyeRacket(view,model,id){
+  const age=model.clock-model.contactAt;
+  // Keep the real contact pose intact, then ease back into the ready position.
+  const contact=!!model.contactPoint&&age>=0&&age<.5;
+  const weight=contact?THREE.MathUtils.smoothstep(age,.14,.5):1;
+  if(weight===0)return;
+  const p=game.players[id],speed=Math.min(1,Math.hypot(p.vx,p.vz)/7.2);
+  const sway=experience.calm?0:Math.sin(model.gait)*speed*.012;
+  const airAge=model.clock-(model.airSwingAt??-100),air=!contact&&airAge>=0&&airAge<.46;
+  const sweep=air?Math.sin(Math.PI*airAge/.46):0,lob=air&&model.airSwingKind==='lob';
+  const x=.30-sweep*.50,y=-.17+sway+sweep*(lob?.24:.08),z=-.62-sweep*.18;
+  // Fit narrow co-op viewports too, keeping the face away from the aiming lane.
+  const point=new THREE.Vector3(x*Math.min(1,view.aspect/1.25),y,z);
+  view.localToWorld(point);
+  solveRacketContact(model,point,1,lob?'lob':'forehand',weight);
+}
+function renderEyeView(view,id){
+  const model=models[id],limb=model.limbs.right,hidden=[];
+  const joints=[limb.arm,limb.forearm,limb.hand],rotations=joints.map(j=>j.quaternion.clone());
+  try{
+    poseEyeRacket(view,model,id);
+    model.root.traverse(node=>{if(!node.isMesh)return;let parent=node;while(parent&&parent!==limb.arm)parent=parent.parent;if(!parent){hidden.push([node,node.visible]);node.visible=false;}});
+    renderer.render(scene,view);
+  }finally{
+    for(const [node,visible]of hidden)node.visible=visible;
+    joints.forEach((j,i)=>j.quaternion.copy(rotations[i]));model.root.updateMatrixWorld(true);
+  }
+}
 // All gameplay views face the other half, preserving the arrow/stick axes.
 function updatePlayCamera(p,b,dt){
   if(isLocalCoop()){updateCoopCamera();return;}

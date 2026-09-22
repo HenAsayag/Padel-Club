@@ -13,6 +13,9 @@ replace('model.gait+=speed*dt*(shuffle?5.2:back?3.6:2.7)','model.gait+=speed*dt*
 replace('target[1]=sway*.008*(1-moving)','target[1]=sway*.020*(1-moving)');
 replace('moving*(shuffle?.009:.018)','moving*(shuffle?.016:.028)');
 replace('amplitude=moving*(shuffle?.13:back?.30:.58)','amplitude=moving*(shuffle?.21:back?.38:.66)');
+// Real perforations remain crisp at first-person distance (coplanar hole decals flicker).
+replace('holes.count=count;racket.add(holes);','holes.geometry.dispose();');
+replace('const face=new THREE.ExtrudeGeometry(shape,',"for(let row=-3;row<=3;row++)for(let col=-3;col<=3;col++){if(col*col+row*row>11)continue;const hole=new THREE.Path();hole.absarc(col*.030,row*.034,.008,0,Math.PI*2,true);shape.holes.push(hole);}const face=new THREE.ExtrudeGeometry(shape,");
 replace('</head>','<style>'+fs.readFileSync(path.join(src,'experience.css'),'utf8')+'</style></head>');
 replace('<div class="menu-foot">',fs.readFileSync(path.join(src,'experience.html'),'utf8')+'<div class="menu-foot">');
 replace('<div id="status-pill">','<div id="rally-card" hidden><span id="rally-goal">RALLY / TARGET 8</span><strong id="rally-count">0</strong><progress id="rally-progress" aria-label="Rally challenge" max="8" value="0"></progress></div><div id="status-pill">');
