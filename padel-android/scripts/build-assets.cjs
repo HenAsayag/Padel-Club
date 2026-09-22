@@ -9,6 +9,7 @@ replace('<div id="court-view-bar">',fs.readFileSync(path.join(src,'mobile-ui.htm
 replace('  window.readSimpleInputs(game,keys);','  readMobileInputs();online.tick(dt);updateMobileUI();');
 replace('function updateModeUI(){',"function updateModeUI(){delete $('input-guide').dataset.mobileReady;");
 replace('function pause(){','function pause(){if(online?.active){online.requestPause();return;}');
+replace('game.start(difficulty);clearLocalInputs();',"game.start(difficulty);for(const id of game.activePlayers)if(game.isHuman(id))game.setMovementMode(id,movementMode);clearLocalInputs();");
 replace('function menu(){','function menu(){if(online?.active)online.leave();resetTouch();$(\'rematch\').disabled=false;');
 replace("window.addEventListener('keydown',e=>{","window.addEventListener('keydown',e=>{if(!$('online-panel').hidden)return;");
 // Shared camera derives its direction from the locally controlled player's team.

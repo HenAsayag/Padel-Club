@@ -13,3 +13,10 @@ fire('touch-lob','pointerdown',4);assert.ok(api.touch.lob);assert.equal(hits.len
 console.log('PASS simultaneous joystick + shot, independent release, pointer cancellation and pause recovery');
 
 fire('touch-lob','pointercancel',4);assert.equal(releases,1);assert.equal(cancels,1);
+// Exercise a second touch on the actual swipe listeners while the stick stays held.
+{
+const source=fs.readFileSync(path.resolve(__dirname,'../src/gesture-ui.js'),'utf8'),snippet=source.slice(source.indexOf('renderer.domElement.style.touchAction'),source.indexOf('function estimateGesture')),events={},renderer={domElement:{style:{},addEventListener:(key,fn)=>events[key]=fn,setPointerCapture(){}}};let shots=0;
+Object.assign(game,{mode:'rally',ball:{x:0},players:[{x:0,z:6}],commitGesture(){shots++;return true;},setMoveTarget(){}});
+new Function('renderer','game','window','document','performance','let swipe=null,swipeFeedback=null;const landingArea={visible:false},audioStart=()=>{},liveGesture=()=>true,gestureView=()=>({id:0}),gesturePoint=()=>null,swipeSample=e=>e.result,cancelSwipe=()=>{swipe=null;},estimateGesture=()=>({x:0,z:-6}),selectGestureShot=()=>{};'+snippet)(renderer,game,{addEventListener(){}},{addEventListener(){}},{now:()=>0});
+fire('joystick','pointerdown',10,120,64);const gesture={pointerId:11,button:0,clientX:400,clientY:200,timeStamp:10,preventDefault(){},result:{valid:true,forward:1,power:.58,kind:'drive',aim:{x:1,z:-6}}};events.pointerdown(gesture);events.pointerup(gesture);assert.equal(shots,1);assert.ok(api.touch.x>.9);fire('joystick','pointercancel',10);assert.equal(api.touch.x,0);events.pointerup(gesture);assert.equal(shots,1);console.log('PASS simultaneous joystick and swipe use independent pointer captures');
+}

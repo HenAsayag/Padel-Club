@@ -62,3 +62,8 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 #rotate-browser{min-height:44px;max-width:100%;padding:10px 16px;background:transparent;color:#d7f19b;border:1px solid #d7f19b88;border-radius:10px;font-size:13px}
 .phone #rotate-fullscreen[hidden]{display:none}
 @media(max-height:430px){.phone #menu .experience-panel{padding:10px 18px}.phone #menu .experience-panel h2{font-size:24px;margin:6px 0}.phone #menu #quick-play{margin:4px 0}.phone #menu .club-tip{margin:4px 0}}
+.movement-options{display:flex;gap:6px;margin:10px 0}.movement-options button{flex:1;min-height:44px;border:1px solid #a9d7ba55;border-radius:10px;padding:7px;background:#103b35;color:#dff5e4;font-size:12px;font-weight:bold}.movement-options button small{display:block;font-size:9px;font-weight:normal;margin-top:3px}.movement-options button[aria-pressed=true]{background:#d9fc80;color:#142b25}
+#menu-fullscreen{width:100%;min-height:38px;margin:3px 0;padding:8px;border-radius:9px;border:1px solid #bce1c866;background:#183e3544;color:#e6f9e5;font-size:11px}
+body.swipe-controls.joystick-mode #mobile-controls:not([hidden]){display:block!important}
+body.swipe-controls.joystick-mode .shot-buttons{display:none!important}
+@media(max-height:430px){.phone .movement-options{margin:5px 0}.phone .movement-options button{padding:5px;min-height:42px}.phone #menu-fullscreen{min-height:34px;padding:6px}}

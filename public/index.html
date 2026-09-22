@@ -130,6 +130,11 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 #rotate-browser{min-height:44px;max-width:100%;padding:10px 16px;background:transparent;color:#d7f19b;border:1px solid #d7f19b88;border-radius:10px;font-size:13px}
 .phone #rotate-fullscreen[hidden]{display:none}
 @media(max-height:430px){.phone #menu .experience-panel{padding:10px 18px}.phone #menu .experience-panel h2{font-size:24px;margin:6px 0}.phone #menu #quick-play{margin:4px 0}.phone #menu .club-tip{margin:4px 0}}
+.movement-options{display:flex;gap:6px;margin:10px 0}.movement-options button{flex:1;min-height:44px;border:1px solid #a9d7ba55;border-radius:10px;padding:7px;background:#103b35;color:#dff5e4;font-size:12px;font-weight:bold}.movement-options button small{display:block;font-size:9px;font-weight:normal;margin-top:3px}.movement-options button[aria-pressed=true]{background:#d9fc80;color:#142b25}
+#menu-fullscreen{width:100%;min-height:38px;margin:3px 0;padding:8px;border-radius:9px;border:1px solid #bce1c866;background:#183e3544;color:#e6f9e5;font-size:11px}
+body.swipe-controls.joystick-mode #mobile-controls:not([hidden]){display:block!important}
+body.swipe-controls.joystick-mode .shot-buttons{display:none!important}
+@media(max-height:430px){.phone .movement-options{margin:5px 0}.phone .movement-options button{padding:5px;min-height:42px}.phone #menu-fullscreen{min-height:34px;padding:6px}}
 </style><link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#123128"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head>
 <body>
 <div id="scene"></div><div id="split-labels" hidden aria-label="Split screen players"><span>PLAYER 1 · ARROWS + Z / X</span><span>PLAYER 2 · WASD + N / M</span></div><div id="skill-hud" hidden aria-label="Shot power">
@@ -159,10 +164,12 @@ html,body{overscroll-behavior:none;touch-action:manipulation;-webkit-user-select
 <aside class="experience-panel" aria-label="Clubhouse options">
   <div class="club-header"><span class="eyebrow">PADEL SOCIAL CLUB</span><span class="season-badge">03</span></div><nav class="club-tabs" role="tablist" aria-label="Clubhouse"><button role="tab" data-club-tab="club">Play</button><button role="tab" data-club-tab="locker">Players</button><button role="tab" data-club-tab="settings">Settings</button></nav>
   <section data-club-panel="club" role="tabpanel"><h2>One more<br><em>rally.</em></h2><p>Your court. Your crew. Make the next point count.</p>
+  <div class="movement-options" role="group" aria-label="Movement mode"><button data-movement="auto" aria-pressed="true">Auto run<small>Swipe to hit</small></button><button data-movement="joystick" aria-pressed="false">Joystick<small>Move + swipe to hit</small></button></div>
+  <button id="menu-fullscreen" class="secondary">FULL SCREEN ↗</button>
   <button id="quick-play" class="primary">Quick play · current setup ↗</button>
   <div class="club-tip"><b>TWO BUTTONS. ALL THE SHOTS.</b><p>HIT / serve · LOB<br>Use the joystick to move. Your position decides the stroke.</p></div></section>
   <section data-club-panel="locker" role="tabpanel" hidden><div class="locker-heading"><h2>The lineup.</h2><span>LIVE PREVIEW</span></div><canvas id="locker-canvas" width="256" height="256" aria-label="Animated player preview"></canvas><div class="character-options" role="group" aria-label="Player style"><button data-character="0"><img alt=""><b>Rio</b><small>ARCADE</small></button><button data-character="1"><img alt=""><b>Alex</b><small>ARCADE</small></button><button data-character="-1"><span class="classic-avatar">◉</span><b>Club pro</b><small>CLASSIC</small></button></div><div class="demo-options" role="group" aria-label="Preview animation"><button data-demo="idle" aria-pressed="true">Warm up</button><button data-demo="run">Run</button><button data-demo="swing">Swing</button><button data-demo="celebrate">Celebrate</button></div><p class="asset-credit">Arcade models & emotes: Kenney · CC0.<br>Padel strokes adapted to the contact rig.</p></section>
-  <section data-club-panel="settings" role="tabpanel" hidden><h2>Your game.</h2><p>Set your view and comfort.</p><div class="experience-label">YOUR CAMERA</div><div class="camera-options" role="group" aria-label="Gameplay camera"><button data-camera="0">Rally view</button><button data-camera="1">Chase</button><button data-camera="2">Full court</button><button data-camera="3">Overhead</button></div>
+  <section data-club-panel="settings" role="tabpanel" hidden><h2>Your game.</h2><p>Set your view and comfort.</p><div class="experience-label">YOUR CAMERA</div><div class="camera-options" role="group" aria-label="Gameplay camera"><button data-camera="0">Rally view</button><button data-camera="1">Chase</button><button data-camera="2">Full court</button><button data-camera="3">Overhead</button><button data-camera="4">Player eyes</button></div>
   <div class="experience-label" style="margin-top:18px">TWO PLAYERS · ONE COMPUTER</div><div class="camera-options" role="group" aria-label="Local co-op view"><button data-coop-view="shared">Both players</button><button data-coop-view="split">Split screen</button></div><p class="experience-tip">Local co-op always keeps both players in view. Change the layout here or during a match.</p>
   <label class="experience-toggle"><input id="calm-camera" type="checkbox"> Steady camera · no impact shake</label>
   <label class="experience-toggle touch-option"><input id="large-controls" type="checkbox"> Larger touch buttons</label>
@@ -1007,7 +1014,7 @@ window.readSimpleInputs=readSimpleInputs;
 (() => {
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   class SkillGame extends window.SimpleGame {
-    constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];this.autoRun=true;this.runPlans=[];}
+    constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];this.autoRun=true;this.runPlans=[];this.movementModes=Array(4).fill('auto');}
     start(level){super.start(level);this.tactics?.reset();this.cancelAllShots();this.pendingAward=null;this.pointCredits=[0,0,0,0];this.rewardEvents=[];this.rewardSequence=0;this.progress?.begin();}
     prepare(){super.prepare();this.cancelAllShots();for(const c of this.controls){c.contactWindow=null;c.moveTarget=null;c.autoRunTarget=false;c.autoRunAfter=0;}this.pendingAward=null;this.pointCredits=[0,0,0,0];}
     stat(){return 0;} // Player skill is learned; saved attributes no longer affect play.
@@ -1025,11 +1032,16 @@ window.readSimpleInputs=readSimpleInputs;
       this.controls[id].autoRunTarget=false;this.controls[id].moveTarget={x:point.x,z:point.z};this.controls[id].autoPosition=false;
       if(this.networkRole==='guest'){this.localMoveAction=(this.localMoveAction||0)+1;this.localMoveTarget={...point};}return true;
     }
+    setMovementMode(id,mode){
+      if(!Number.isInteger(id)||id<0||id>3||!['auto','joystick'].includes(mode))return false;
+      this.movementModes??=Array(4).fill('auto');if(this.movementModes[id]===mode)return true;
+      this.movementModes[id]=mode;const c=this.controls[id];c.moveTarget=null;c.autoRunTarget=false;c.autoRunAfter=0;c.input.x=c.input.z=0;return true;
+    }
     updateAutoRun(){
       if(!this.autoRun||this.paused||this.networkRole==='guest'||this.mode!=='rally')return;
       const tuning=window.PADEL_TUNING.autoRun;
       for(let team=0;team<2;team++){
-        const humans=this.members(team).filter(id=>this.isHuman(id));if(!humans.length)continue;
+        const humans=this.members(team).filter(id=>this.isHuman(id)&&this.movementModes?.[id]!=='joystick');if(!humans.length)continue;
         const incoming=this.lastHitter!==team,side=team===0?1:-1;let plan=this.runPlans?.[team];
         if(!plan||plan.hit!==this.lastHitTime||plan.point!==this.pointNumber||plan.next<=this.time){
           plan={hit:this.lastHitTime,point:this.pointNumber,next:this.time+tuning.decision,pick:incoming?this.predictTeam(team):null};this.runPlans??=[];this.runPlans[team]=plan;
@@ -1206,25 +1218,25 @@ class PadelLink{
 constructor(cb,PeerClass=window.Peer){Object.assign(this,{cb,PeerClass,active:false,peer:null,conn:null,role:'offline',mode:'duel',remoteId:1,sequence:0,lastSequence:-1,lastAction:0,clock:0,sentAt:0,receivedAt:0,closing:false,room:'',latency:0,lastPing:0});}
 status(s){this.cb.status(s);}
 options(){const c=window.PADEL_NETWORK||{},o={debug:0};if(c.host)Object.assign(o,{host:c.host,port:c.port||(c.secure===false?80:443),path:c.path||'/',secure:c.secure!==false});if(Array.isArray(c.iceServers))o.config={iceServers:c.iceServers};return o;}
-create(mode){this.leave();this.mode=mode==='coop'?'coop':'duel';this.remoteId=this.mode==='coop'?2:1;this.role='host';this.closing=false;const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',bytes=new Uint8Array(8);crypto.getRandomValues(bytes);this.room=Array.from(bytes,b=>alphabet[b%alphabet.length]).join('');this.status('Creating room...');this.openPeer('padel-mobile-3-'+this.room,()=>this.status('Room '+this.room+' is ready. Share the code with your friend.'));return this.room;}
-join(code){code=code.trim().toUpperCase();if(!/^[A-Z2-9]{8}$/.test(code)){this.status('Enter the 8-character room code.');return false;}this.leave();this.role='guest';this.closing=false;this.room=code;this.status('Finding room '+code+'...');this.openPeer(undefined,()=>this.attach(this.peer.connect('padel-mobile-3-'+code,{reliable:true,serialization:'json',metadata:{version:3}})));return true;}
+create(mode){this.leave();this.mode=mode==='coop'?'coop':'duel';this.remoteId=this.mode==='coop'?2:1;this.role='host';this.closing=false;const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',bytes=new Uint8Array(8);crypto.getRandomValues(bytes);this.room=Array.from(bytes,b=>alphabet[b%alphabet.length]).join('');this.status('Creating room...');this.openPeer('padel-mobile-4-'+this.room,()=>this.status('Room '+this.room+' is ready. Share the code with your friend.'));return this.room;}
+join(code){code=code.trim().toUpperCase();if(!/^[A-Z2-9]{8}$/.test(code)){this.status('Enter the 8-character room code.');return false;}this.leave();this.role='guest';this.closing=false;this.room=code;this.status('Finding room '+code+'...');this.openPeer(undefined,()=>this.attach(this.peer.connect('padel-mobile-4-'+code,{reliable:true,serialization:'json',metadata:{version:4}})));return true;}
 openPeer(id,opened){try{this.peer=id?new this.PeerClass(id,this.options()):new this.PeerClass(this.options());this.peer.on('open',()=>{clearTimeout(this.timeout);opened();if(this.role==='guest')this.timeout=setTimeout(()=>this.fail('Connection timed out. Check the code or try another network.'),20000);});this.peer.on('connection',c=>{if(this.role!=='host'||this.conn){c.on('open',()=>{c.send({t:'full'});setTimeout(()=>c.close(),150);});return;}this.attach(c);});this.peer.on('error',e=>this.fail(e.type==='peer-unavailable'?'Room not found. Check the code and keep the host online.':'Could not connect. Check your internet connection or try another network.'));this.peer.on('disconnected',()=>{if(!this.closing&&!this.active)this.fail('Room service disconnected. Please try again.');});this.timeout=setTimeout(()=>this.fail('Room service did not respond. Check your connection.'),16000);}catch(e){this.fail('Online play is unavailable in this browser.');}}
-attach(c){this.conn=c;c.on('open',()=>{clearTimeout(this.timeout);this.receivedAt=performance.now();if(this.role==='host'){this.send({t:'hello',version:3,mode:this.mode,settings:this.cb.settings()});this.timeout=setTimeout(()=>this.fail('Friend did not finish connecting. Please create another room.'),15000);}else this.status('Connected. Preparing the court...');});c.on('data',d=>this.receive(d));c.on('close',()=>{if(this.conn===c&&!this.closing)this.fail('Your friend disconnected. Create or join a new room.');});c.on('error',()=>{if(this.conn===c&&!this.closing)this.fail('The connection was interrupted. Please reconnect.');});}
+attach(c){this.conn=c;c.on('open',()=>{clearTimeout(this.timeout);this.receivedAt=performance.now();if(this.role==='host'){this.send({t:'hello',version:4,mode:this.mode,settings:this.cb.settings()});this.timeout=setTimeout(()=>this.fail('Friend did not finish connecting. Please create another room.'),15000);}else this.status('Connected. Preparing the court...');});c.on('data',d=>this.receive(d));c.on('close',()=>{if(this.conn===c&&!this.closing)this.fail('Your friend disconnected. Create or join a new room.');});c.on('error',()=>{if(this.conn===c&&!this.closing)this.fail('The connection was interrupted. Please reconnect.');});}
 send(d){if(this.conn?.open&&(this.conn.dataChannel?.bufferedAmount||0)<128000)this.conn.send(d);}
 boot(role,settings){clearTimeout(this.timeout);Object.assign(this,{active:true,role,lastSequence:-1,lastAction:0,lastMoveAction:0,sequence:0,sentAt:0,receivedAt:performance.now()});this.cb.boot(role,this.mode,this.remoteId,settings);this.status('Connected - '+(this.mode==='coop'?'co-op 2 vs 2':'1 vs 1'));}
 receive(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;this.receivedAt=performance.now();const g=this.cb.game();
 if(d.t==='full'){this.fail('This room already has two players.');return;}
-if(d.t==='hello'&&this.role==='guest'&&!this.active){if(d.version!==3||!['duel','coop'].includes(d.mode)){this.fail('Different game versions.');return;}this.mode=d.mode;this.remoteId=d.mode==='coop'?2:1;this.boot('guest',d.settings);this.send({t:'ready',version:3});return;}
-if(d.t==='ready'&&this.role==='host'&&!this.active&&d.version===3){this.boot('host',this.cb.settings());this.send({t:'state',seq:++this.sequence,state:snapshot(g)});return;}
+if(d.t==='hello'&&this.role==='guest'&&!this.active){if(d.version!==4||!['duel','coop'].includes(d.mode)){this.fail('Different game versions.');return;}this.mode=d.mode;this.remoteId=d.mode==='coop'?2:1;this.boot('guest',d.settings);this.send({t:'ready',version:4});return;}
+if(d.t==='ready'&&this.role==='host'&&!this.active&&d.version===4){this.boot('host',this.cb.settings());this.send({t:'state',seq:++this.sequence,state:snapshot(g)});return;}
 if(!this.active)return;
-if(d.t==='input'&&this.role==='host'){if(!Number.isInteger(d.seq)||d.seq<=this.lastSequence||!Number.isFinite(d.x)||!Number.isFinite(d.z)||Math.abs(d.x)>1||Math.abs(d.z)>1)return;this.lastSequence=d.seq;if(Number.isInteger(d.moveAction)&&d.moveAction>(this.lastMoveAction||0)){this.lastMoveAction=d.moveAction;g.setMoveTarget(this.remoteId,d.moveTarget);}g.remoteInput={x:d.x,z:d.z,drive:d.drive===true,lob:d.lob===true};g.remoteInputAt=g.time;if(!g.paused&&['drive','lob'].includes(d.charging)){g.beginShot(this.remoteId,d.charging);}else if(g.chargeStates?.[this.remoteId])g.cancelShot(this.remoteId,true);if(Number.isInteger(d.action)&&d.action>this.lastAction){this.lastAction=d.action;if(['drive','lob'].includes(d.kind)&&Number.isFinite(d.power)&&d.power>=0&&d.power<=1&&!g.paused)g.queueReleasedShot(this.remoteId,d.kind,d.power,d.aim);}return;}
+if(d.t==='input'&&this.role==='host'){if(!Number.isInteger(d.seq)||d.seq<=this.lastSequence||!Number.isFinite(d.x)||!Number.isFinite(d.z)||Math.abs(d.x)>1||Math.abs(d.z)>1)return;this.lastSequence=d.seq;if(['auto','joystick'].includes(d.movementMode))g.setMovementMode(this.remoteId,d.movementMode);if(Number.isInteger(d.moveAction)&&d.moveAction>(this.lastMoveAction||0)){this.lastMoveAction=d.moveAction;g.setMoveTarget(this.remoteId,d.moveTarget);}g.remoteInput={x:d.x,z:d.z,drive:d.drive===true,lob:d.lob===true};g.remoteInputAt=g.time;if(!g.paused&&['drive','lob'].includes(d.charging)){g.beginShot(this.remoteId,d.charging);}else if(g.chargeStates?.[this.remoteId])g.cancelShot(this.remoteId,true);if(Number.isInteger(d.action)&&d.action>this.lastAction){this.lastAction=d.action;if(['drive','lob'].includes(d.kind)&&Number.isFinite(d.power)&&d.power>=0&&d.power<=1&&!g.paused)g.queueReleasedShot(this.remoteId,d.kind,d.power,d.aim);}return;}
 if(d.t==='state'&&this.role==='guest'){if(!Number.isInteger(d.seq)||d.seq<=this.lastSequence||!applyState(g,d.state))return;this.lastSequence=d.seq;g.controlled=this.remoteId;this.cb.state(d.state);return;}
 if(d.t==='pause'&&this.role==='host'&&typeof d.value==='boolean'){this.setPaused(d.value);return;}
 if(d.t==='ping'&&Number.isFinite(d.at)){this.send({t:'pong',at:d.at});return;}
 if(d.t==='pong'&&Number.isFinite(d.at))this.latency=Math.round(Math.max(0,performance.now()-d.at));}
 setPaused(value){const g=this.cb.game();g.paused=value;g.cancelAllShots?.();g.remoteInput={x:0,z:0,drive:false,lob:false};this.cb.paused(value);this.send({t:'state',seq:++this.sequence,state:snapshot(g)});}
 requestPause(){if(!this.active)return;const value=!this.cb.game().paused;if(this.role==='guest')this.send({t:'pause',value});else this.setPaused(value);}
-tick(dt){if(!this.active)return;this.clock+=dt;const g=this.cb.game(),now=performance.now();if(now-this.receivedAt>12000){this.fail('Connection lost. Your match has stopped.');return;}if(this.clock-this.lastPing>2){this.lastPing=this.clock;this.send({t:'ping',at:now});}if(this.clock-this.sentAt<.05)return;this.sentAt=this.clock;if(this.role==='host')this.send({t:'state',seq:++this.sequence,state:snapshot(g)});else{const i=g.deviceInput;this.send({t:'input',seq:++this.sequence,x:i.x,z:i.z,drive:i.drive,lob:i.lob,action:g.localAction,kind:g.localKind,power:g.localPower,aim:g.localAim,moveAction:g.localMoveAction||0,moveTarget:g.localMoveTarget,charging:g.chargeStates?.[g.controlled]?.kind||null});}}
+tick(dt){if(!this.active)return;this.clock+=dt;const g=this.cb.game(),now=performance.now();if(now-this.receivedAt>12000){this.fail('Connection lost. Your match has stopped.');return;}if(this.clock-this.lastPing>2){this.lastPing=this.clock;this.send({t:'ping',at:now});}if(this.clock-this.sentAt<.05)return;this.sentAt=this.clock;if(this.role==='host')this.send({t:'state',seq:++this.sequence,state:snapshot(g)});else{const i=g.deviceInput;this.send({t:'input',seq:++this.sequence,x:i.x,z:i.z,drive:i.drive,lob:i.lob,action:g.localAction,kind:g.localKind,power:g.localPower,aim:g.localAim,movementMode:g.movementModes?.[g.controlled]||'auto',moveAction:g.localMoveAction||0,moveTarget:g.localMoveTarget,charging:g.chargeStates?.[g.controlled]?.kind||null});}}
 fail(message){if(this.closing)return;const active=this.active;this.leave();this.status(message);this.cb.ended(active,message);}
 leave(){this.closing=true;clearTimeout(this.timeout);this.active=false;this.conn?.close();this.peer?.destroy();this.conn=null;this.peer=null;this.role='offline';const g=this.cb.game();g.cancelAllShots?.();g.networkMode='offline';g.networkRole='offline';g.remoteInput={x:0,z:0,drive:false,lob:false};}
 }
@@ -1568,7 +1580,7 @@ installMotion(game,models);
 function showMessage(title,detail,seconds){$('message-title').textContent=title;$('message-detail').textContent=detail;messageUntil=game.time+seconds;$('message').style.display='block';}
 function updateScore(){for(let i=0;i<2;i++){const id=i===0?'you':'ai';$('games-'+id).textContent=game.games[i];$('points-'+id).textContent=game.scoreText(i);$('serve-'+id).textContent=game.server===i?'● '+(game.pointNumber%2?'L':'R')+' / '+(game.serverPlayer<2?'1':'2'):'';}$('difficulty-label').textContent=difficulty.toUpperCase();$('your-team-name').textContent=game.format==='singles'?'YOU':game.coop?'PLAYERS 1 + 2':'YOUR TEAM';$('opponent-team-name').textContent=game.format==='singles'?'CLUB PRO':'CLUB PROS';}
 function resetTrail(){for(let i=0;i<trailCount;i++){trailArray[i*3]=game.ball.x;trailArray[i*3+1]=game.ball.y;trailArray[i*3+2]=game.ball.z;}trailGeometry.attributes.position.needsUpdate=true;}
-function startMatch(){resetMotionVisuals();keyboardActive=true;game.configure({format:setup.format==='singles'?'singles':'doubles',coop:setup.format==='coop',autoSwitch:setup.autoSwitch&&setup.format!=='coop',racket:setup.racket});cameraMode=experience.camera;previewing=false;updateRackets();audioStart();$('menu').style.display='none';$('result').style.display='none';$('pause').style.display='none';$('scoreboard').style.display='block';$('bottom').style.display='flex';$('status-pill').style.display='block';keys={};game.input.x=game.input.z=0;mouseActive=false;game.start(difficulty);clearLocalInputs();selectCamera(cameraMode);renderer.domElement.focus();accumulator=0;}
+function startMatch(){resetMotionVisuals();keyboardActive=true;game.configure({format:setup.format==='singles'?'singles':'doubles',coop:setup.format==='coop',autoSwitch:setup.autoSwitch&&setup.format!=='coop',racket:setup.racket});cameraMode=experience.camera;previewing=false;updateRackets();audioStart();$('menu').style.display='none';$('result').style.display='none';$('pause').style.display='none';$('scoreboard').style.display='block';$('bottom').style.display='flex';$('status-pill').style.display='block';keys={};game.input.x=game.input.z=0;mouseActive=false;game.start(difficulty);for(const id of game.activePlayers)if(game.isHuman(id))game.setMovementMode(id,movementMode);clearLocalInputs();selectCamera(cameraMode);renderer.domElement.focus();accumulator=0;}
 function menu(){if(online?.active)online.leave();resetTouch();$('rematch').disabled=false;resetMotionVisuals();clearLocalInputs();game.mode='menu';game.paused=false;game.charging=false;keys={};$('pause').style.display='none';$('result').style.display='none';$('menu').style.display='flex';for(const id of ['scoreboard','bottom','status-pill','message','power'])$(id).style.display='none';}
 function pause(){if(online?.active){online.requestPause();return;}if(game.mode==='menu'||game.mode==='match')return;game.paused=!game.paused;clearLocalInputs();game.charging=false;game.charge=0;game.hitBuffer=0;keys={};game.input.x=game.input.z=0;$('pause').style.display=game.paused?'flex':'none';accumulator=0;}
 $('start').onclick=startMatch;$('resume').onclick=pause;$('pause-button').onclick=pause;$('quit').onclick=menu;$('rematch').onclick=startMatch;$('result-menu').onclick=menu;
@@ -1755,13 +1767,13 @@ function frame(now){
 }
 camera.lookAt(look);resetTrail();$('start').disabled=false;$('start-text').textContent='Step onto the court';requestAnimationFrame(frame);
 // Shared desktop / Android presentation. Camera preferences remain local online.
-const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead'];
+const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead','Player eyes'];
 let experience={camera:0,largeControls:false,calm:false,best:0};
-try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');if(Number.isInteger(v.camera)&&v.camera>=0&&v.camera<4)experience.camera=v.camera;experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
+try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');if(Number.isInteger(v.camera)&&v.camera>=0&&v.camera<5)experience.camera=v.camera;experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
 function saveExperience(){try{localStorage.setItem('padel-experience',JSON.stringify(experience));}catch{}}
 function selectCamera(index){cameraMode=index;experience.camera=index;saveExperience();document.querySelectorAll('[data-camera]').forEach(b=>{b.classList.toggle('active',Number(b.dataset.camera)===index);b.setAttribute('aria-pressed',String(Number(b.dataset.camera)===index));});$('camera-cycle').textContent='CAM · '+CAMERA_NAMES[index];$('camera-label').textContent=CAMERA_NAMES[index].toUpperCase();}
 for(const button of document.querySelectorAll('[data-camera]'))button.onclick=()=>selectCamera(Number(button.dataset.camera));
-$('camera-cycle').onclick=()=>selectCamera((cameraMode+1)%4);
+$('camera-cycle').onclick=()=>selectCamera((cameraMode+1)%CAMERA_NAMES.length);
 $('quick-play').onclick=()=>{if(!$('start').disabled)startMatch();};
 experience.calm=experience.calm||window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 $('large-controls').checked=experience.largeControls;$('calm-camera').checked=experience.calm;
@@ -1782,6 +1794,9 @@ function updateExperience(){
   $('rally-card').classList.toggle('achieved',hits>=8);
   if(hits>=8&&Math.floor(hits/8)>rallyMilestone){rallyMilestone=Math.floor(hits/8);$('status-pill').textContent=hits+' SHOT RALLY · KEEP IT GOING!';}
 }
+// Stable eye height and opponent-facing view keep swipe/stick directions predictable.
+function setEyePose(position,target,p,b,side){position.set(p.x,1.68,p.z-side*.06);target.set(p.x+THREE.MathUtils.clamp((b.x-p.x)*.55,-3.5,3.5),THREE.MathUtils.clamp(b.y*.55,.55,3.2),p.z-side*Math.max(3,Math.abs(p.z-b.z)));}
+function renderEyeView(view,id){const hidden=[],arm=models[id].limbs.right.arm;models[id].root.traverse(node=>{if(!node.isMesh)return;let parent=node;while(parent&&parent!==arm)parent=parent.parent;if(!parent){hidden.push([node,node.visible]);node.visible=false;}});try{renderer.render(scene,view);}finally{for(const [node,visible]of hidden)node.visible=visible;}}
 // All gameplay views face the other half, preserving the arrow/stick axes.
 function updatePlayCamera(p,b,dt){
   if(isLocalCoop()){updateCoopCamera();return;}
@@ -1789,8 +1804,9 @@ function updatePlayCamera(p,b,dt){
   if(cameraMode===0){desired.set(p.x*.16,10.5+high*.06,side*17.5+p.z*.03);targetLook.set(p.x*.10,.45,side*2.8);}
   else if(cameraMode===1){desired.set(p.x*.65,5.8+high*.16,p.z+side*7);targetLook.set(p.x*.4+b.x*.08,.7+high*.18,p.z-side*7);}
   else if(cameraMode===2){desired.set(side*.01,15,side*22);targetLook.set(0,.3,0);}
-  else{desired.set(p.x*.15,23,side*.4);targetLook.set(p.x*.15,0,-side*.4);}
-  const base=[44,55,49,53][cameraMode],fov=camera.aspect<1.6?base+8:base;
+  else if(cameraMode===3){desired.set(p.x*.15,23,side*.4);targetLook.set(p.x*.15,0,-side*.4);}
+  else{setEyePose(desired,targetLook,p,b,side);}
+  const base=[44,55,49,53,78][cameraMode],fov=camera.aspect<1.6?base+8:base;
   if(Math.abs(camera.fov-fov)>.01){camera.fov+=(fov-camera.fov)*(1-Math.exp(-dt*7));camera.updateProjectionMatrix();}
 }
 function fitViewport(){const width=Math.max(1,Math.round(window.visualViewport?.width||innerWidth)),height=Math.max(1,Math.round(window.visualViewport?.height||innerHeight));document.documentElement.style.setProperty('--screen-h',height+'px');camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);renderer.setPixelRatio(Math.min(devicePixelRatio,1.35));}
@@ -1908,7 +1924,7 @@ document.querySelectorAll('[data-coop-view]').forEach(b=>b.onclick=()=>selectCoo
 const secondPlayerRing=playerRing.clone();secondPlayerRing.material=playerRing.material.clone();secondPlayerRing.material.color.set('#83d9ff');scene.add(secondPlayerRing);
 let previousCoopLayout='';
 function renderCourt(){
-  const local=isLocalCoop(),live=game.mode!=='menu',split=local&&live&&experience.coopView==='split';
+  const local=isLocalCoop(),live=game.mode!=='menu',split=local&&live&&(experience.coopView==='split'||cameraMode===4);
   $('coop-view-toggle').hidden=!local;$('camera-cycle').hidden=local;$('split-labels').hidden=!split;document.body.classList.toggle('split-screen',split);
   const a=game.players[0],b=game.players[2];secondPlayerRing.visible=local&&live;secondPlayerRing.position.set(b.x,.025,b.z);
   if(local&&live){playerRing.position.set(a.x,.025,a.z);$('camera-cycle').textContent=split?'CAM · Individual':'CAM · Team centered';}
@@ -1916,13 +1932,13 @@ function renderCourt(){
   if(layout==='shared'){camera.position.copy(desired);look.copy(targetLook);camera.lookAt(look);}
   if(previousCoopLayout!==layout&&layout==='single')selectCamera(cameraMode);previousCoopLayout=layout;
   const size=renderer.getSize(new THREE.Vector2()),width=size.x,height=size.y;
-  if(!split){renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);renderer.render(scene,camera);return;}
+  if(!split){renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);if(live&&cameraMode===4){camera.position.copy(desired);look.lerp(targetLook,.25);camera.lookAt(look);renderEyeView(camera,game.controlled);}else renderer.render(scene,camera);return;}
   renderer.setScissorTest(true);const leftWidth=Math.floor(width/2);
   for(let slot=0;slot<2;slot++){
     const id=slot===0?0:2,p=game.players[id],ball=game.ball,view=coopCameras[slot],w=slot===0?leftWidth:width-leftWidth;
     const target=new THREE.Vector3(p.x*.85,.95,p.z-3),points=[{x:p.x,y:0,z:p.z},{x:p.x,y:2.05,z:p.z},{x:ball.x,y:Math.min(6,ball.y),z:ball.z}];
-    fitCoopView(view,target,new THREE.Vector3(0,6.5,10),points,w/height,62);
-    renderer.setViewport(slot*leftWidth,0,w,height);renderer.setScissor(slot*leftWidth,0,w,height);renderer.render(scene,view);
+    if(cameraMode===4){const eyeTarget=new THREE.Vector3();setEyePose(view.position,eyeTarget,p,ball,1);view.aspect=w/height;view.fov=86;view.updateProjectionMatrix();view.lookAt(eyeTarget);}else fitCoopView(view,target,new THREE.Vector3(0,6.5,10),points,w/height,62);
+    renderer.setViewport(slot*leftWidth,0,w,height);renderer.setScissor(slot*leftWidth,0,w,height);if(cameraMode===4)renderEyeView(view,id);else renderer.render(scene,view);
   }
   renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);
 }
@@ -1966,7 +1982,7 @@ function setSwipeMode(){swipeEnabled=$('gesture-mode').checked;document.body.cla
 $('gesture-mode').checked=swipeEnabled;$('gesture-mode').onchange=setSwipeMode;setSwipeMode();
 function selectGestureShot(kind){lobGesture=kind==='lob';$('gesture-lob').setAttribute('aria-pressed',String(lobGesture));$('gesture-drive').setAttribute('aria-pressed',String(!lobGesture));}
 $('gesture-lob').onclick=()=>selectGestureShot(lobGesture?'drive':'lob');$('gesture-drive').onclick=()=>selectGestureShot('drive');
-function gestureView(x,y){const r=renderer.domElement.getBoundingClientRect();if(isLocalCoop()&&experience.coopView==='split'){const left=x<r.left+r.width/2;return {id:left?0:2,camera:coopCameras[left?0:1],left:r.left+(left?0:r.width/2),top:r.top,width:r.width/2,height:r.height};}return {id:game.controlled,camera,left:r.left,top:r.top,width:r.width,height:r.height};}
+function gestureView(x,y){const r=renderer.domElement.getBoundingClientRect();if(isLocalCoop()&&(experience.coopView==='split'||cameraMode===4)){const left=x<r.left+r.width/2;return {id:left?0:2,camera:coopCameras[left?0:1],left:r.left+(left?0:r.width/2),top:r.top,width:r.width/2,height:r.height};}return {id:game.controlled,camera,left:r.left,top:r.top,width:r.width,height:r.height};}
 function gesturePoint(x,y,view){gestureNdc.set((x-view.left)/view.width*2-1,-(y-view.top)/view.height*2+1);gestureRay.setFromCamera(gestureNdc,view.camera);const point=new THREE.Vector3();return gestureRay.ray.intersectPlane(gesturePlane,point)?{x:point.x,z:point.z}:null;}
 function liveGesture(){return swipeEnabled&&!game.paused&&['ready','rally'].includes(game.mode)&&document.getElementById('online-panel')?.hidden!==false;}
 function swipeSample(e){const end={x:e.clientX,y:e.clientY,time:e.timeStamp},sample=window.PadelGesture.sample(swipe.start,end,swipe.view),side=game.team(swipe.view.id)===0?-1:1;
@@ -1996,7 +2012,7 @@ function updateGestureUI(dt){
   if(swipe&&!liveGesture())cancelSwipe();const shot=swipe?.last||((swipeFeedback?.until>performance.now())?swipeFeedback:null),id=swipe?.view.id??swipeFeedback?.id??game.controlled;
   const mover=game.players[game.controlled],control=game.controls[game.controlled];if(control.moveTarget&&Math.hypot(mover.x-control.moveTarget.x,mover.z-control.moveTarget.z)<window.PADEL_TUNING.movement.arrival)control.moveTarget=null;const target=control.moveTarget;moveMarker.visible=!!target&&!control.autoRunTarget;if(target)moveMarker.position.set(target.x,.027,target.z);
   if(game.mode==='ready'){$('status-pill').textContent='SWIPE UP TO SERVE';$('message-detail').textContent=$('message-detail').textContent.replace('hold Z, release to serve','swipe up to serve');}
-  $('gesture-help').hidden=game.mode!=='ready';$('gesture-help').textContent=game.mode==='ready'?'Swipe to serve · running is automatic':'Auto-run · choose DRIVE or LOB, then swipe';
+  $('gesture-help').hidden=game.mode!=='ready';$('gesture-help').textContent=game.mode==='ready'?(game.movementModes?.[game.controlled]==='joystick'?'Joystick to move · swipe to serve':'Swipe to serve · running is automatic'):'Auto-run · choose DRIVE or LOB, then swipe';
   $('gesture-power').hidden=!shot||(!shot.valid&&!shot.invalid);landingArea.visible=!!shot&&shot.valid&&!shot.invalid;swipeArrow.visible=landingArea.visible;
   if(shot){$('gesture-power-text').textContent=shot.invalid?'Swipe up to hit':(shot.power>window.PADEL_TUNING.power.over?'WALL RISK':shot.kind==='lob'?'LOB':shot.power<.48?'GENTLE':shot.power>.82?'FIRM':'DRIVE');$('gesture-power-bar').value=shot.power||0;
     gesturePreviewClock+=dt;if(shot.valid&&!shot.invalid){
@@ -2021,6 +2037,12 @@ $('joystick').addEventListener('pointermove',e=>{if(touch.pointer===e.pointerId)
 for(const event of ['pointerup','pointercancel','lostpointercapture'])$('joystick').addEventListener(event,e=>{if(touch.pointer===e.pointerId){touch.pointer=null;touch.x=touch.z=0;touch.active=false;$('joystick-thumb').style.transform='';}});
 for(const [id,kind]of [['touch-hit','drive'],['touch-lob','lob']]){const button=$(id);button.addEventListener('pointerdown',e=>{e.preventDefault();if(button.dataset.pointer!==undefined)return;button.dataset.pointer=String(e.pointerId);button.setPointerCapture(e.pointerId);touch[kind]=true;button.classList.add('held');audioStart();game.beginShot(game.controlled,kind);});for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,e=>{if(button.dataset.pointer===String(e.pointerId)){delete button.dataset.pointer;if(event==='pointerup')game.releaseShot(game.controlled,kind);else game.cancelShot(game.controlled);touch[kind]=false;button.classList.remove('held');}});}
 window.addEventListener('blur',resetTouch);
+let movementMode='auto';try{movementMode=localStorage.getItem('padel-movement-mode')==='joystick'?'joystick':'auto';}catch{}
+function applyMovementMode(mode){movementMode=mode==='joystick'?'joystick':'auto';resetTouch();game.setMovementMode(game.controlled,movementMode);document.body.classList.toggle('joystick-mode',movementMode==='joystick');document.querySelectorAll('[data-movement]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.movement===movementMode)));if(!swipeEnabled){$('gesture-mode').checked=true;setSwipeMode();}updateControlInstructions();try{localStorage.setItem('padel-movement-mode',movementMode);}catch{}}
+function updateControlInstructions(){const manual=movementMode==='joystick',tip=document.querySelector('.club-tip p'),heading=document.querySelector('.club-tip b');if(tip)tip.textContent=manual?'Move with the joystick. Swipe elsewhere to aim and set power. Choose LOB for a high return.':'We run to the ball. Swipe to aim and set power. Choose LOB for the next return.';if(heading)heading.textContent=manual?'YOUR MOVEMENT. YOUR SHOT.':'AUTO RUN. YOUR SHOT.';}
+for(const b of document.querySelectorAll('[data-movement]'))b.onclick=()=>applyMovementMode(b.dataset.movement);
+applyMovementMode(movementMode);
+
 function readMobileInputs(){const x=touch.active?touch.x:(keys.ArrowRight?1:0)-(keys.ArrowLeft?1:0),z=touch.active?touch.z:(keys.ArrowDown?1:0)-(keys.ArrowUp?1:0),drive=touch.drive||!!keys.KeyZ,lob=touch.lob||!!keys.KeyX,flip=game.networkRole==='guest'&&game.remoteId===1?-1:1;game.deviceInput={x:x*flip,z:z*flip,drive,lob};if(game.networkRole==='guest'){game.input.x=x*flip;game.input.z=z*flip;}
 if(game.networkRole!=='guest'){window.readSimpleInputs(game,keys);if(touch.active){game.input.x=x;game.input.z=z;game.input.sprint=Math.hypot(game.ball.x-game.players[game.controlled].x,game.ball.z-game.players[game.controlled].z)>2.2;}}
 }
@@ -2028,7 +2050,7 @@ let receivedContact='',receivedMode='',receivedPoint=-1;
 online=new window.PadelLink({
 game:()=>game,settings:()=>({court:setup.court,racket:setup.racket,colors:setup.colors,difficulty}),
 status:text=>{$('online-status').textContent=text;},
-boot:(role,mode,remoteId,settings)=>{if(COURTS[settings?.court])setup.court=settings.court;if(window.PADEL_RACKETS[settings?.racket])setup.racket=settings.racket;if(['easy','normal','hard'].includes(settings?.difficulty))difficulty=settings.difficulty;if(settings?.colors)for(const [key,value]of Object.entries(settings.colors))if(COURTS[key]&&SURFACES.some(c=>c.hex===value))setup.colors[key]=value;setup.format=mode==='coop'?'doubles':'singles';setup.autoSwitch=false;applyCourt();startMatch();game.networkMode=mode;game.networkRole=role;game.remoteId=remoteId;game.controlled=role==='guest'?remoteId:0;game.localAction=0;game.localMoveAction=0;game.localMoveTarget=null;game.localKind='drive';$('rematch').disabled=role==='guest';receivedContact='';receivedMode='';receivedPoint=-1;resetTouch();$('online-panel').hidden=true;updateScore();},
+boot:(role,mode,remoteId,settings)=>{if(COURTS[settings?.court])setup.court=settings.court;if(window.PADEL_RACKETS[settings?.racket])setup.racket=settings.racket;if(['easy','normal','hard'].includes(settings?.difficulty))difficulty=settings.difficulty;if(settings?.colors)for(const [key,value]of Object.entries(settings.colors))if(COURTS[key]&&SURFACES.some(c=>c.hex===value))setup.colors[key]=value;setup.format=mode==='coop'?'doubles':'singles';setup.autoSwitch=false;applyCourt();startMatch();game.networkMode=mode;game.networkRole=role;game.remoteId=remoteId;game.controlled=role==='guest'?remoteId:0;game.localAction=0;game.localMoveAction=0;game.localMoveTarget=null;game.localKind='drive';$('rematch').disabled=role==='guest';receivedContact='';receivedMode='';receivedPoint=-1;game.movementModes.fill('auto');game.setMovementMode(game.controlled,movementMode);resetTouch();$('online-panel').hidden=true;updateScore();},
 state:s=>{updateScore();$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';$('pause').style.display=s.paused?'flex':'none';if(s.paused)resetTouch();if(s.contact){const token=s.contact.time+':'+s.contact.id;if(token!==receivedContact){receivedContact=token;avatarContact(s.contact.id,s.contact.stroke);recordMotionContact(s.contact.id);sound('racket',s.lastShotSpeed||12);$('status-pill').textContent=strokeName(s.contact.stroke)+' / '+s.rallyHits+' SHOTS';}}if(s.mode!==receivedMode||s.pointNumber!==receivedPoint){receivedMode=s.mode;receivedPoint=s.pointNumber;if(s.mode==='ready')showMessage(game.serverPlayer===game.controlled?'Your serve':'Friend is serving',game.serverPlayer===game.controlled?'Hold HIT, then release to serve':'Get ready for the return',2);if(s.mode==='between')showMessage('Point finished','Next point in a moment',2);if(s.mode==='match'){const won=(s.games[0]>s.games[1]?0:1)===game.team(game.controlled);$('result-title').textContent=won?'Court is yours.':'Well played.';$('result-description').textContent='Final score: '+s.games[0]+' - '+s.games[1]+'. Return to the clubhouse to play again.';$('result').style.display='flex';}}},
 paused:value=>{resetTouch();$('pause').style.display=value?'flex':'none';},
 ended:(active,message)=>{resetTouch();if(active){game.mode='menu';game.paused=false;$('menu').style.display='flex';for(const id of ['pause','result','scoreboard','bottom','status-pill','message'])$(id).style.display='none';}$('online-panel').hidden=false;$('room-code-box').hidden=true;$('online-status').textContent=message;}
@@ -2041,7 +2063,7 @@ $('copy-room').onclick=async()=>{try{await navigator.clipboard.writeText($('room
 $('online-close').onclick=()=>{online.leave();$('online-panel').hidden=true;menu();};
 window.padelSuspend=()=>{resetTouch();if(game.mode!=='menu'&&game.mode!=='match'&&!game.paused)pause();};
 window.padelBack=()=>{if(!$('online-panel').hidden){$('online-close').click();return true;}if(game.mode==='menu')return false;if(game.mode==='match'){menu();return true;}pause();return true;};
-function updateMobileUI(){const playing=game.mode!=='menu'&&game.mode!=='match'&&!game.paused;$('mobile-controls').hidden=!(isPhone&&playing);$('online-open').hidden=game.mode!=='menu'||!$('online-panel').hidden;$('net-badge').hidden=!online.active;if(online.active)$('net-badge').textContent='ONLINE '+(online.mode==='coop'?'CO-OP':'1 VS 1')+' / '+online.latency+' ms';$('touch-hit').firstChild.textContent=game.mode==='ready'&&game.serverPlayer===game.controlled?'SERVE':'HIT';if(online.active){$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';}if(isPhone&&!$('input-guide').dataset.mobileReady){$('input-guide').dataset.mobileReady='true';$('input-guide').innerHTML='<b>MADE FOR TOUCH</b><p>Left joystick to move. Hold HIT or LOB, aim with the joystick, then release. Watch the power meter.</p>';}}
+function updateMobileUI(){const playing=game.mode!=='menu'&&game.mode!=='match'&&!game.paused;$('mobile-controls').hidden=!((isPhone||movementMode==='joystick')&&playing);$('online-open').hidden=game.mode!=='menu'||!$('online-panel').hidden;$('net-badge').hidden=!online.active;if(online.active)$('net-badge').textContent='ONLINE '+(online.mode==='coop'?'CO-OP':'1 VS 1')+' / '+online.latency+' ms';$('touch-hit').firstChild.textContent=game.mode==='ready'&&game.serverPlayer===game.controlled?'SERVE':'HIT';if(online.active){$('your-team-name').textContent=online.mode==='coop'?'YOU + FRIEND':online.role==='guest'?'FRIEND':'YOU';$('opponent-team-name').textContent=online.mode==='coop'?'CLUB PROS':online.role==='guest'?'YOU':'FRIEND';}if(isPhone&&!$('input-guide').dataset.mobileReady){$('input-guide').dataset.mobileReady='true';$('input-guide').innerHTML='<b>MADE FOR TOUCH</b><p>Left joystick to move. Hold HIT or LOB, aim with the joystick, then release. Watch the power meter.</p>';}}
 
 // One mobile home panel; setup remains available without crowding the play screen.
 if(isPhone){
@@ -2055,28 +2077,31 @@ if(isPhone){
   $('pause-button').textContent='Ⅱ';$('pause-button').setAttribute('aria-label','Pause game');
 }
 
+updateControlInstructions();
+
 // Fullscreen must begin inside a user gesture; orientation lock is best effort.
 let screenBusy=false,browserPlay=false;
 try{browserPlay=localStorage.getItem('padel-browser-play')==='1';}catch{}
 function setBrowserPlay(value){browserPlay=value;try{localStorage.setItem('padel-browser-play',value?'1':'0');}catch{}refreshGameScreen();}
 function playWithoutFullscreen(){setBrowserPlay(true);if(!matchMedia('(orientation:portrait)').matches&&game.mode==='menu')$('quick-play').click();}
 $('iphone-play').onclick=playWithoutFullscreen;$('rotate-browser').onclick=playWithoutFullscreen;
-async function enterGameScreen(){
-  if(!isPhone||screenBusy||browserPlay)return;screenBusy=true;
+async function enterGameScreen(force=false){
+  if((!isPhone&&force!==true)||screenBusy||browserPlay)return;screenBusy=true;
   try{
     if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();
-    if(screen.orientation?.lock)await screen.orientation.lock('landscape');
+    if(isPhone&&screen.orientation?.lock)await screen.orientation.lock('landscape');
   }catch{/* Portrait guard remains available on browsers without locking. */}
   finally{screenBusy=false;refreshGameScreen();}
 }
 function refreshGameScreen(){
   const portrait=isPhone&&matchMedia('(orientation:portrait)').matches;
+  $('menu-fullscreen').textContent=document.fullscreenElement?'FULL SCREEN ✓':'FULL SCREEN ↗';
   $('browser-fullscreen').hidden=!isPhone||!browserPlay;$('iphone-play').hidden=!isPhone;$('iphone-play').textContent=browserPlay?'iPhone mode ✓ · Play in browser':'Using iPhone? Play without full screen';$('rotate-fullscreen').hidden=browserPlay;$('rotate-browser').textContent=browserPlay?'iPhone mode ready · rotate to play':'Using iPhone? Play in browser';
   $('fullscreen-play').hidden=browserPlay||!isPhone||!!document.fullscreenElement||matchMedia('(display-mode:fullscreen)').matches||matchMedia('(display-mode:standalone)').matches;
   if(portrait){resetTouch();if(game.mode!=='menu'&&game.mode!=='match'&&!game.paused)pause();}
 }
-function requestGameFullscreen(){setBrowserPlay(false);return enterGameScreen();}
-$('browser-fullscreen').onclick=requestGameFullscreen;$('fullscreen-play').onclick=requestGameFullscreen;$('rotate-fullscreen').onclick=requestGameFullscreen;
+function requestGameFullscreen(){setBrowserPlay(false);return enterGameScreen(true);}
+$('menu-fullscreen').onclick=requestGameFullscreen;$('browser-fullscreen').onclick=requestGameFullscreen;$('fullscreen-play').onclick=requestGameFullscreen;$('rotate-fullscreen').onclick=requestGameFullscreen;
 for(const id of ['start','quick-play','create-room','join-room','resume','rematch'])$(id).addEventListener('click',enterGameScreen);
 document.addEventListener('fullscreenchange',refreshGameScreen);
 window.addEventListener('resize',refreshGameScreen);

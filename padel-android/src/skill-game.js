@@ -1,7 +1,7 @@
 (() => {
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   class SkillGame extends window.SimpleGame {
-    constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];this.autoRun=true;this.runPlans=[];}
+    constructor(event){super(event);this.tactics=new window.RallyTactics(this);this.chargeStates=Array(4).fill(null);this.characterKeys=['rio','alex','rio','alex'];this.rewardEvents=[];this.rewardSequence=0;this.pendingAward=null;this.pointCredits=[0,0,0,0];this.lastRelease=[];this.autoRun=true;this.runPlans=[];this.movementModes=Array(4).fill('auto');}
     start(level){super.start(level);this.tactics?.reset();this.cancelAllShots();this.pendingAward=null;this.pointCredits=[0,0,0,0];this.rewardEvents=[];this.rewardSequence=0;this.progress?.begin();}
     prepare(){super.prepare();this.cancelAllShots();for(const c of this.controls){c.contactWindow=null;c.moveTarget=null;c.autoRunTarget=false;c.autoRunAfter=0;}this.pendingAward=null;this.pointCredits=[0,0,0,0];}
     stat(){return 0;} // Player skill is learned; saved attributes no longer affect play.
@@ -19,11 +19,16 @@
       this.controls[id].autoRunTarget=false;this.controls[id].moveTarget={x:point.x,z:point.z};this.controls[id].autoPosition=false;
       if(this.networkRole==='guest'){this.localMoveAction=(this.localMoveAction||0)+1;this.localMoveTarget={...point};}return true;
     }
+    setMovementMode(id,mode){
+      if(!Number.isInteger(id)||id<0||id>3||!['auto','joystick'].includes(mode))return false;
+      this.movementModes??=Array(4).fill('auto');if(this.movementModes[id]===mode)return true;
+      this.movementModes[id]=mode;const c=this.controls[id];c.moveTarget=null;c.autoRunTarget=false;c.autoRunAfter=0;c.input.x=c.input.z=0;return true;
+    }
     updateAutoRun(){
       if(!this.autoRun||this.paused||this.networkRole==='guest'||this.mode!=='rally')return;
       const tuning=window.PADEL_TUNING.autoRun;
       for(let team=0;team<2;team++){
-        const humans=this.members(team).filter(id=>this.isHuman(id));if(!humans.length)continue;
+        const humans=this.members(team).filter(id=>this.isHuman(id)&&this.movementModes?.[id]!=='joystick');if(!humans.length)continue;
         const incoming=this.lastHitter!==team,side=team===0?1:-1;let plan=this.runPlans?.[team];
         if(!plan||plan.hit!==this.lastHitTime||plan.point!==this.pointNumber||plan.next<=this.time){
           plan={hit:this.lastHitTime,point:this.pointNumber,next:this.time+tuning.decision,pick:incoming?this.predictTeam(team):null};this.runPlans??=[];this.runPlans[team]=plan;

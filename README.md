@@ -48,7 +48,7 @@ Automatic character progression is disabled. Existing saved attributes are ignor
 | skill-game.js | Released intent, contact sampling, shot quality, flight and wall-aware prediction |
 | tactics.js | AI candidates, coverage, styles, memory and rally safeguard |
 | reach-game.js | Short animated approach and physical contact validation |
-| mobile-engine.js / online.js | Far-court controls and version 3 network gesture packets |
+| mobile-engine.js / online.js | Far-court controls and version 4 network gesture packets |
 | clubhouse.js | Preparation and contextual character animation |
 
 Both phones must reload after this protocol update. Physics runs at 120 Hz with additional fast-ball contact samples. Reduced-motion preferences enable calm camera and hide the fast trail. Pause, resize and pointer cancellation discard unfinished gestures. iPhone mode plays in the browser without requiring fullscreen; rotate manually.
@@ -58,3 +58,11 @@ Validation: npm run build and npm test cover gesture normalization, independent 
 Reference for this control revision: the user-provided 10.77-second Tennis Clash recording was sampled across the full clip and more densely at 5–6 and 9–10 seconds. Visible design cues were an elevated court view, brief cyan directional feedback and a player-position ring. The clip does not establish the original game's internal power algorithm; the revised curve is our own padel tuning. No graphics or code were copied from the reference.
 
 Automatic-run validation covers normal returns without movement input on both court sides, unreachable balls, manual overrides, pause/guest authority, doubles ownership, eight gesture-only returns, lob arc height and duration, and controlled versus overhit corner drives. Legacy /public/ links redirect to the published game root.
+
+## Pre-game controls and eye view
+
+Choose **Auto run** or **Joystick** in the Play menu before starting. Both use swipes for shot direction and power, with DRIVE / LOB selection. Joystick mode disables automatic pursuit for that player; the stick and a second finger's swipe work independently. The movement choice is saved locally and sent to the host in version 4 input packets so each phone can choose differently. Reload both phones before reconnecting. Desktop joystick mode also displays the stick and retains arrow keys.
+
+**FULL SCREEN** is available directly in the Play menu on desktop and mobile. It requests fullscreen without starting a match. Browser restrictions still apply; the iPhone browser-play option remains available.
+
+In **Settings → Player eyes**, the camera sits at player eye height, faces the opponent and follows the ball across the court. Only the player's obstructing meshes are hidden during that camera's render; the racket arm stays visible. Other players and other camera views retain complete characters. Local two-player eye view uses split screen. The camera cycle includes this fifth view.
