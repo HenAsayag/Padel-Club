@@ -22,8 +22,9 @@ function selectCoopView(value){experience.coopView=value==='split'?'split':'shar
 document.querySelectorAll('[data-coop-view]').forEach(b=>b.onclick=()=>selectCoopView(b.dataset.coopView));$('coop-view-toggle').onclick=()=>selectCoopView(experience.coopView==='split'?'shared':'split');selectCoopView(experience.coopView);
 const secondPlayerRing=playerRing.clone();secondPlayerRing.material=playerRing.material.clone();secondPlayerRing.material.color.set('#83d9ff');scene.add(secondPlayerRing);
 let previousCoopLayout='';
-function renderCourt(){
+function renderCourt(dt){
   const local=isLocalCoop(),live=game.mode!=='menu',split=local&&live&&(experience.coopView==='split'||cameraMode===4);
+  if(!live||cameraMode!==4){eyeGazeStates.delete(camera);for(const view of coopCameras)eyeGazeStates.delete(view);}
   $('coop-view-toggle').hidden=!local;$('camera-cycle').hidden=local;$('split-labels').hidden=!split;document.body.classList.toggle('split-screen',split);
   const a=game.players[0],b=game.players[2];secondPlayerRing.visible=local&&live;secondPlayerRing.position.set(b.x,.025,b.z);
   if(local&&live){playerRing.position.set(a.x,.025,a.z);$('camera-cycle').textContent=split?'CAM · Individual':'CAM · Team centered';}
@@ -31,12 +32,12 @@ function renderCourt(){
   if(layout==='shared'){camera.position.copy(desired);look.copy(targetLook);camera.lookAt(look);}
   if(previousCoopLayout!==layout&&layout==='single')selectCamera(cameraMode);previousCoopLayout=layout;
   const size=renderer.getSize(new THREE.Vector2()),width=size.x,height=size.y;
-  if(!split){renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);if(live&&cameraMode===4){camera.position.copy(desired);look.copy(targetLook);camera.lookAt(look);renderEyeView(camera,game.controlled);}else renderer.render(scene,camera);return;}
+  if(!split){renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);if(live&&cameraMode===4){updateEyeCamera(camera,game.players[game.controlled],game.ball,game.team(game.controlled)===0?1:-1,game.controlled,dt);renderEyeView(camera,game.controlled);}else renderer.render(scene,camera);return;}
   renderer.setScissorTest(true);const leftWidth=Math.floor(width/2);
   for(let slot=0;slot<2;slot++){
     const id=slot===0?0:2,p=game.players[id],ball=game.ball,view=coopCameras[slot],w=slot===0?leftWidth:width-leftWidth;
     const target=new THREE.Vector3(p.x*.85,.95,p.z-3),points=[{x:p.x,y:0,z:p.z},{x:p.x,y:2.05,z:p.z},{x:ball.x,y:Math.min(6,ball.y),z:ball.z}];
-    if(cameraMode===4){const eyeTarget=new THREE.Vector3();setEyePose(view.position,eyeTarget,p,ball,1);view.aspect=w/height;view.near=.01;view.fov=86;view.updateProjectionMatrix();view.lookAt(eyeTarget);}else fitCoopView(view,target,new THREE.Vector3(0,6.5,10),points,w/height,62);
+    if(cameraMode===4){view.aspect=w/height;view.near=.01;view.fov=86;view.updateProjectionMatrix();updateEyeCamera(view,p,ball,1,id,dt);}else fitCoopView(view,target,new THREE.Vector3(0,6.5,10),points,w/height,62);
     renderer.setViewport(slot*leftWidth,0,w,height);renderer.setScissor(slot*leftWidth,0,w,height);if(cameraMode===4)renderEyeView(view,id);else renderer.render(scene,view);
   }
   renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);

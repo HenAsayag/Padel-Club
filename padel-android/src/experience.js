@@ -1,7 +1,7 @@
 // Shared desktop / Android presentation. Camera preferences remain local online.
 const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead','Player eyes'];
-let experience={camera:0,largeControls:false,calm:false,best:0};
-try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');if(Number.isInteger(v.camera)&&v.camera>=0&&v.camera<5)experience.camera=v.camera;experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
+let experience={camera:4,largeControls:false,calm:false,best:0};
+try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
 function saveExperience(){try{localStorage.setItem('padel-experience',JSON.stringify(experience));}catch{}}
 function selectCamera(index){cameraMode=index;experience.camera=index;saveExperience();document.querySelectorAll('[data-camera]').forEach(b=>{b.classList.toggle('active',Number(b.dataset.camera)===index);b.setAttribute('aria-pressed',String(Number(b.dataset.camera)===index));});$('camera-cycle').textContent='CAM · '+CAMERA_NAMES[index];$('camera-label').textContent=CAMERA_NAMES[index].toUpperCase();}
 for(const button of document.querySelectorAll('[data-camera]'))button.onclick=()=>selectCamera(Number(button.dataset.camera));
@@ -26,8 +26,29 @@ function updateExperience(){
   $('rally-card').classList.toggle('achieved',hits>=8);
   if(hits>=8&&Math.floor(hits/8)>rallyMilestone){rallyMilestone=Math.floor(hits/8);$('status-pill').textContent=hits+' SHOT RALLY · KEEP IT GOING!';}
 }
-// Eye height follows the player; gaze follows the real ball, including behind and overhead.
-function setEyePose(position,target,p,b,side){position.set(p.x,1.68,p.z-side*.06);target.set(b.x,b.y,b.z);}
+// Each new session starts in eye view; pre-game and in-match camera choices still work.
+// During your serve, look over the court; otherwise follow live ball flight.
+function setEyePose(position,target,p,b,side,follow=true){
+  position.set(p.x,1.68,p.z-side*.06);
+  if(follow)target.set(b.x,b.y,b.z);else target.set(p.x*.35,1.15,p.z-side*9);
+}
+const eyeGazeStates=new WeakMap(),eyeGazeCamera=new THREE.PerspectiveCamera(),eyeGazeTarget=new THREE.Vector3();
+function updateEyeCamera(view,p,b,side,id,dt){
+  const follow=game.mode==='rally'||(['ready','drop'].includes(game.mode)&&game.serverPlayer!==id);
+  setEyePose(view.position,eyeGazeTarget,p,b,side,follow);
+  eyeGazeCamera.position.copy(view.position);eyeGazeCamera.lookAt(eyeGazeTarget);
+  let state=eyeGazeStates.get(view);
+  if(!state||state.id!==id){
+    const forward=new THREE.Vector3(p.x,1.15,p.z-side*9);
+    view.lookAt(forward);state={id,rotation:view.quaternion.clone()};eyeGazeStates.set(view,state);
+  }
+  // Quaternion interpolation takes the shortest turn, with no frame-rate-dependent snap.
+  const step=Math.min(Math.max(dt,0),.05),angle=state.rotation.angleTo(eyeGazeCamera.quaternion);
+  const turn=Math.min(angle*(1-Math.exp(-step*8)),step*(experience.calm?2.4:3.4));
+  if(!game.paused)state.rotation.rotateTowards(eyeGazeCamera.quaternion,turn);
+  view.quaternion.copy(state.rotation);view.updateMatrixWorld(true);
+}
+
 // Pose the existing articulated arm for this view only; never detach the racket.
 function poseEyeRacket(view,model,id){
   const age=model.clock-model.contactAt;

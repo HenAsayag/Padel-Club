@@ -4,7 +4,7 @@ test('Joystick mode disables automatic chase while auto mode still runs',()=>{co
 test('Two phone movement modes remain independent',()=>{const g=game();g.networkMode='duel';g.networkRole='host';g.remoteId=1;g.setMovementMode(0,'auto');g.setMovementMode(1,'joystick');g.updateAutoRun();assert.ok(g.controls[0].autoRunTarget);assert.equal(g.controls[1].moveTarget,null);g.start();assert.equal(g.movementModes[1],'joystick');});
 test('Eye camera centers low, overhead, sideways and behind-player balls at both ends',async()=>{
  const THREE=await import('../public/three.module.js'),source=fs.readFileSync('padel-android/src/experience.js','utf8');
- const part=source.slice(source.indexOf('function setEyePose'),source.indexOf('function poseEyeRacket'));
+ const part=source.slice(source.indexOf('function setEyePose'),source.indexOf('const eyeGazeStates'));
  const pose=new Function(part+'return setEyePose;')();
  for(const side of [1,-1])for(const aspect of [2.16,1.08]){
   const p={x:2,z:side*6},view=new THREE.PerspectiveCamera(78,aspect,.01,180),target=new THREE.Vector3();
@@ -38,4 +38,31 @@ test('Eye racket has a visible ready pose, animates misses and preserves ball co
  m.airSwingAt=9.77;m.airSwingKind='lob';pose(view,m,0);assert.equal(call.stroke,'lob');assert.ok(call.point.y>0);assert.ok(call.point.x<0);
  call=null;m.contactPoint={x:0,y:1,z:0};m.contactAt=9.95;pose(view,m,0);assert.equal(call,null,'actual impact rig must not be overridden');
  m.contactAt=9.7;pose(view,m,0);assert.ok(call.weight>0&&call.weight<1);
+});
+
+test('Eye gaze offers a court view for own serve and smoothly follows flight for each player',async()=>{
+ const THREE=await import('../public/three.module.js'),source=fs.readFileSync('padel-android/src/experience.js','utf8');
+ const part=source.slice(source.indexOf('function setEyePose'),source.indexOf('// Pose the existing'));
+ const state={mode:'ready',serverPlayer:0,paused:false};
+ const update=new Function('THREE','game','experience',part+'return updateEyeCamera;')(THREE,state,{calm:false});
+ const p={x:2,z:8},ball={x:2,y:.5,z:7.8},view=new THREE.PerspectiveCamera(78,2,.01,180);
+ for(let i=0;i<60;i++)update(view,p,ball,1,0,1/60);
+ const direction=view.getWorldDirection(new THREE.Vector3());assert.ok(direction.z<-.98);assert.ok(direction.y>-.1,'own serve keeps horizon visible');
+ state.mode='drop';update(view,p,ball,1,0,1/60);assert.ok(view.getWorldDirection(new THREE.Vector3()).y>-.1);
+ const other=new THREE.PerspectiveCamera(78,1,.01,180);update(other,p,ball,1,2,1/60);
+ assert.ok(other.quaternion.angleTo(view.quaternion)>.01,'receiver follows the serving ball independently');
+ state.mode='rally';ball.x=-4;ball.y=6;ball.z=9;
+ for(let i=0;i<180;i++){const before=view.quaternion.clone();update(view,p,ball,1,0,1/60);assert.ok(before.angleTo(view.quaternion)<=3.4/60+1e-7);}
+ const projected=new THREE.Vector3(ball.x,ball.y,ball.z).project(view);assert.ok(Math.abs(projected.x)<.002&&Math.abs(projected.y)<.002);
+ state.paused=true;const before=view.quaternion.clone();ball.x=4;update(view,p,ball,1,0,.05);assert.ok(before.angleTo(view.quaternion)<1e-7);
+});
+test('Eye gaze converges consistently across frame rates and new sessions default to eyes',async()=>{
+ const THREE=await import('../public/three.module.js'),source=fs.readFileSync('padel-android/src/experience.js','utf8');
+ const part=source.slice(source.indexOf('function setEyePose'),source.indexOf('// Pose the existing'));
+ const update=new Function('THREE','game','experience',part+'return updateEyeCamera;')(THREE,{mode:'rally',paused:false},{calm:false}),results=[];
+ for(const fps of [30,60,120]){const view=new THREE.PerspectiveCamera();for(let i=0;i<fps;i++)update(view,{x:0,z:8},{x:3,y:2,z:0},1,0,1/fps);results.push(view.quaternion.clone());}
+ assert.ok(results[0].angleTo(results[2])<.001);
+ const prefix=source.slice(source.indexOf('let experience='),source.indexOf('function saveExperience'));
+ const experience=new Function('localStorage',prefix+'return experience;')({getItem:()=>JSON.stringify({camera:0,calm:true,best:8})});
+ assert.equal(experience.camera,4);assert.equal(experience.calm,true);assert.equal(experience.best,8);
 });

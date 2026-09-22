@@ -51,7 +51,7 @@ replace('function clearLocalInputs(){','function clearLocalInputs(){game.cancelA
 replace('  updateExperience();','  updateSkillUI(dt);updateExperience();');
 replace('window.__padel={',fs.readFileSync(path.join(src,'skill-ui.js'),'utf8')+'\nwindow.__padel={');
 replace('function updatePlayCamera(p,b,dt){','function updatePlayCamera(p,b,dt){\n  if(isLocalCoop()){updateCoopCamera();return;}');
-replace('if(renderEnabled)renderer.render(scene,camera);','if(renderEnabled)renderCourt();');
+replace('if(renderEnabled)renderer.render(scene,camera);','if(renderEnabled)renderCourt(dt);');
 replace('window.__padel={',fs.readFileSync(path.join(src,'coop-camera.js'),'utf8')+'\nwindow.__padel={');
 replace('<button id="camera-cycle"','<button id="coop-view-toggle" class="icon-button" hidden>VIEW · Both players</button><button id="camera-cycle"');
 replace('<div id="scene"></div>','<div id="scene"></div><div id="split-labels" hidden aria-label="Split screen players"><span>PLAYER 1 · ARROWS + Z / X</span><span>PLAYER 2 · WASD + N / M</span></div>');
