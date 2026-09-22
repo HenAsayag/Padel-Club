@@ -66,3 +66,19 @@ test('Eye gaze converges consistently across frame rates and new sessions defaul
  const experience=new Function('localStorage',prefix+'return experience;')({getItem:()=>JSON.stringify({camera:0,calm:true,best:8})});
  assert.equal(experience.camera,4);assert.equal(experience.calm,true);assert.equal(experience.best,8);
 });
+
+test('Actual swipe serve keeps the camera off the close low ball through contact and departure',async()=>{
+ const THREE=await import('../public/three.module.js'),api=load(),g=new api.MobileGame(()=>{});g.configure({format:'singles'});g.start();
+ const source=fs.readFileSync('public/index.html','utf8'),part=source.slice(source.indexOf('function setEyePose'),source.indexOf('// Pose the existing'));
+ const update=new Function('THREE','game','experience',part+'return updateEyeCamera;')(THREE,g,{calm:false}),view=new THREE.PerspectiveCamera(78,844/390,.01,180);
+ for(let i=0;i<30;i++)update(view,g.players[0],g.ball,1,0,1/30);
+ assert.equal(g.commitGesture(0,'drive',.55,{x:-2.5,z:-4.5}),true);
+ let contact=false,departure=false;
+ for(let i=0;i<180;i++){
+  g.step(1/120);if(i%4===3)update(view,g.players[0],g.ball,1,0,1/30);
+  const distance=Math.hypot(g.ball.x-g.players[0].x,g.ball.z-g.players[0].z),direction=view.getWorldDirection(new THREE.Vector3());
+  if(g.mode==='drop'||(g.mode==='rally'&&g.serveActive&&distance<3))assert.ok(direction.y>-.14,'own serve dives toward low nearby ball: '+direction.y);
+  if(g.mode==='rally'&&g.serveActive){contact=true;if(distance>4){departure=true;const projected=new THREE.Vector3(g.ball.x,g.ball.y,g.ball.z).project(view);assert.ok(Math.abs(projected.y)<.5,'departing ball remains visible');}}
+ }
+ assert.ok(contact&&departure,'exercise bounce, racket contact and outgoing serve');
+});

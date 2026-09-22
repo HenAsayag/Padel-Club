@@ -1803,7 +1803,11 @@ function setEyePose(position,target,p,b,side,follow=true){
 const eyeGazeStates=new WeakMap(),eyeGazeCamera=new THREE.PerspectiveCamera(),eyeGazeTarget=new THREE.Vector3();
 function updateEyeCamera(view,p,b,side,id,dt){
   const follow=game.mode==='rally'||(['ready','drop'].includes(game.mode)&&game.serverPlayer!==id);
-  setEyePose(view.position,eyeGazeTarget,p,b,side,follow);
+  // Contact changes drop to rally before the low ball has left the server's feet.
+  // Keep the court framing through departure, then blend into tracking in space.
+  const ownServe=game.mode==='rally'&&game.serveActive&&game.serverPlayer===id;
+  setEyePose(view.position,eyeGazeTarget,p,b,side,follow&&!ownServe);
+  if(ownServe){const distance=Math.hypot(b.x-p.x,b.z-p.z);eyeGazeTarget.lerp(b,THREE.MathUtils.smoothstep(distance,2.8,5));}
   eyeGazeCamera.position.copy(view.position);eyeGazeCamera.lookAt(eyeGazeTarget);
   let state=eyeGazeStates.get(view);
   if(!state||state.id!==id){
