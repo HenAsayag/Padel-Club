@@ -4,7 +4,7 @@ function isLocalCoop(){return game.coop&&(!game.networkMode||game.networkMode===
 const coopCameras=[new THREE.PerspectiveCamera(62,1,.08,180),new THREE.PerspectiveCamera(62,1,.08,180)];
 const fitCamera=new THREE.PerspectiveCamera(55,1,.08,180),fitPoint=new THREE.Vector3();
 function fitCoopView(view,target,offset,points,aspect,fov=55){
-  view.aspect=aspect;view.fov=fov;view.updateProjectionMatrix();let scale=1;
+  view.aspect=aspect;view.near=.08;view.fov=fov;view.updateProjectionMatrix();let scale=1;
   for(let i=0;i<24;i++){
     view.position.copy(target).addScaledVector(offset,scale);view.lookAt(target);view.updateMatrixWorld(true);
     const fits=points.every(p=>{fitPoint.set(p.x,p.y,p.z).project(view);return Math.abs(fitPoint.x)<.82&&Math.abs(fitPoint.y)<.70&&fitPoint.z<1;});
@@ -31,12 +31,12 @@ function renderCourt(){
   if(layout==='shared'){camera.position.copy(desired);look.copy(targetLook);camera.lookAt(look);}
   if(previousCoopLayout!==layout&&layout==='single')selectCamera(cameraMode);previousCoopLayout=layout;
   const size=renderer.getSize(new THREE.Vector2()),width=size.x,height=size.y;
-  if(!split){renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);if(live&&cameraMode===4){camera.position.copy(desired);look.lerp(targetLook,.25);camera.lookAt(look);renderEyeView(camera,game.controlled);}else renderer.render(scene,camera);return;}
+  if(!split){renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);if(live&&cameraMode===4){camera.position.copy(desired);look.copy(targetLook);camera.lookAt(look);renderEyeView(camera,game.controlled);}else renderer.render(scene,camera);return;}
   renderer.setScissorTest(true);const leftWidth=Math.floor(width/2);
   for(let slot=0;slot<2;slot++){
     const id=slot===0?0:2,p=game.players[id],ball=game.ball,view=coopCameras[slot],w=slot===0?leftWidth:width-leftWidth;
     const target=new THREE.Vector3(p.x*.85,.95,p.z-3),points=[{x:p.x,y:0,z:p.z},{x:p.x,y:2.05,z:p.z},{x:ball.x,y:Math.min(6,ball.y),z:ball.z}];
-    if(cameraMode===4){const eyeTarget=new THREE.Vector3();setEyePose(view.position,eyeTarget,p,ball,1);view.aspect=w/height;view.fov=86;view.updateProjectionMatrix();view.lookAt(eyeTarget);}else fitCoopView(view,target,new THREE.Vector3(0,6.5,10),points,w/height,62);
+    if(cameraMode===4){const eyeTarget=new THREE.Vector3();setEyePose(view.position,eyeTarget,p,ball,1);view.aspect=w/height;view.near=.01;view.fov=86;view.updateProjectionMatrix();view.lookAt(eyeTarget);}else fitCoopView(view,target,new THREE.Vector3(0,6.5,10),points,w/height,62);
     renderer.setViewport(slot*leftWidth,0,w,height);renderer.setScissor(slot*leftWidth,0,w,height);if(cameraMode===4)renderEyeView(view,id);else renderer.render(scene,view);
   }
   renderer.setScissorTest(false);renderer.setViewport(0,0,width,height);

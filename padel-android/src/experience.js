@@ -26,8 +26,8 @@ function updateExperience(){
   $('rally-card').classList.toggle('achieved',hits>=8);
   if(hits>=8&&Math.floor(hits/8)>rallyMilestone){rallyMilestone=Math.floor(hits/8);$('status-pill').textContent=hits+' SHOT RALLY · KEEP IT GOING!';}
 }
-// Stable eye height and opponent-facing view keep swipe/stick directions predictable.
-function setEyePose(position,target,p,b,side){position.set(p.x,1.68,p.z-side*.06);target.set(p.x+THREE.MathUtils.clamp((b.x-p.x)*.55,-3.5,3.5),THREE.MathUtils.clamp(b.y*.55,.55,3.2),p.z-side*Math.max(3,Math.abs(p.z-b.z)));}
+// Eye height follows the player; gaze follows the real ball, including behind and overhead.
+function setEyePose(position,target,p,b,side){position.set(p.x,1.68,p.z-side*.06);target.set(b.x,b.y,b.z);}
 // Pose the existing articulated arm for this view only; never detach the racket.
 function poseEyeRacket(view,model,id){
   const age=model.clock-model.contactAt;
@@ -57,7 +57,7 @@ function renderEyeView(view,id){
     joints.forEach((j,i)=>j.quaternion.copy(rotations[i]));model.root.updateMatrixWorld(true);
   }
 }
-// All gameplay views face the other half, preserving the arrow/stick axes.
+// Court views face the other half; the eye view keeps the ball centered.
 function updatePlayCamera(p,b,dt){
   const side=game.team(game.controlled)===0?1:-1,high=Math.max(0,b.y-2.5);
   if(cameraMode===0){desired.set(p.x*.16,10.5+high*.06,side*17.5+p.z*.03);targetLook.set(p.x*.10,.45,side*2.8);}
@@ -65,6 +65,7 @@ function updatePlayCamera(p,b,dt){
   else if(cameraMode===2){desired.set(side*.01,15,side*22);targetLook.set(0,.3,0);}
   else if(cameraMode===3){desired.set(p.x*.15,23,side*.4);targetLook.set(p.x*.15,0,-side*.4);}
   else{setEyePose(desired,targetLook,p,b,side);}
+  const near=cameraMode===4?.01:.08;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}
   const base=[44,55,49,53,78][cameraMode],fov=camera.aspect<1.6?base+8:base;
   if(Math.abs(camera.fov-fov)>.01){camera.fov+=(fov-camera.fov)*(1-Math.exp(-dt*7));camera.updateProjectionMatrix();}
 }

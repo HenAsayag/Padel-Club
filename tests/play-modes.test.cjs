@@ -2,9 +2,24 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 function game(){const api=load(),g=new api.MobileGame(()=>{});g.configure({format:'singles'});g.start();g.mode='rally';g.time=2;g.lastHitter=1;return g;}
 test('Joystick mode disables automatic chase while auto mode still runs',()=>{const g=game();g.setMovementMode(0,'joystick');g.updateAutoRun();assert.equal(g.controls[0].moveTarget,null);g.setMovementMode(0,'auto');g.updateAutoRun();assert.ok(g.controls[0].autoRunTarget);g.setMovementMode(0,'joystick');assert.equal(g.controls[0].moveTarget,null);assert.equal(g.setMovementMode(0,'bad'),false);});
 test('Two phone movement modes remain independent',()=>{const g=game();g.networkMode='duel';g.networkRole='host';g.remoteId=1;g.setMovementMode(0,'auto');g.setMovementMode(1,'joystick');g.updateAutoRun();assert.ok(g.controls[0].autoRunTarget);assert.equal(g.controls[1].moveTarget,null);g.start();assert.equal(g.movementModes[1],'joystick');});
-test('Eye camera stays at player height and faces the opponent at both ends',()=>{const source=fs.readFileSync('padel-android/src/experience.js','utf8'),part=source.slice(source.indexOf('function setEyePose'),source.indexOf('function renderEyeView')),pose=new Function('THREE',part+'return setEyePose;')({MathUtils:{clamp:(x,a,b)=>Math.max(a,Math.min(b,x))}}),vec=()=>({set(x,y,z){Object.assign(this,{x,y,z});}});for(const side of [1,-1]){const p={x:2,z:side*6},position=vec(),target=vec();pose(position,target,p,{x:-2,y:1,z:-side*5},side);assert.equal(position.x,p.x);assert.equal(position.y,1.68);assert.ok(Math.abs(position.z-p.z)<.1);assert.ok((target.z-position.z)*side<0);}});
+test('Eye camera centers low, overhead, sideways and behind-player balls at both ends',async()=>{
+ const THREE=await import('../public/three.module.js'),source=fs.readFileSync('padel-android/src/experience.js','utf8');
+ const part=source.slice(source.indexOf('function setEyePose'),source.indexOf('function poseEyeRacket'));
+ const pose=new Function(part+'return setEyePose;')();
+ for(const side of [1,-1])for(const aspect of [2.16,1.08]){
+  const p={x:2,z:side*6},view=new THREE.PerspectiveCamera(78,aspect,.01,180),target=new THREE.Vector3();
+  for(const ball of [{x:-4,y:.1,z:-side*8},{x:2,y:9,z:side*6},{x:4,y:1,z:side*9},{x:-4,y:2,z:side*6},{x:2.02,y:1.7,z:side*6}]){
+   pose(view.position,target,p,ball,side);view.lookAt(target);view.updateMatrixWorld(true);
+   assert.equal(view.position.y,1.68);assert.equal(view.position.x,p.x);assert.ok(Math.abs(view.position.z-p.z)<.1);
+   assert.deepEqual(target.toArray(),[ball.x,ball.y,ball.z]);
+   const projected=new THREE.Vector3(ball.x,ball.y,ball.z).project(view);
+   assert.ok(Math.abs(projected.x)<1e-8&&Math.abs(projected.y)<1e-8,'ball stays at the center, including rear glass and lobs');
+   assert.ok(projected.z>-1&&projected.z<1);
+  }
+ }
+});
 test('Eye rendering restores arm poses and visibility even when drawing fails',()=>{
- const source=fs.readFileSync('padel-android/src/experience.js','utf8'),part=source.slice(source.indexOf('function renderEyeView'),source.indexOf('// All gameplay views'));
+ const source=fs.readFileSync('padel-android/src/experience.js','utf8'),part=source.slice(source.indexOf('function renderEyeView'),source.indexOf('function updatePlayCamera'));
  for(const fails of [false,true]){
   const joint=()=>({quaternion:{value:1,clone(){return {value:this.value};},copy(q){this.value=q.value;}}});
   const limb={arm:joint(),forearm:joint(),hand:joint()},head={isMesh:true,visible:true},hand={isMesh:true,visible:true,parent:limb.arm};let called=0,updated=0;
