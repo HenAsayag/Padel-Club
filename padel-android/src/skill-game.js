@@ -31,6 +31,7 @@
         const humans=this.members(team).filter(id=>this.isHuman(id)&&this.movementModes?.[id]!=='joystick');if(!humans.length)continue;
         const incoming=this.lastHitter!==team,side=team===0?1:-1;let plan=this.runPlans?.[team];
         if(!plan||plan.hit!==this.lastHitTime||plan.point!==this.pointNumber||plan.next<=this.time){
+          if(incoming&&(!plan||plan.hit!==this.lastHitTime))for(const id of humans)this.players[id].splitStart=this.time;
           plan={hit:this.lastHitTime,point:this.pointNumber,next:this.time+tuning.decision,pick:incoming?this.predictTeam(team):null};this.runPlans??=[];this.runPlans[team]=plan;
         }
         if(plan.pick)this.claims[team]=plan.pick.id;
@@ -161,7 +162,25 @@
     }
     coordinate(){this.tactics.coordinate();}
     aiHit(id){this.tactics.hit(id);}
-    moveToward(p,x,z,dt,speed=window.PADEL_TUNING.movement.run){const id=this.players.indexOf(p);if(this.mode==='rally'&&id>=0&&!this.isHuman(id)&&this.tactics)speed=this.tactics.settings().speed*(1-this.tactics.brains[id].fatigue*.15);const dx=x-p.x,dz=z-p.z,d=Math.hypot(dx,dz),targetSpeed=Math.min(speed,d*window.PADEL_TUNING.movement.gain),vx=d>.001?dx/d*targetSpeed:0,vz=d>.001?dz/d*targetSpeed:0,ax=vx-p.vx,az=vz-p.vz,a=Math.hypot(ax,az),limit=window.PADEL_TUNING.movement.acceleration*dt,f=a>limit?limit/a:1;p.vx+=ax*f;p.vz+=az*f;p.x=clamp(p.x+p.vx*dt,-4.55,4.55);const side=z<0?-1:1;p.z=side*clamp((p.z+p.vz*dt)*side,.6,9.55);}
+    moveToward(p,x,z,dt,speed=window.PADEL_TUNING.movement.run){
+      if(dt<=0)return;const id=this.players.indexOf(p),bot=id>=0&&!this.isHuman(id),brain=this.tactics?.brains[id],t=window.PADEL_TUNING.movement;
+      if(this.mode==='rally'&&bot){speed=this.tactics.settings().speed*(1-brain.fatigue*.15);if(this.lastHitter!==this.team(id)&&this.time<brain.perceiveAt)speed=0;}
+      const dx=x-p.x,dz=z-p.z,d=Math.hypot(dx,dz),oldVX=p.vx,oldVZ=p.vz,oldSpeed=Math.hypot(oldVX,oldVZ);
+      const retreat=d>2&&dz*(id%2?-1:1)>0,shuffle=!retreat&&Math.abs(dx)>Math.abs(dz)*1.4;
+      if(shuffle)speed*=.93;
+      const targetSpeed=Math.min(speed,Math.sqrt(2*t.braking*Math.max(0,d-.12))),vx=d>.12?dx/d*targetSpeed:0,vz=d>.12?dz/d*targetSpeed:0;
+      const ax=vx-p.vx,az=vz-p.vz,a=Math.hypot(ax,az),brake=targetSpeed<oldSpeed||oldVX*vx+oldVZ*vz<0,limit=(brake?Math.min(t.braking,t.acceleration):t.acceleration)*dt,f=a>limit?limit/a:1;
+      p.vx+=ax*f;p.vz+=az*f;const nx=p.x+p.vx*dt,nz=p.z+p.vz*dt,side=id>=0?(this.team(id)===0?1:-1):(p.z<0?-1:1);
+      p.x=clamp(nx,-4.55,4.55);p.z=side*clamp(nz*side,.6,9.55);if(p.x!==nx)p.vx=0;if(p.z!==nz)p.vz=0;
+      p.ax=(p.vx-oldVX)/dt;p.az=(p.vz-oldVZ)/dt;
+      if(bot){
+        const moving=Math.hypot(p.vx,p.vz),near=Math.hypot(p.x-this.ball.x,p.z-this.ball.z)<2.7;
+        p.locomotion=moving<.12?'idle':shuffle?'shuffle':'run';
+        const track=near||moving<.3||shuffle||this.mode!=='rally',facing=this.mode!=='rally'?(side===1?0:Math.PI):track?Math.atan2(p.x-this.ball.x,p.z-this.ball.z):Math.atan2(-p.vx,-p.vz);
+        const delta=Math.atan2(Math.sin(facing-p.facing),Math.cos(facing-p.facing)),turn=clamp(delta*(1-Math.exp(-dt*10)),-dt*8,dt*8);p.facing=Math.atan2(Math.sin(p.facing+turn),Math.cos(p.facing+turn));p.turnRate=turn/dt;
+        if(oldSpeed>4.5&&brake&&a>3&&this.time-p.skidStart>1.2){p.skidStart=this.time;p.skidSide=Math.sign(oldVX)||1;p.recoverUntil=this.time+.35;this.emit('skid',id,oldSpeed);}
+      }
+    }
     moveLocal(id,dt){const c=this.controls[id],before=c.stamina;super.moveLocal(id,dt);if(c.stamina<before)c.stamina+=((before-c.stamina)*this.stat(id,'stamina')*.12);}
     step(dt=1/120){if(this.paused||this.networkRole==='guest')return;this.updateAutoRun();super.step(dt);if(this.mode!=='menu'&&this.mode!=='match'){this.advanceCharge(dt);this.tactics.step(dt);}}
   }

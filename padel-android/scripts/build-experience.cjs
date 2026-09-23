@@ -9,6 +9,15 @@ replace("      if(this.mode!=='rally')return;\n      this.keyboardAim(id);this.q
 replace("  keys[e.code]=true;window.readSimpleInputs(game,keys);if(e.repeat)return;", "  const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],KeyA:[-1,0],KeyD:[1,0],KeyW:[0,-1],KeyS:[0,1]}[e.code];if(direction&&!e.repeat){const id=game.coop&&['KeyW','KeyA','KeyS','KeyD'].includes(e.code)?2:game.controlled;game.tapMove?.(id,direction[0],direction[1]);}keys[e.code]=true;window.readSimpleInputs(game,keys);if(e.repeat)return;");
 replace('moveToward(p,x,z,dt,speed=5.5)','moveToward(p,x,z,dt,speed=6.0)');
 replace('      const targetVX=length>.015?', '      if(!automatic)speed*=Math.min(1,length);\n      const targetVX=length>.015?');
+// Keep bot facing authoritative in simulation, not in rendering.
+const botFacingStart=s.indexOf('  if(game.isHuman(id))model.root.rotation.y=p.facing;else{'),botFacingEnd=s.indexOf('\n  const ax=',botFacingStart);
+if(botFacingStart<0||botFacingEnd<0)throw Error('Bot facing anchor');s=s.slice(0,botFacingStart)+'  model.root.rotation.y=p.facing;'+s.slice(botFacingEnd);
+replace('const model={root,hips,torso,neck,head,headMesh,hairMesh,skin,headMaterial,hairMaterial,limbs,racket,index,id,groundOffset,heightScale,','const model={root,hips,torso,neck,head,headMesh,hairMesh,skin,shirt,shorts,shoes,headMaterial,hairMaterial,limbs,racket,index,id,groundOffset,heightScale,');
+// A continuous shirt silhouette and covered joints instead of disconnected capsules.
+replace('taperedCapsule(.14,.45,.22),shirt,torso', 'new THREE.LatheGeometry([new THREE.Vector2(.115,-.29),new THREE.Vector2(.12,-.22),new THREE.Vector2(.132,-.08),new THREE.Vector2(.155,.07),new THREE.Vector2(.151,.14),new THREE.Vector2(.104,.225)],16),shirt,torso');
+replace("const shin=joint(name+'Shin',thigh,0,-.405,0);", "const shin=joint(name+'Shin',thigh,0,-.405,0);ellipsoid(skin,shin,0,0,0,.046,.048,.047);");
+replace("const forearm=joint(name+'Forearm',arm,0,-.295,0);", "const forearm=joint(name+'Forearm',arm,0,-.295,0);ellipsoid(skin,forearm,0,0,0,.039,.041,.04);");
+replace('taperedCapsule(.045,.11,.05),skin,neck', 'taperedCapsule(.046,.15,.05),skin,neck');
 replace('model.gait+=speed*dt*(shuffle?5.2:back?3.6:2.7)','model.gait+=speed*dt*(shuffle?5.5:back?4.1:3.0)');
 replace('target[1]=sway*.008*(1-moving)','target[1]=sway*.020*(1-moving)');
 replace('moving*(shuffle?.009:.018)','moving*(shuffle?.016:.028)');
@@ -24,6 +33,15 @@ replace('cameraMode=0;previewing=false','cameraMode=experience.camera;previewing
 replace("$('camera-label').textContent=cameraMode?'BROADCAST VIEW':'PLAYER VIEW'","selectCamera(cameraMode)");
 const cameraStart=s.indexOf('  else if(cameraMode){'),cameraEnd=s.indexOf('  for(const [original,material] of rearMaterials)',cameraStart);
 if(cameraStart<0||cameraEnd<0)throw Error('Camera anchors missing');s=s.slice(0,cameraStart)+'  else updatePlayCamera(p,b,dt);\n'+s.slice(cameraEnd);
+// Fade only the wall between the Match camera and the player, keeping the far enclosure visible.
+replace('let rearWall=false,batchParent=scene;', 'const farWallMaterials=new Map([...rearMaterials].map(([original,material])=>[original,material.clone()]));let rearWall=false,batchParent=scene;');
+replace('rearWall=sign===1;', 'rearWall=sign;');
+replace('material=rearMaterials.get(material);', 'material=(rearWall<0?farWallMaterials:rearMaterials).get(material);');
+replace('for(const [original,material] of rearMaterials){const opacity=inMenu?original.opacity:', 'for(const [wallSide,wallMaterials] of [[1,rearMaterials],[-1,farWallMaterials]])for(const [original,material] of wallMaterials){const opacity=inMenu?original.opacity:cameraMode===5?(camera.position.z*wallSide>9.3?0:original.opacity):');
+// Keep the night court grounded: no glowing rail across the close camera.
+replace('box(10,.025,.024,0,3,side*10,edge);','');
+replace("sky:'#101e35',floor:'#566384'", "sky:'#0b1922',floor:'#5b7945'");
+replace('const skyline=new THREE.MeshStandardMaterial', "for(const side of [-1,1])for(const z of [-14,14]){const x=side*8.8;cylinder(.13,.22,5.8,x,2.7,z,materials.wood,.06*side);for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const leaf=new THREE.ConeGeometry(.42,3.6,5);leaf.rotateZ(Math.PI/2);batch(leaf,materials.leaves,x+Math.cos(a)*1.35,5.3,z+Math.sin(a)*1.35,0,-a,.14);}}const skyline=new THREE.MeshStandardMaterial");
 replace('const smooth=1-Math.exp(-dt*3.1)','const smooth=1-Math.exp(-dt*(inMenu?3.1:experience.calm?4.5:8))');
 replace('if(impactKick>0&&!game.paused&&!inMenu)','if(impactKick>0&&!game.paused&&!inMenu&&!experience.calm)');
 replace("game.lastHitter===1&&b.vy<0","game.lastHitter!==game.team(game.controlled)&&b.vy<0");
@@ -34,8 +52,9 @@ replace('width=device-width,initial-scale=1','width=device-width,initial-scale=1
 const characters=fs.readFileSync(path.join(root,'assets/characters/characters.json'),'utf8');
 replace('</head>','<style>'+fs.readFileSync(path.join(src,'clubhouse.css'),'utf8')+'</style></head>');
 replace('window.__padel={',fs.readFileSync(path.join(src,'clubhouse.js'),'utf8').replace('__CHARACTER_ASSETS__',characters)+'\nwindow.__padel={');
-replace('for(const i of game.activePlayers)animatePlayer(models[i],game.players[i],i,game.paused?0:dt);','for(const i of game.activePlayers){animatePlayer(models[i],game.players[i],i,game.paused?0:dt);animateClubCharacter(models[i],game.players[i],i,game.paused?0:dt);}updateLocker(dt);');
+replace('for(const i of game.activePlayers)animatePlayer(models[i],game.players[i],i,game.paused?0:dt);','for(const i of game.activePlayers){animatePlayer(models[i],game.players[i],i,game.paused?0:dt);animateClubCharacter(models[i],game.players[i],i,game.paused?0:dt);refineAthleteMotion(models[i],game.players[i],i,game.paused?0:dt);}updateLocker(dt);');
 replace("document.querySelector('.experience-panel').appendChild($('cycle-looks'));","document.querySelector('[data-club-panel=locker]').appendChild($('cycle-looks'));");
+replace('window.__padel={',fs.readFileSync(path.join(src,'athletic-motion.js'),'utf8')+'\nwindow.__padel={');
 s=require('./patch-flow.cjs')(s);
 replace('<script>','<script>'+fs.readFileSync(path.join(src,'control-model.js'),'utf8')+'\n');
 for(const key of ['acceleration','run','max','shuffle','backpedal'])s=s.replaceAll('MOVEMENT.'+key,'window.PADEL_TUNING.movement.'+key);

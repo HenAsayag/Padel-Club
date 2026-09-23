@@ -168,8 +168,8 @@ body.swipe-controls.joystick-mode .shot-buttons{display:none!important}
   <button id="menu-fullscreen" class="secondary">FULL SCREEN ↗</button>
   <button id="quick-play" class="primary">Quick play · current setup ↗</button>
   <div class="club-tip"><b>TWO BUTTONS. ALL THE SHOTS.</b><p>HIT / serve · LOB<br>Use the joystick to move. Your position decides the stroke.</p></div></section>
-  <section data-club-panel="locker" role="tabpanel" hidden><div class="locker-heading"><h2>The lineup.</h2><span>LIVE PREVIEW</span></div><canvas id="locker-canvas" width="256" height="256" aria-label="Animated player preview"></canvas><div class="character-options" role="group" aria-label="Player style"><button data-character="0"><img alt=""><b>Rio</b><small>ARCADE</small></button><button data-character="1"><img alt=""><b>Alex</b><small>ARCADE</small></button><button data-character="-1"><span class="classic-avatar">◉</span><b>Club pro</b><small>CLASSIC</small></button></div><div class="demo-options" role="group" aria-label="Preview animation"><button data-demo="idle" aria-pressed="true">Warm up</button><button data-demo="run">Run</button><button data-demo="swing">Swing</button><button data-demo="celebrate">Celebrate</button></div><p class="asset-credit">Arcade models & emotes: Kenney · CC0.<br>Padel strokes adapted to the contact rig.</p></section>
-  <section data-club-panel="settings" role="tabpanel" hidden><h2>Your game.</h2><p>Set your view and comfort.</p><div class="experience-label">YOUR CAMERA</div><div class="camera-options" role="group" aria-label="Gameplay camera"><button data-camera="0">Rally view</button><button data-camera="1">Chase</button><button data-camera="2">Full court</button><button data-camera="3">Overhead</button><button data-camera="4">Player eyes</button></div>
+  <section data-club-panel="locker" role="tabpanel" hidden><div class="locker-heading"><h2>The lineup.</h2><span>LIVE PREVIEW</span></div><canvas id="locker-canvas" width="256" height="256" aria-label="Animated player preview"></canvas><div class="character-options" role="group" aria-label="Player style"><button data-character="0"><img alt=""><b>Rio</b><small>ARCADE</small></button><button data-character="1"><img alt=""><b>Alex</b><small>ARCADE</small></button><button data-character="-1"><span class="classic-avatar">◉</span><b>Club pro</b><small>ATHLETE</small></button></div><div class="demo-options" role="group" aria-label="Preview animation"><button data-demo="idle" aria-pressed="true">Warm up</button><button data-demo="run">Run</button><button data-demo="swing">Swing</button><button data-demo="celebrate">Celebrate</button></div><p class="asset-credit">Arcade models & emotes: Kenney · CC0.<br>Padel strokes adapted to the contact rig.</p></section>
+  <section data-club-panel="settings" role="tabpanel" hidden><h2>Your game.</h2><p>Set your view and comfort.</p><div class="experience-label">YOUR CAMERA</div><div class="camera-options" role="group" aria-label="Gameplay camera"><button data-camera="0">Rally view</button><button data-camera="1">Chase</button><button data-camera="2">Full court</button><button data-camera="3">Overhead</button><button data-camera="4">Player eyes</button><button data-camera="5">Match view</button></div>
   <div class="experience-label" style="margin-top:18px">TWO PLAYERS · ONE COMPUTER</div><div class="camera-options" role="group" aria-label="Local co-op view"><button data-coop-view="shared">Both players</button><button data-coop-view="split">Split screen</button></div><p class="experience-tip">Local co-op always keeps both players in view. Change the layout here or during a match.</p>
   <label class="experience-toggle"><input id="calm-camera" type="checkbox"> Steady camera · no impact shake</label>
   <label class="experience-toggle touch-option"><input id="large-controls" type="checkbox"> Larger touch buttons</label>
@@ -217,7 +217,7 @@ window.PADEL_TUNING={
   autoRun:{decision:.08,manualPause:.65,recoveryDepth:5.3},
   contact:{reachRadius:1.55,grace:.12,lateRadius:1.95,stepDistance:.10,assistDistance:.45,assistDuration:.16,assistSpeed:3.4},
   power:{weak:.24,over:.90,maxSpread:.8,overSpeed:.28,overLift:.07,driveBase:.74,driveDistance:.050,drivePower:.40,driveMinimum:.62,serveFlight:1.32,lobBase:2.0},
-  ai:{easy:{reaction:.27,speed:3.9,error:.27},normal:{reaction:.16,speed:4.9,error:.15},hard:{reaction:.085,speed:5.65,error:.075},decision:.20,cooldown:.26}
+  ai:{easy:{reaction:.27,speed:4.15,error:.27},normal:{reaction:.16,speed:5.15,error:.15},hard:{reaction:.085,speed:5.9,error:.075},decision:.20,cooldown:.26}
 };
 window.PadelGesture={
   sample(start,end,viewport){
@@ -939,14 +939,14 @@ window.readSimpleInputs=readSimpleInputs;
   const styles=['balanced','aggressive','defensive','creative'];
   class RallyTactics {
     constructor(game){this.game=game;this.reset();}
-    reset(){this.brains=Array.from({length:4},(_,id)=>({state:'Recover',style:styles[id],history:[],fatigue:0,next:0,shot:-1,readyAt:0,plan:null}));this.rallyStart=null;this.history=[];this.safeguardCount=0;}
+    reset(){this.brains=Array.from({length:4},(_,id)=>({state:'Recover',style:styles[id],history:[],fatigue:0,next:0,shot:-1,readyAt:0,perceiveAt:0,plan:null}));this.rallyStart=null;this.history=[];this.safeguardCount=0;}
     settings(){return levels[this.game.difficulty]||levels.normal;}
     pressure(){return clamp((this.game.rallyHits-8)/26,0,1.5);}
     transition(brain,state){if(brain.state!==state){brain.state=state;brain.since=this.game.time;}}
     choose(id){
       const g=this.game,b=g.ball,p=g.players[id],brain=this.brains[id],side=g.team(id)===0?-1:1,opponents=g.members(1-g.team(id)).map(i=>g.players[i]);
       const exhausted=brain.fatigue+this.pressure()*.22,displaced=Math.min(1,Math.hypot(p.vx,p.vz)/6),defending=Math.abs(p.z)>7.5||b.y<.65||displaced>.85;
-      const netPressure=opponents.every(o=>Math.abs(o.z)<4.4),canAttack=b.y>1.7&&Math.abs(p.z)<5.5&&!defending;
+      const netPressure=opponents.every(o=>Math.abs(o.z)<4.4),canAttack=b.y>2.25&&Math.abs(p.z)<5.5&&!defending;
       const candidates=[];
       for(const x of [-3.65,0,3.65])for(const depth of [2.8,5.4,8.3])for(const kind of ['drive','lob',...(canAttack?['smash']:[])]){
         if(kind==='lob'&&depth!==8.3)continue;
@@ -956,8 +956,8 @@ window.readSimpleInputs=readSimpleInputs;
         if(recent.length>=2&&recent.slice(-2).every(h=>h.key===key))continue;
         const wallRisk=zone==='deep'&&Math.abs(x)>3?(.25+exhausted*.4):0;
         let score=space*.65-repeats*3-teamRepeats*.65-wallRisk;
-        score+=kind==='lob'?(netPressure?3.5:-1.8)+(defending?1.3:0):0;
-        score+=kind==='smash'?2.2:0;score+=defending&&zone==='deep'?1.2:0;
+        score+=kind==='lob'?(netPressure?3.5:-1.8)+(defending?1.3:0)-recent.filter(h=>h.kind==='lob').length*2.1:0;
+        score+=kind==='smash'?2.2:0;score+=kind==='drive'&&zone==='short'&&netPressure?-2.5:0;score+=kind==='drive'&&zone==='middle'&&Math.abs(x)<.1&&opponents.length===2?.85:0;score+=defending&&zone==='deep'?1.2:0;
         score+=brain.style==='aggressive'&&zone==='short'?.7:brain.style==='defensive'&&kind==='lob'?.9:0;
         score-=Math.abs(x-b.x)*.08*(defending?2:1);score+=g.gaussian()*(brain.style==='creative'?.38:.16);
         candidates.push({x,z:side*depth,kind,lane,zone,key,score});
@@ -967,8 +967,16 @@ window.readSimpleInputs=readSimpleInputs;
       let power=pick.kind==='lob'?.59:pick.kind==='smash'?.77:intent==='Attack'?.73:g.difficulty==='hard'?.67:g.difficulty==='normal'?.57:.49;
       // Timing error grows with speed, fatigue and rally pressure; never rerolled per frame.
       const error=this.settings().error*(1+displaced*.6)+brain.fatigue*.08+this.pressure()*.15;
-      power=clamp(power+clamp(g.gaussian(),-2,2)*error,.04,.99);
+      power=clamp(power+(pick.kind==='lob'?0:this.pressure()*.12)+clamp(g.gaussian(),-2,2)*error,.04,.99);
       return {...pick,power,intent,error,displaced};
+    }
+    recoveryTarget(id,pick){
+      const g=this.game,team=g.team(id),ids=g.members(team),side=team===0?1:-1,brain=this.brains[id],incoming=g.lastHitter!==team;
+      const lobThreat=incoming&&(g.ball.y>2.8||g.ball.vy>3.5),defend=lobThreat||brain.style==='defensive';
+      const depth=incoming?(lobThreat?7.4:5.6):defend?6.1:g.lastShotSpeed>10||g.solvedKind==='lob'?3.25:4.8;
+      // Partners cover separate lanes, moving together toward net or defensive positions.
+      const center=clamp(g.ball.x*.35,-1.5,1.5),lane=ids.length===2?(pick?(pick.x>=0?-1:1):(ids.indexOf(id)===0?1:-1)):0;
+      return {x:clamp(center+lane*2.1,-4.1,4.1),z:side*depth};
     }
     coordinate(){
       const g=this.game,settings=this.settings();
@@ -977,14 +985,15 @@ window.readSimpleInputs=readSimpleInputs;
         const pick=incoming?g.predictTeam(team):null;
         if(pick)g.claims[team]=pick.id;
         for(const id of ids){if(g.isHuman(id))continue;const brain=this.brains[id],p=g.players[id];
-          if(incoming&&brain.shot!==g.rallyHits){brain.shot=g.rallyHits;brain.readyAt=g.time+settings.reaction*(1+brain.fatigue*.5);brain.plan=null;brain.offset=g.gaussian()*settings.error;brain.next=0;this.transition(brain,'Track');}
+          if(incoming&&brain.shot!==g.rallyHits){brain.shot=g.rallyHits;brain.perceiveAt=g.time+settings.reaction*(1+brain.fatigue*.5);brain.readyAt=brain.perceiveAt;g.targets[id]={x:p.x,z:p.z};p.splitStart=g.time;brain.plan=null;brain.offset=g.gaussian()*settings.error;brain.next=0;this.transition(brain,'Track');}
+          if(incoming&&g.time<brain.perceiveAt)continue;
           if(g.time<brain.next)continue;brain.next=g.time+levels.decision+settings.reaction*.3;
           if(incoming&&pick&&pick.id===id){
-            g.targets[id]={x:clamp(pick.x+(brain.offset||0),-4.5,4.5),z:side*clamp(Math.abs(pick.z)+Math.abs(brain.offset||0)*.3,.65,9.4)};
+            const target={x:clamp(pick.x+(brain.offset||0),-4.5,4.5),z:side*clamp(Math.abs(pick.z)+Math.abs(brain.offset||0)*.3,.65,9.4)};
+            if(Math.hypot(target.x-g.targets[id].x,target.z-g.targets[id].z)>.16)g.targets[id]=target;
             if(g.time>=brain.readyAt&&!brain.plan){brain.plan=this.choose(id);brain.readyAt=g.time+.06+brain.plan.displaced*settings.reaction;this.transition(brain,brain.plan.intent);}
           }else{
-            const depth=brain.style==='defensive'?6.3:brain.style==='aggressive'&&Math.abs(g.ball.z)<6?3.0:4.9;
-            g.targets[id]={x:clamp(ids.length===2&&pick?(pick.x>=0?-2.4:2.4):g.ball.x*.22+(ids.length===2?(id<2?1.9:-1.9)*side:0),-4.3,4.3),z:side*(incoming?6.2:depth)};
+            g.targets[id]=this.recoveryTarget(id,pick);
             this.transition(brain,'Recover');brain.plan=null;
           }
         }
@@ -993,7 +1002,7 @@ window.readSimpleInputs=readSimpleInputs;
       }
     }
     hit(id){const g=this.game,brain=this.brains[id],team=g.team(id);if(g.claims[team]!==id||!brain.plan||g.time<brain.readyAt||g.time<(brain.cooldown||0)||!g.canHit(id)||g.serveActive&&(g.bounces[team]===0||id!==g.serveReceiver))return;
-      const plan=brain.plan,p=g.players[id],distance=Math.hypot(g.ball.x-p.x,g.ball.z-p.z),strain=clamp(distance-.55,0,1)+brain.fatigue*.3+this.pressure()*.12;
+      const plan=this.choose(id),p=g.players[id],distance=Math.hypot(g.ball.x-p.x,g.ball.z-p.z),strain=clamp(distance-.55,0,1)+brain.fatigue*.3+this.pressure()*.12;
       const error=plan.error*(.6+strain);const x=plan.x+g.gaussian()*error,z=plan.z+g.gaussian()*error;
       this.transition(brain,'Perform Action');g.serveActive=false;g.launch(id,x,z,plan.power,plan.kind);brain.cooldown=g.time+levels.cooldown;
       const record={key:plan.key,lane:plan.lane,kind:plan.kind,power:plan.power,team};brain.history.push(record);brain.history=brain.history.slice(-8);this.history.push(record);this.history=this.history.slice(-12);brain.plan=null;
@@ -1044,6 +1053,7 @@ window.readSimpleInputs=readSimpleInputs;
         const humans=this.members(team).filter(id=>this.isHuman(id)&&this.movementModes?.[id]!=='joystick');if(!humans.length)continue;
         const incoming=this.lastHitter!==team,side=team===0?1:-1;let plan=this.runPlans?.[team];
         if(!plan||plan.hit!==this.lastHitTime||plan.point!==this.pointNumber||plan.next<=this.time){
+          if(incoming&&(!plan||plan.hit!==this.lastHitTime))for(const id of humans)this.players[id].splitStart=this.time;
           plan={hit:this.lastHitTime,point:this.pointNumber,next:this.time+tuning.decision,pick:incoming?this.predictTeam(team):null};this.runPlans??=[];this.runPlans[team]=plan;
         }
         if(plan.pick)this.claims[team]=plan.pick.id;
@@ -1174,7 +1184,25 @@ window.readSimpleInputs=readSimpleInputs;
     }
     coordinate(){this.tactics.coordinate();}
     aiHit(id){this.tactics.hit(id);}
-    moveToward(p,x,z,dt,speed=window.PADEL_TUNING.movement.run){const id=this.players.indexOf(p);if(this.mode==='rally'&&id>=0&&!this.isHuman(id)&&this.tactics)speed=this.tactics.settings().speed*(1-this.tactics.brains[id].fatigue*.15);const dx=x-p.x,dz=z-p.z,d=Math.hypot(dx,dz),targetSpeed=Math.min(speed,d*window.PADEL_TUNING.movement.gain),vx=d>.001?dx/d*targetSpeed:0,vz=d>.001?dz/d*targetSpeed:0,ax=vx-p.vx,az=vz-p.vz,a=Math.hypot(ax,az),limit=window.PADEL_TUNING.movement.acceleration*dt,f=a>limit?limit/a:1;p.vx+=ax*f;p.vz+=az*f;p.x=clamp(p.x+p.vx*dt,-4.55,4.55);const side=z<0?-1:1;p.z=side*clamp((p.z+p.vz*dt)*side,.6,9.55);}
+    moveToward(p,x,z,dt,speed=window.PADEL_TUNING.movement.run){
+      if(dt<=0)return;const id=this.players.indexOf(p),bot=id>=0&&!this.isHuman(id),brain=this.tactics?.brains[id],t=window.PADEL_TUNING.movement;
+      if(this.mode==='rally'&&bot){speed=this.tactics.settings().speed*(1-brain.fatigue*.15);if(this.lastHitter!==this.team(id)&&this.time<brain.perceiveAt)speed=0;}
+      const dx=x-p.x,dz=z-p.z,d=Math.hypot(dx,dz),oldVX=p.vx,oldVZ=p.vz,oldSpeed=Math.hypot(oldVX,oldVZ);
+      const retreat=d>2&&dz*(id%2?-1:1)>0,shuffle=!retreat&&Math.abs(dx)>Math.abs(dz)*1.4;
+      if(shuffle)speed*=.93;
+      const targetSpeed=Math.min(speed,Math.sqrt(2*t.braking*Math.max(0,d-.12))),vx=d>.12?dx/d*targetSpeed:0,vz=d>.12?dz/d*targetSpeed:0;
+      const ax=vx-p.vx,az=vz-p.vz,a=Math.hypot(ax,az),brake=targetSpeed<oldSpeed||oldVX*vx+oldVZ*vz<0,limit=(brake?Math.min(t.braking,t.acceleration):t.acceleration)*dt,f=a>limit?limit/a:1;
+      p.vx+=ax*f;p.vz+=az*f;const nx=p.x+p.vx*dt,nz=p.z+p.vz*dt,side=id>=0?(this.team(id)===0?1:-1):(p.z<0?-1:1);
+      p.x=clamp(nx,-4.55,4.55);p.z=side*clamp(nz*side,.6,9.55);if(p.x!==nx)p.vx=0;if(p.z!==nz)p.vz=0;
+      p.ax=(p.vx-oldVX)/dt;p.az=(p.vz-oldVZ)/dt;
+      if(bot){
+        const moving=Math.hypot(p.vx,p.vz),near=Math.hypot(p.x-this.ball.x,p.z-this.ball.z)<2.7;
+        p.locomotion=moving<.12?'idle':shuffle?'shuffle':'run';
+        const track=near||moving<.3||shuffle||this.mode!=='rally',facing=this.mode!=='rally'?(side===1?0:Math.PI):track?Math.atan2(p.x-this.ball.x,p.z-this.ball.z):Math.atan2(-p.vx,-p.vz);
+        const delta=Math.atan2(Math.sin(facing-p.facing),Math.cos(facing-p.facing)),turn=clamp(delta*(1-Math.exp(-dt*10)),-dt*8,dt*8);p.facing=Math.atan2(Math.sin(p.facing+turn),Math.cos(p.facing+turn));p.turnRate=turn/dt;
+        if(oldSpeed>4.5&&brake&&a>3&&this.time-p.skidStart>1.2){p.skidStart=this.time;p.skidSide=Math.sign(oldVX)||1;p.recoverUntil=this.time+.35;this.emit('skid',id,oldSpeed);}
+      }
+    }
     moveLocal(id,dt){const c=this.controls[id],before=c.stamina;super.moveLocal(id,dt);if(c.stamina<before)c.stamina+=((before-c.stamina)*this.stat(id,'stamina')*.12);}
     step(dt=1/120){if(this.paused||this.networkRole==='guest')return;this.updateAutoRun();super.step(dt);if(this.mode!=='menu'&&this.mode!=='match'){this.advanceCharge(dt);this.tactics.step(dt);}}
   }
@@ -1268,9 +1296,9 @@ const materials={
  wood:new THREE.MeshStandardMaterial({color:0x997d56,roughness:.8}),light:new THREE.MeshStandardMaterial({color:0xfff5d0,emissive:0xffe7af,emissiveIntensity:1})
 };
 // Static geometry is batched by material, including the fence and net wires.
-const rearMaterials=new Map();for(const m of [materials.frame,materials.mesh,materials.glass,materials.concrete]){const clone=m.clone();clone.transparent=true;clone.depthWrite=false;rearMaterials.set(m,clone);}let rearWall=false,batchParent=scene;const batches=new Map();const transform=new THREE.Matrix4(),quat=new THREE.Quaternion(),pos=new THREE.Vector3(),scale=new THREE.Vector3();
+const rearMaterials=new Map();for(const m of [materials.frame,materials.mesh,materials.glass,materials.concrete]){const clone=m.clone();clone.transparent=true;clone.depthWrite=false;rearMaterials.set(m,clone);}const farWallMaterials=new Map([...rearMaterials].map(([original,material])=>[original,material.clone()]));let rearWall=false,batchParent=scene;const batches=new Map();const transform=new THREE.Matrix4(),quat=new THREE.Quaternion(),pos=new THREE.Vector3(),scale=new THREE.Vector3();
 function batch(geometry,material,x,y,z,rx=0,ry=0,rz=0){
-  if(rearWall&&rearMaterials.has(material))material=rearMaterials.get(material);quat.setFromEuler(new THREE.Euler(rx,ry,rz));pos.set(x,y,z);scale.set(1,1,1);transform.compose(pos,quat,scale);
+  if(rearWall&&rearMaterials.has(material))material=(rearWall<0?farWallMaterials:rearMaterials).get(material);quat.setFromEuler(new THREE.Euler(rx,ry,rz));pos.set(x,y,z);scale.set(1,1,1);transform.compose(pos,quat,scale);
   geometry.applyMatrix4(transform);const g=geometry.index?geometry.toNonIndexed():geometry;
   if(!batches.has(material))batches.set(material,[]);batches.get(material).push(g);if(g!==geometry)geometry.dispose();
 }
@@ -1288,7 +1316,7 @@ turfGeo.setAttribute('position',new THREE.Float32BufferAttribute(turfPositions,3
 for(const sign of [-1,1]){
   box(10,.009,.05,0,.008,sign*6.95,materials.line);box(.05,.009,6.95,0,.008,sign*3.475,materials.line);
   box(.05,.009,20,sign*4.975,.008,0,materials.line);box(10,.009,.05,0,.008,sign*9.975,materials.line);
-  rearWall=true;box(10,3,.018,0,1.5,sign*10,materials.glass);meshGridZ(sign*10,-5,5,3,4);
+  rearWall=sign;box(10,3,.018,0,1.5,sign*10,materials.glass);meshGridZ(sign*10,-5,5,3,4);
   for(let x=-5;x<=5;x+=2.5){box(.065,4,.065,x,2,sign*10);for(const y of [.32,2.68])box(.12,.09,.05,x,y,sign*9.98,materials.concrete);}
   for(const y of [0,3,4])box(10,.055,.055,0,y,sign*10);
   rearWall=false;for(let z=-10;z<10;z+=2){const h=Math.abs(z+1)>=8?3:2;box(.018,h,2,sign*5,h/2,z+1,materials.glass);meshGridX(sign*5,z,z+2,h,h+1);box(.055,h+1,.055,sign*5,(h+1)/2,z);box(.055,.055,2,sign*5,h,z+1);box(.055,.055,2,sign*5,h+1,z+1);box(.055,.055,2,sign*5,.025,z+1);for(const zz of [z+.13,z+1.87])box(.055,.09,.12,sign*4.98,h-.3,zz,materials.concrete);}
@@ -1416,14 +1444,14 @@ function createPlayer(color,index=0,id=0){
   function ellipsoid(m,parent,x,y,z,sx,sy,sz){const g=new THREE.SphereGeometry(1,14,10);g.scale(sx,sy,sz);return part(g,m,parent,x,y,z);}
   const hips=joint('hips',root,0,.89,0),torso=joint('torso',hips,0,.11,0);
   const pelvis=part(taperedCapsule(.12,.22,.06),shorts,hips,0,-.015,0);pelvis.scale.set(1.38,1,.77);
-  const chest=part(taperedCapsule(.14,.45,.22),shirt,torso,0,.20,0);chest.scale.set(1.24,1,.72);
+  const chest=part(new THREE.LatheGeometry([new THREE.Vector2(.115,-.29),new THREE.Vector2(.12,-.22),new THREE.Vector2(.132,-.08),new THREE.Vector2(.155,.07),new THREE.Vector2(.151,.14),new THREE.Vector2(.104,.225)],16),shirt,torso,0,.20,0);chest.scale.set(1.24,1,.72);
   const shoulderYoke=part(taperedCapsule(.074,.39,.03),shirt,torso,0,.358,0,0,0,Math.PI/2);shoulderYoke.scale.z=.86;
   const collar=part(new THREE.TorusGeometry(.065,.011,6,20),trim,torso,0,.443,0,Math.PI/2);collar.scale.set(1,1,.8);
   // A small stitched club mark, built from primitives rather than a logo file.
   part(new THREE.TorusGeometry(.014,.003,4,12),trim,torso,-.095,.325,-.097);
   part(taperedCapsule(.003,.035,0),trim,torso,-.095,.325,-.099,0,0,-.38);
   const neck=joint('neck',torso,0,.48,0);
-  part(taperedCapsule(.045,.11,.05),skin,neck,0,.024,0);
+  part(taperedCapsule(.046,.15,.05),skin,neck,0,.024,0);
   const head=joint('head',neck,0,.1613,0);
   const headMaterial=new THREE.MeshStandardMaterial({map:avatarFaceTextures[index],roughness:.86});
   const headMesh=ellipsoid(headMaterial,head,0,0,0,.102,1.78/15,.10);headMesh.name='textured-head';
@@ -1436,7 +1464,7 @@ function createPlayer(color,index=0,id=0){
     const thigh=joint(name+'Thigh',hips,side*.105,-.005,0);
     part(taperedCapsule(.073,.405,.14),skin,thigh,0,-.2025,0);
     part(taperedCapsule(.087,.18,.06),shorts,thigh,0,-.073,0);
-    const shin=joint(name+'Shin',thigh,0,-.405,0);
+    const shin=joint(name+'Shin',thigh,0,-.405,0);ellipsoid(skin,shin,0,0,0,.046,.048,.047);
     part(taperedCapsule(.049,.395,.27),skin,shin,0,-.1975,0);
     part(taperedCapsule(.044,.10,.03),shoes,shin,0,-.343,0);
     const foot=joint(name+'Foot',shin,0,-.395,0);
@@ -1447,7 +1475,7 @@ function createPlayer(color,index=0,id=0){
     const arm=joint(name+'UpperArm',shoulder);
     part(taperedCapsule(.053,.295,.16),skin,arm,0,-.1475,0);
     part(taperedCapsule(.069,.15,.07),shirt,arm,0,-.044,0);
-    const forearm=joint(name+'Forearm',arm,0,-.295,0);
+    const forearm=joint(name+'Forearm',arm,0,-.295,0);ellipsoid(skin,forearm,0,0,0,.039,.041,.04);
     part(taperedCapsule(.045,.27,.23),skin,forearm,0,-.135,0);
     part(taperedCapsule(.044,.045,0),trim,forearm,0,-.235,0);
     const hand=joint(name+'Hand',forearm,0,-.27,0);
@@ -1470,7 +1498,7 @@ function createPlayer(color,index=0,id=0){
   mergeJointMeshes(root);root.updateMatrixWorld(true);
   const bounds=new THREE.Box3().setFromObject(root),heightScale=1.78/(bounds.max.y-bounds.min.y),groundOffset=-bounds.min.y*heightScale;
   root.scale.setScalar(heightScale);root.position.y=groundOffset;scene.add(root);
-  const model={root,hips,torso,neck,head,headMesh,hairMesh,skin,headMaterial,hairMaterial,limbs,racket,index,id,groundOffset,heightScale,
+  const model={root,hips,torso,neck,head,headMesh,hairMesh,skin,shirt,shorts,shoes,headMaterial,hairMaterial,limbs,racket,index,id,groundOffset,heightScale,
     clock:0,gait:0,previousVX:0,previousVZ:0,contactAt:-100,contactHeight:.9,contactKind:'drive',emotion:'neutral',emotionUntil:0,pose:new Float32Array(24),targetPose:new Float32Array(24)};
   // Pose layout: hips height/X, torso X/Y/Z; left/right thigh, knee, ankle;
   // left/right shoulder X/Z, elbow X, wrist X; head X/Y; hips Y/Z; stance.
@@ -1648,7 +1676,7 @@ function animatePlayer(model,p,id,dt){
   }
   if(model.emotion!=='neutral'){if(model.clock>model.emotionUntil)setAvatarExpression(model,'neutral');else if(game.mode==='between'||game.mode==='match'){if(model.emotion==='win'){target[11]=1.85;target[13]=1.25;}else{target[2]=-.22;target[15]=.2;target[17]=.4;}}}
   let turn=p.turnRate||0;
-  if(game.isHuman(id))model.root.rotation.y=p.facing;else{const track=near||contact||speed<.2||shuffle||back||game.mode==='drop',desired=track?Math.atan2(p.x-game.ball.x,p.z-game.ball.z):Math.atan2(-p.vx,-p.vz),delta=Math.atan2(Math.sin(desired-model.root.rotation.y),Math.cos(desired-model.root.rotation.y));turn=THREE.MathUtils.clamp(delta*(1-Math.exp(-dt*12)),-dt*12,dt*12);model.root.rotation.y+=turn;p.facing=model.root.rotation.y;p.turnRate=turn/dt;turn=p.turnRate;}
+  model.root.rotation.y=p.facing;
   const ax=THREE.MathUtils.clamp((p.vx-model.previousVX)/dt,-30,30),az=THREE.MathUtils.clamp((p.vz-model.previousVZ)/dt,-30,30);model.previousVX=p.vx;model.previousVZ=p.vz;target[2]+=THREE.MathUtils.clamp((ax*s+az*c)*.003,-.08,.08);target[4]+=THREE.MathUtils.clamp(-(ax*c-az*s)*.003-turn*speed*.002,-.10,.10);
   const lookYaw=Math.atan2(p.x-game.ball.x,p.z-game.ball.z)-model.root.rotation.y;target[20]=THREE.MathUtils.clamp(Math.atan2(Math.sin(lookYaw),Math.cos(lookYaw)),-.7,.7);target[19]=THREE.MathUtils.clamp(Math.atan2(game.ball.y-1.55,Math.max(.7,distance)),-.32,.42);if(near&&!contact&&!preparing)target[3]+=target[20]*.25;
   const blend=1-Math.exp(-dt*(contact?22:preparing?17:13)),pose=model.pose;for(let i=0;i<pose.length;i++)pose[i]+=(target[i]-pose[i])*blend;
@@ -1668,7 +1696,7 @@ const COURTS={
   club:{name:'Club 01 — Open Air',short:'Open Air',note:'Daylight, trees and a familiar green court.',sky:'#afc8bf',floor:'#376f57',outer:'#b8b9a2',light:0xffedc6,intensity:3.2,ambient:2.2},
   indoor:{name:'Indoor Arena',short:'Indoor Arena',note:'Blue turf, roof beams and a crowd under arena lights.',sky:'#253a46',floor:'#326f9c',outer:'#3d4b54',light:0xd6eaff,intensity:2.2,ambient:2.0},
   seaside:{name:'Seaside',short:'Seaside',note:'Warm sunset light, palms and the sea beyond the glass.',sky:'#dfa17b',floor:'#ad6653',outer:'#d4b586',light:0xffaf73,intensity:3.5,ambient:1.8},
-  night:{name:'Night Court',short:'Night Court',note:'Floodlights, deep blue skies and illuminated glass edges.',sky:'#101e35',floor:'#566384',outer:'#283644',light:0xd9eaff,intensity:3.6,ambient:.9}
+  night:{name:'Night Court',short:'Night Court',note:'Floodlights, deep blue skies and illuminated glass edges.',sky:'#0b1922',floor:'#5b7945',outer:'#283644',light:0xd9eaff,intensity:3.6,ambient:.9}
 };
 const SURFACES=[{name:'Club green',hex:'#376f57'},{name:'Ocean blue',hex:'#326f9c'},{name:'Terracotta',hex:'#ad6653'},{name:'Lavender',hex:'#756887'}];
 let setup={court:'club',racket:'round',format:'doubles',autoSwitch:false,difficulty:'normal',colors:{}},setupStep=0,previewing=false,viewAngle=0;
@@ -1688,8 +1716,8 @@ function buildEnvironment(key){const group=new THREE.Group();scene.add(group);ba
     for(const side of [-1,1])for(const z of [-16,-4,13,24]){const x=side*(11+random()*3);cylinder(.13,.24,5.8,x,2.7,z,materials.wood,.08*side);for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const leaf=new THREE.ConeGeometry(.52,3.6,5);leaf.rotateZ(Math.PI/2);batch(leaf,materials.leaves,x+Math.cos(a)*1.4,5.3,z+Math.sin(a)*1.4,0,-a,.1);}}
     const sunDisk=new THREE.Mesh(new THREE.SphereGeometry(4,24,16),new THREE.MeshBasicMaterial({color:0xffd298}));sunDisk.position.set(-34,9,-70);group.add(sunDisk);
   }else{
-    const skyline=new THREE.MeshStandardMaterial({color:0x1c2b42,roughness:1});for(let x=-34;x<=34;x+=5){const h=3+random()*8;box(3,h,3,x,h/2,-30,skyline);}
-    const edge=new THREE.MeshBasicMaterial({color:0x70b9dc});for(const side of [-1,1]){box(.024,.025,20,side*5,2,0,edge);box(10,.025,.024,0,3,side*10,edge);for(const z of [-9,9]){cylinder(.07,.11,7.5,side*6.5,3.75,z,steel);box(1.1,.12,.35,side*6.5,7.5,z,steel);box(1,.035,.3,side*6.5,7.42,z,materials.light);}}
+    for(const side of [-1,1])for(const z of [-14,14]){const x=side*8.8;cylinder(.13,.22,5.8,x,2.7,z,materials.wood,.06*side);for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const leaf=new THREE.ConeGeometry(.42,3.6,5);leaf.rotateZ(Math.PI/2);batch(leaf,materials.leaves,x+Math.cos(a)*1.35,5.3,z+Math.sin(a)*1.35,0,-a,.14);}}const skyline=new THREE.MeshStandardMaterial({color:0x1c2b42,roughness:1});for(let x=-34;x<=34;x+=5){const h=3+random()*8;box(3,h,3,x,h/2,-30,skyline);}
+    const edge=new THREE.MeshBasicMaterial({color:0x70b9dc});for(const side of [-1,1]){box(.024,.025,20,side*5,2,0,edge);for(const z of [-9,9]){cylinder(.07,.11,7.5,side*6.5,3.75,z,steel);box(1.1,.12,.35,side*6.5,7.5,z,steel);box(1,.035,.3,side*6.5,7.42,z,materials.light);}}
     const stars=new THREE.BufferGeometry(),dots=[];for(let i=0;i<180;i++)dots.push((random()-.5)*150,22+random()*45,(random()-.5)*150);stars.setAttribute('position',new THREE.Float32BufferAttribute(dots,3));group.add(new THREE.Points(stars,new THREE.PointsMaterial({color:0xdceaf5,size:.09,sizeAttenuation:true})));
   }
   flushBatches();batchParent=scene;group.visible=false;return group;
@@ -1751,8 +1779,8 @@ function frame(now){
   const b=game.ball,p=game.players[game.controlled],inMenu=game.mode==='menu';
   if(inMenu){if(previewing&&viewAngle===1){desired.set(0,2.2,8.8);targetLook.set(0,1,-6);}else if(previewing&&viewAngle===2){desired.set(.01,27,.01);targetLook.set(0,0,0);}else{desired.set(17,15.5,22);targetLook.set(-1.2,.2,-1);}} 
   else updatePlayCamera(p,b,dt);
-  for(const [original,material] of rearMaterials){const opacity=inMenu?original.opacity:(original===materials.glass?.025:original===materials.mesh?.065:.12);material.opacity+=(opacity-material.opacity)*(1-Math.exp(-dt*4));}const smooth=1-Math.exp(-dt*(inMenu?3.1:experience.calm?4.5:8));camera.position.lerp(desired,smooth);look.lerp(targetLook,smooth);camera.lookAt(look);
-  for(const i of game.activePlayers){animatePlayer(models[i],game.players[i],i,game.paused?0:dt);animateClubCharacter(models[i],game.players[i],i,game.paused?0:dt);}updateLocker(dt);updateClubExtras(dt,inMenu);updateMotionEffects(dt,inMenu);
+  for(const [wallSide,wallMaterials] of [[1,rearMaterials],[-1,farWallMaterials]])for(const [original,material] of wallMaterials){const opacity=inMenu?original.opacity:cameraMode===5?(camera.position.z*wallSide>9.3?0:original.opacity):(original===materials.glass?.025:original===materials.mesh?.065:.12);material.opacity+=(opacity-material.opacity)*(1-Math.exp(-dt*4));}const smooth=1-Math.exp(-dt*(inMenu?3.1:experience.calm?4.5:8));camera.position.lerp(desired,smooth);look.lerp(targetLook,smooth);camera.lookAt(look);
+  for(const i of game.activePlayers){animatePlayer(models[i],game.players[i],i,game.paused?0:dt);animateClubCharacter(models[i],game.players[i],i,game.paused?0:dt);refineAthleteMotion(models[i],game.players[i],i,game.paused?0:dt);}updateLocker(dt);updateClubExtras(dt,inMenu);updateMotionEffects(dt,inMenu);
   if(game.networkRole==='guest'&&game.mode==='rally')ballMesh.position.lerp(new THREE.Vector3(b.x,b.y,b.z),1-Math.exp(-dt*30));else ballMesh.position.set(b.x,b.y,b.z);if(!game.paused){ballMesh.rotation.x+=b.sx*dt;ballMesh.rotation.z+=b.sz*dt;}
   shadow.position.set(b.x,.018,b.z);const shadowSize=.07+Math.min(b.y,5)*.021;shadow.scale.set(shadowSize*1.4,shadowSize,1);shadow.material.opacity=.5-Math.min(b.y,6)*.04;
   playerRing.position.set(p.x,.02,p.z);playerRing.visible=!inMenu;
@@ -1767,7 +1795,7 @@ function frame(now){
 }
 camera.lookAt(look);resetTrail();$('start').disabled=false;$('start-text').textContent='Step onto the court';requestAnimationFrame(frame);
 // Shared desktop / Android presentation. Camera preferences remain local online.
-const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead','Player eyes'];
+const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead','Player eyes','Match view'];
 let experience={camera:4,largeControls:false,calm:false,best:0};
 try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
 function saveExperience(){try{localStorage.setItem('padel-experience',JSON.stringify(experience));}catch{}}
@@ -1850,6 +1878,11 @@ function renderEyeView(view,id){
     joints.forEach((j,i)=>j.quaternion.copy(rotations[i]));model.root.updateMatrixWorld(true);
   }
 }
+// Close third-person view shows footwork while keeping the ball and net above the player.
+function setMatchPose(position,target,p,b,side){
+  position.set(THREE.MathUtils.clamp(p.x*.82,-3.9,3.9),2.65,side*Math.min(13,Math.abs(p.z)+3.35));
+  target.set(p.x*.2+b.x*.24,.85+Math.max(0,b.y-2.5)*.25,p.z-side*7.5);
+}
 // Court views face the other half; the eye view keeps the ball centered.
 function updatePlayCamera(p,b,dt){
   if(isLocalCoop()){updateCoopCamera();return;}
@@ -1858,9 +1891,10 @@ function updatePlayCamera(p,b,dt){
   else if(cameraMode===1){desired.set(p.x*.65,5.8+high*.16,p.z+side*7);targetLook.set(p.x*.4+b.x*.08,.7+high*.18,p.z-side*7);}
   else if(cameraMode===2){desired.set(side*.01,15,side*22);targetLook.set(0,.3,0);}
   else if(cameraMode===3){desired.set(p.x*.15,23,side*.4);targetLook.set(p.x*.15,0,-side*.4);}
-  else{setEyePose(desired,targetLook,p,b,side);}
+  else if(cameraMode===4){setEyePose(desired,targetLook,p,b,side);}
+  else{setMatchPose(desired,targetLook,p,b,side);}
   const near=cameraMode===4?.01:.08;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}
-  const base=[44,55,49,53,78][cameraMode],fov=camera.aspect<1.6?base+8:base;
+  const base=[44,55,49,53,78,62][cameraMode],fov=camera.aspect<1.6?base+8:base;
   if(Math.abs(camera.fov-fov)>.01){camera.fov+=(fov-camera.fov)*(1-Math.exp(-dt*7));camera.updateProjectionMatrix();}
 }
 function fitViewport(){const width=Math.max(1,Math.round(window.visualViewport?.width||innerWidth)),height=Math.max(1,Math.round(window.visualViewport?.height||innerHeight));document.documentElement.style.setProperty('--screen-h',height+'px');camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);renderer.setPixelRatio(Math.min(devicePixelRatio,1.35));}
@@ -1890,8 +1924,8 @@ function installCharacter(model,assetIndex){
  add('head',model.head,[.25,.27,.23],[0,0,0]);add('torso',model.torso,[.37,.44,.20],[0,.21,0]);add('torso',model.hips,[.30,.16,.19],[0,.02,0],[0,.2]);model.neck.children.filter(m=>m.isMesh).forEach(m=>m.visible=true);
  for(const side of ['left','right']){const l=model.limbs[side],arm='arm-'+side,leg='leg-'+side;add(arm,l.arm,[.115,.295,.12],[0,-.1475,0],[.5,1]);add(arm,l.forearm,[.095,.27,.105],[0,-.135,0],[0,.5]);add(arm,l.hand,[.075,.085,.085],[0,-.032,0],[0,.12]);add(leg,l.thigh,[.145,.405,.16],[0,-.2025,0],[.5,1]);add(leg,l.shin,[.12,.395,.13],[0,-.1975,0],[.12,.5]);add(leg,l.foot,[.135,.09,.25],[0,-.035,-.05],[0,.12]);}
 }
-let clubhouse={style:0,tab:'club',demo:'idle'};try{const saved=JSON.parse(localStorage.getItem('padel-clubhouse')||'{}');if([-1,0,1].includes(saved.style))clubhouse.style=saved.style;}catch{}
-function chooseCharacter(style){clubhouse.style=style;models.forEach((m,i)=>installCharacter(m,style<0?-1:(style+i%2)%characterAssets.length));document.querySelectorAll('[data-character]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.character)===style)));try{localStorage.setItem('padel-clubhouse',JSON.stringify({style}));}catch{}renderRosterPortraits();}
+let clubhouse={style:-1,tab:'club',demo:'idle'};try{const saved=JSON.parse(localStorage.getItem('padel-clubhouse')||'{}');if(saved.appearanceVersion===2&&[-1,0,1].includes(saved.style))clubhouse.style=saved.style;}catch{}
+function chooseCharacter(style){clubhouse.style=style;models.forEach((m,i)=>installCharacter(m,style<0?-1:(style+i%2)%characterAssets.length));document.querySelectorAll('[data-character]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.character)===style)));try{localStorage.setItem('padel-clubhouse',JSON.stringify({style,appearanceVersion:2}));}catch{}renderRosterPortraits();}
 function clubTab(tab){clubhouse.tab=tab;document.querySelector('.rally-challenge').hidden=tab!=='club';document.querySelectorAll('[data-club-panel]').forEach(p=>p.hidden=p.dataset.clubPanel!==tab);document.querySelectorAll('[data-club-tab]').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.clubTab===tab));b.classList.toggle('active',b.dataset.clubTab===tab);});document.querySelector('.experience-panel').scrollTop=0;}
 for(const b of document.querySelectorAll('[data-club-tab]'))b.onclick=()=>clubTab(b.dataset.clubTab);
 for(const b of document.querySelectorAll('[data-character]'))b.onclick=()=>chooseCharacter(Number(b.dataset.character));
@@ -1915,6 +1949,53 @@ function animateClubCharacter(model,p,id,dt){
 const lockerScene=new THREE.Scene();lockerScene.background=new THREE.Color('#172d39');lockerScene.add(new THREE.HemisphereLight(0xf3f9ff,0x647a68,2.8));const lockerLight=new THREE.DirectionalLight(0xffe4c5,2.5);lockerLight.position.set(-2,4,-3);lockerScene.add(lockerLight);
 const lockerCamera=new THREE.PerspectiveCamera(33,1,.1,20);lockerCamera.position.set(2.2,1.55,-3.4);lockerCamera.lookAt(0,.93,0);const lockerTarget=new THREE.WebGLRenderTarget(256,256),lockerPixels=new Uint8Array(256*256*4),lockerContext=$('locker-canvas').getContext('2d'),lockerImage=lockerContext.createImageData(256,256);lockerTarget.texture.colorSpace=THREE.SRGBColorSpace;let lockerTimer=0;
 function updateLocker(dt){if(game.mode!=='menu'||clubhouse.tab!=='locker')return;lockerTimer+=dt;if(lockerTimer<1/24)return;lockerTimer=0;const model=models[0],root=model.root,oldPosition=root.position.clone(),oldRotation=root.rotation.clone(),parent=root.parent,visible=root.visible,previous=renderer.getRenderTarget();lockerScene.add(root);root.position.set(0,model.groundOffset,0);root.rotation.y=0;root.visible=true;renderer.setRenderTarget(lockerTarget);renderer.render(lockerScene,lockerCamera);renderer.readRenderTargetPixels(lockerTarget,0,0,256,256,lockerPixels);renderer.setRenderTarget(previous);parent.add(root);root.position.copy(oldPosition);root.rotation.copy(oldRotation);root.visible=visible;for(let row=0;row<256;row++)lockerImage.data.set(lockerPixels.subarray((255-row)*1024,(256-row)*1024),row*1024);lockerContext.putImageData(lockerImage,0,0);}
+
+// Grounded footwork and clothing are presentation-only; racket contact stays authoritative.
+const footDown=new THREE.Vector3(0,-1,0),footTarget=new THREE.Vector3(),kneePole=new THREE.Vector3(),legDirection=new THREE.Vector3(),kneePoint=new THREE.Vector3(),lowerLeg=new THREE.Vector3(),legQ=new THREE.Quaternion();
+function plantAthleteFoot(model,limb,world,weight){
+  const footRotation=limb.foot.getWorldQuaternion(new THREE.Quaternion());
+  model.hips.updateWorldMatrix(true,false);footTarget.copy(world);model.hips.worldToLocal(footTarget);footTarget.sub(limb.thigh.position);
+  const upper=.405,lower=.395,d=THREE.MathUtils.clamp(footTarget.length(),.06,.79);
+  legDirection.copy(footTarget).normalize();kneePole.set(0,0,-1).addScaledVector(legDirection,legDirection.z).normalize();
+  const along=(upper*upper+d*d-lower*lower)/(2*d),height=Math.sqrt(Math.max(0,upper*upper-along*along));
+  kneePoint.copy(legDirection).multiplyScalar(along).addScaledVector(kneePole,height);
+  legQ.setFromUnitVectors(footDown,kneePoint.clone().normalize());limb.thigh.quaternion.slerp(legQ,weight);
+  lowerLeg.copy(legDirection).multiplyScalar(d).sub(kneePoint).applyQuaternion(legQ.invert()).normalize();
+  legQ.setFromUnitVectors(footDown,lowerLeg);limb.shin.quaternion.slerp(legQ,weight);
+  model.root.updateMatrixWorld(true);
+  limb.shin.getWorldQuaternion(legQ);limb.foot.quaternion.copy(legQ.invert().multiply(footRotation));
+  model.root.updateMatrixWorld(true);
+}
+function refineAthleteMotion(model,p,id,dt){
+  if(dt<=0)return;const speed=Math.hypot(p.vx,p.vz),contact=model.clock-model.contactAt<.28,split=game.time-p.splitStart<.32;
+  model.footPlants??={};
+  for(const [index,name]of ['left','right'].entries()){
+    const limb=model.limbs[name],phase=Math.sin(model.gait+index*Math.PI);
+    const stance=game.mode==='rally'&&!contact&&!split&&model.preHop<.025&&speed>.25&&phase<-.08;
+    let plant=model.footPlants[name];
+    if(!stance){model.footPlants[name]=null;continue;}
+    if(!plant){plant=limb.foot.getWorldPosition(new THREE.Vector3());plant.y=.09;model.footPlants[name]=plant;}
+    if(Math.hypot(plant.x-p.x,plant.z-p.z)>.7){model.footPlants[name]=null;continue;}
+    plantAthleteFoot(model,limb,plant,.82);
+  }
+  model.root.updateMatrixWorld(true);
+}
+function makeClubKit(id){
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const c=canvas.getContext('2d');
+  c.fillStyle=id%2?'#862e29':'#202a24';c.fillRect(0,0,256,256);
+  c.fillStyle=id%2?'#f2e6ce':'#d9f557';c.beginPath();c.moveTo(0,20);c.lineTo(256,146);c.lineTo(256,196);c.lineTo(0,72);c.fill();
+  c.fillStyle='#ffffff';c.font='bold 17px Arial';c.textAlign='center';c.fillText('PADEL CLUB',128,58);
+  c.globalAlpha=.13;c.fillStyle='#080d0b';for(let y=0;y<256;y+=5)for(let x=0;x<256;x+=5)c.fillRect(x,y,1,2);
+  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t;
+}
+for(const model of models){model.shirt.map=makeClubKit(model.id);model.shirt.color.set('#ffffff');model.shirt.roughness=.82;model.shirt.needsUpdate=true;}
+const turfCanvas=document.createElement('canvas');turfCanvas.width=turfCanvas.height=256;const turfContext=turfCanvas.getContext('2d');
+let turfSeed=7721;function turfRandom(){turfSeed=(turfSeed*1664525+1013904223)>>>0;return turfSeed/4294967296;}
+turfContext.fillStyle='#b5b9af';turfContext.fillRect(0,0,256,256);
+for(let i=0;i<18000;i++){const value=Math.floor(140+turfRandom()*110);turfContext.fillStyle='rgb('+value+','+value+','+value+')';turfContext.fillRect(turfRandom()*256,turfRandom()*256,.7,1+turfRandom()*2);}
+const turfDetail=new THREE.CanvasTexture(turfCanvas);turfDetail.wrapS=turfDetail.wrapT=THREE.RepeatWrapping;turfDetail.anisotropy=4;turfDetail.colorSpace=THREE.SRGBColorSpace;
+materials.turf.map=turfDetail;materials.turf.bumpMap=turfDetail;materials.turf.bumpScale=.006;materials.turf.needsUpdate=true;
+scene.traverse(mesh=>{if(mesh.isMesh&&mesh.material===materials.turf){const positions=mesh.geometry.attributes.position,uv=new Float32Array(positions.count*2);for(let i=0;i<positions.count;i++){uv[i*2]=positions.getX(i)*1.5;uv[i*2+1]=positions.getZ(i)*1.5;}mesh.geometry.setAttribute('uv',new THREE.BufferAttribute(uv,2));}});
 
 let progressStorage;try{progressStorage=localStorage;}catch{}
 game.progress=null;

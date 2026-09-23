@@ -14,7 +14,7 @@ replace('function menu(){','function menu(){if(online?.active)online.leave();res
 replace("window.addEventListener('keydown',e=>{","window.addEventListener('keydown',e=>{if(!$('online-panel').hidden)return;");
 // Shared camera derives its direction from the locally controlled player's team.
 // Either phone can view the court from behind an end wall.
-replace('rearWall=sign===1;','rearWall=true;');
+// Both end walls have independent materials in the shared build.
 replace('ballMesh.position.set(b.x,b.y,b.z);','if(game.networkRole===\'guest\'&&game.mode===\'rally\')ballMesh.position.lerp(new THREE.Vector3(b.x,b.y,b.z),1-Math.exp(-dt*30));else ballMesh.position.set(b.x,b.y,b.z);');
 replace("window.__padel={",fs.readFileSync(path.join(src,'mobile-ui.js'),'utf8')+'\n'+fs.readFileSync(path.join(src,'mobile-screen.js'),'utf8')+'\nwindow.__padel={online,touch,');
 s=s.replaceAll('Math.min(devicePixelRatio,1.8)','Math.min(devicePixelRatio,1.35)');

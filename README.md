@@ -65,4 +65,14 @@ Choose **Auto run** or **Joystick** in the Play menu before starting. Both use s
 
 **FULL SCREEN** is available directly in the Play menu on desktop and mobile. It requests fullscreen without starting a match. Browser restrictions still apply; the iPhone browser-play option remains available.
 
-In **Settings → Player eyes**, the camera sits at player eye height, faces the opponent and follows the ball across the court. Only the player's obstructing meshes are hidden during that camera's render; the racket arm stays visible. Other players and other camera views retain complete characters. Local two-player eye view uses split screen. The camera cycle includes this fifth view.
+**Player eyes** remains the starting camera. It follows the ball smoothly during play, but looks up the court during your serve and blends into ball tracking after the ball leaves your immediate reach. Only the player's obstructing meshes are hidden during that camera's render; the racket arm stays visible. Other players and other camera views retain complete characters. Local two-player eye view uses split screen.
+
+## Athletic movement and Match view
+
+**Settings → Match view** adds a sixth camera: a low, smooth view behind your full player, looking across the net. Choose **Courts → Night Court**, a green surface, and **Players → Club pro** for the visual direction inspired by the supplied reference. Club pro is now the initial athlete; old appearance preferences migrate once, then new character selections are saved normally. The existing lightweight procedural models remain stylized, with connected joints, sports kits and textured turf; they are not photorealistic scanned characters.
+
+Athletes split-step when the opponent hits. Bots turn and accelerate in the simulation, so their movement no longer depends on rendering. Short approaches brake before arrival, sideways movement uses shuffle steps, and visual foot planting reduces sliding during strides without moving the physical player or racket contact. A close return still needs actual reach.
+
+Bots pause for a difficulty-dependent reaction, intercept with stable targets, and recover into separate doubles lanes. They advance after an attacking return and retreat against a lob. Shot selection is reevaluated at contact, avoids low-ball smashes and repeated defensive lobs, and considers gaps, opponents at the net and the middle between two defenders. Longer rallies gradually increase attacking risk. Fatigue, reaction delay and bounded placement errors remain, so opponents are beatable.
+
+`athletic-motion.js` contains foot planting, sports kit textures and turf detail. `tests/athletic-gameplay.test.cjs` checks delayed bot movement, doubles positioning, shot variety, bounded turning, foot placement and camera framing. The full test suite also simulates rallies at all three difficulties and checks mobile input, racket contact and online synchronization.

@@ -1,5 +1,5 @@
 // Shared desktop / Android presentation. Camera preferences remain local online.
-const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead','Player eyes'];
+const CAMERA_NAMES=['Rally view','Chase','Full court','Overhead','Player eyes','Match view'];
 let experience={camera:4,largeControls:false,calm:false,best:0};
 try{const v=JSON.parse(localStorage.getItem('padel-experience')||'{}');experience.largeControls=v.largeControls===true;experience.calm=v.calm===true;experience.best=Number.isFinite(v.best)?Math.max(0,Math.floor(v.best)):0;}catch{}
 function saveExperience(){try{localStorage.setItem('padel-experience',JSON.stringify(experience));}catch{}}
@@ -82,6 +82,11 @@ function renderEyeView(view,id){
     joints.forEach((j,i)=>j.quaternion.copy(rotations[i]));model.root.updateMatrixWorld(true);
   }
 }
+// Close third-person view shows footwork while keeping the ball and net above the player.
+function setMatchPose(position,target,p,b,side){
+  position.set(THREE.MathUtils.clamp(p.x*.82,-3.9,3.9),2.65,side*Math.min(13,Math.abs(p.z)+3.35));
+  target.set(p.x*.2+b.x*.24,.85+Math.max(0,b.y-2.5)*.25,p.z-side*7.5);
+}
 // Court views face the other half; the eye view keeps the ball centered.
 function updatePlayCamera(p,b,dt){
   const side=game.team(game.controlled)===0?1:-1,high=Math.max(0,b.y-2.5);
@@ -89,9 +94,10 @@ function updatePlayCamera(p,b,dt){
   else if(cameraMode===1){desired.set(p.x*.65,5.8+high*.16,p.z+side*7);targetLook.set(p.x*.4+b.x*.08,.7+high*.18,p.z-side*7);}
   else if(cameraMode===2){desired.set(side*.01,15,side*22);targetLook.set(0,.3,0);}
   else if(cameraMode===3){desired.set(p.x*.15,23,side*.4);targetLook.set(p.x*.15,0,-side*.4);}
-  else{setEyePose(desired,targetLook,p,b,side);}
+  else if(cameraMode===4){setEyePose(desired,targetLook,p,b,side);}
+  else{setMatchPose(desired,targetLook,p,b,side);}
   const near=cameraMode===4?.01:.08;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}
-  const base=[44,55,49,53,78][cameraMode],fov=camera.aspect<1.6?base+8:base;
+  const base=[44,55,49,53,78,62][cameraMode],fov=camera.aspect<1.6?base+8:base;
   if(Math.abs(camera.fov-fov)>.01){camera.fov+=(fov-camera.fov)*(1-Math.exp(-dt*7));camera.updateProjectionMatrix();}
 }
 function fitViewport(){const width=Math.max(1,Math.round(window.visualViewport?.width||innerWidth)),height=Math.max(1,Math.round(window.visualViewport?.height||innerHeight));document.documentElement.style.setProperty('--screen-h',height+'px');camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));}
